@@ -1,0 +1,40 @@
+# Flutter/Dart 관련 파일 및 디렉터리
+.dart_tool/
+.packages
+.pub/
+build/
+
+# Flutter 플러그인 관련
+.flutter-plugins
+.flutter-plugins-dependencies
+.flutter-versions
+
+# iOS 관련 파일/디렉터리
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Generated.xcconfig
+ios/Flutter/GeneratedPluginRegistrant.*
+ios/Flutter/ephemeral/
+ios/Pods/
+
+# Android 관련 파일/디렉터리
+android/.gradle/
+android/app/build/
+android/app/debug.apk
+android/app/profile.apk
+android/app/release.apk
+
+# Android Studio / IntelliJ 관련 설정 파일
+.idea/
+*.iml
+*.ipr
+*.iws
+.gradle
+local.properties
+
+# VS Code 관련 설정 파일
+.vscode/
+
+# 기타 임시 파일 및 OS에서 생성하는 파일
+*.swp
+.DS_Store
