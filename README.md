@@ -6,6 +6,7 @@
 
 - [코드 컨벤션](https://6-keem-dev.vercel.app/blog/%EC%BA%A1%EC%8A%A4%ED%86%A4%EB%94%94%EC%9E%90%EC%9D%B8/2025-02-05)
 - [아키텍쳐 구조](https://6-keem-dev.vercel.app/blog/%EC%BA%A1%EC%8A%A4%ED%86%A4%EB%94%94%EC%9E%90%EC%9D%B8/2025-02-12)
+- [GitHub Rule](https://6-keem-dev.vercel.app/blog/%EC%BA%A1%EC%8A%A4%ED%86%A4%EB%94%94%EC%9E%90%EC%9D%B8/2025-02-13)
 
 
 ```bash
