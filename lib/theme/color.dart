@@ -38,4 +38,6 @@ class AppColors {
   static const Color errorLight = Color(0xFFFF7171);
   static const Color errorBase = Color(0xFFFF4747);
   static const Color errorDark = Color(0xFFDD3333);
+
+  static const Color transparent = Colors.transparent;
 }
