@@ -13,10 +13,10 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// (임시) 에고 아이콘 이미지가 저장된 Path이다.
   final String egoIconPath = 'assets/image/egoIcon.png';
 
-  /// 선택한 Tab과 Body를 매핑하는 Controller이다.
+  /// [tabController]  선택한 Tab과 Body를 매핑하는 Controller이다.
   final TabController tabController;
 
-  /// 생성자
+  /// [tabController]  Tab과 body를 관리할 객체 주입
   const MainAppBar(this.tabController, {super.key});
 
   /// 페이지 이동 함수이다.
@@ -33,9 +33,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 0, 18.0, 0),
+      padding: EdgeInsets.fromLTRB(0, 0, 18.0, 0), // 좌측 18px Padding을 준다.
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 70,
+        toolbarHeight: kToolbarHeight + 70, // 앱바 상단 영역 확장을 위한 70px 추가
         title: DefaultTabController(
           // TabBar를 AppBar의 좌측에 배치하기 위함
           length: tabController.length, // 이용할 Tab은 2개로 지정
@@ -79,16 +79,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: Icon(Icons.alarm), // TODO: 디자인 확정되면 변경할 것
                 iconSize: 30,
                 highlightColor: Colors.transparent, // 터치 애니메이션 제거
-                onPressed: () {
-                  alertMethod(context);
-                },
+                onPressed: () => alertMethod(context),
               ),
               ImageButton(
                 // 설정 페이지로 이동하기 위한 Button
                 imagePath: egoIconPath,
-                onTab: () {
-                  settingsMethod(context);
-                },
+                onTab: () => settingsMethod(context),
                 width: 35.0,
                 height: 35.0,
                 radius: 100.0,
