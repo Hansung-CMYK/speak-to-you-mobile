@@ -15,22 +15,25 @@ class ImageButton extends StatelessWidget {
   final double radius;
 
   const ImageButton({
-      super.key,
-      required this.imagePath,
-      required this.onTab,
-      this.width,
-      this.height,
-      this.radius = 0,
+    super.key,
+    required this.imagePath,
+    required this.onTab,
+    this.width,
+    this.height,
+    this.radius = 0,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell( // 실제 이미지를 버튼으로 만드는 클래스
+    return InkWell(
+      // 실제 이미지를 버튼으로 만드는 클래스
       borderRadius: BorderRadius.circular(radius), // 모서리 값 설정
-      onTap: () { // 클릭 시 동작
+      onTap: () {
+        // 클릭 시 동작
         onTab();
       },
-      child: Image.asset( // 이미지 소스 조정
+      child: Image.asset(
+        // 이미지 소스 조정
         imagePath,
         width: width,
         height: height,
