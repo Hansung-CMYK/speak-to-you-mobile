@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../theme/color.dart';
 import '../../theme/theme.dart';
-import '../ImageButton.dart';
+import '../image_button.dart';
 
 /// [MainAppBar]는 SpeakToYou에서 가장 기본적으로 사용되는 AppBar이다.
 ///
