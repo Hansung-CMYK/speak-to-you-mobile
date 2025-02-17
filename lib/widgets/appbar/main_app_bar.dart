@@ -2,40 +2,99 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../theme/color.dart';
+import '../../theme/theme.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
+  String egoIconPath = 'assets/image/egoIcon.png';
+
   void speakMethod() {
 
   }
   void calendarMethod() {
 
   }
-  void settingsMethod() {
+  void alertMethod() {
     
+  }
+  void settingsMethod() {
+
   }
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColors.transparency,
-      title: Row(
-        children: [
-          TextButton(onPressed: speakMethod, child: Text("스피크", style: TextStyle(color: AppColors.black, fontSize: 24, fontWeight: FontWeight.bold),)),
-          TextButton(onPressed: calendarMethod, child: Text("캘린더", style: TextStyle(color: AppColors.gray400, fontSize: 24),)),
-        ],
+      title: DefaultTabController(
+        length: 2,
+        child: TabBar(
+          isScrollable: true,
+          tabAlignment: TabAlignment.start,
+          labelPadding: EdgeInsets.symmetric(horizontal: 8.0),
+          indicator: BoxDecoration(),
+          labelStyle: TextStyle(
+            color: AppColors.black,
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+          ),
+          unselectedLabelStyle: TextStyle(
+            color: AppColors.gray400,
+            fontSize: 21,
+            fontWeight: FontWeight.bold,
+          ),
+          tabs: [
+            Tab(text: "스피크"),
+            Tab(text: "캘린더"),
+          ],
+        )
       ),
       actions: [
-        TextButton(onPressed: calendarMethod, child: Text("알림", style: TextStyle(color: AppColors.gray400, fontSize: 24),)),
-        IconButton(onPressed: settingsMethod, icon: Icon(Icons.person, size: 35.0,)),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 8.0),
+          child: Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.alarm),
+                iconSize: 30,
+                onPressed: alertMethod,
+              ),
+              IconButton(
+                icon: ImageIcon(Image.asset(egoIconPath, scale: 9.0,).image),
+                iconSize: 30,
+                onPressed: settingsMethod,
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight); // AppBar의 기본 높이 설정
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class SampleAppBarScreen extends ConsumerWidget {
+/// AppBar 단위 테스트 코드
+/// SampleAppBarTest를 통해 위젯 비율을 조정하고 관리함
+void main() {
+  runApp(
+    ProviderScope(
+      child: MainAppBarTest(),
+    ),
+  );
+}
+
+class MainAppBarTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Riverpod App',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      home: SampleMainAppBarScreen(),
+    );
+  }
+}
+
+class SampleMainAppBarScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(

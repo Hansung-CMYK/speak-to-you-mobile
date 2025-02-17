@@ -15,7 +15,7 @@ class AppTheme {
         onSecondary: AppColors.white,
 
         surface: AppColors.white, // 배경색
-        onSurface: AppColors.gray900, // 전경색
+        onSurface: AppColors.transparent, // 전경색
         onSurfaceVariant: AppColors.gray300, // 비활성 버튼 배경색
 
         error: AppColors.errorBase,
