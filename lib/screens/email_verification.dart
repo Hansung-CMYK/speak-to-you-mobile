@@ -1,9 +1,16 @@
 import 'package:ego/theme/color.dart';
+import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailVerificationScreen extends StatefulWidget {
-  const EmailVerificationScreen({super.key});
+  final Widget nextPage;
+
+  const EmailVerificationScreen({
+    super.key,
+    required this.nextPage,
+  });
 
   @override
   State<EmailVerificationScreen> createState() => _EmailVerificationPageState();
@@ -56,8 +63,8 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOut,
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        width: 64,
-        height: 64,
+        width: 64.w,
+        height: 64.h,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: AppColors.gray100,
@@ -90,8 +97,8 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text(''),
+        appBar: StackAppBar(
+          title: '',
         ),
         body: Container(
           padding: const EdgeInsets.all(20),
@@ -238,6 +245,12 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                         onPressed: codeBuffer.length == 4
                             ? () {
                                 /// TODO 인증번호 검증 & 다음 페이지로
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => widget.nextPage,
+                                  ),
+                                );
                               }
                             : null,
                         style: TextButton.styleFrom(
