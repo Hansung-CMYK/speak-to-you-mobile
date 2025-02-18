@@ -4,6 +4,8 @@ import 'package:ego/widgets/textfield/custom_textfield1.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../widgets/appbar/stack_app_bar.dart';
+
 /// 사용자를 구분하는 로그인 스크린이다.
 ///
 /// 대화하기 페이지로 이동하기 위해 필수적으로 거쳐야 하는 스크린이다.
@@ -62,21 +64,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //appBar: ,
+      appBar: StackAppBar(title: ""),
       body: Container(
-      width: MediaQuery.of(context).size.width, // 화면 전체 너비로 설정
-      padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
-        children: [
-          _title(), // 하위에 제목 및 설명이 있다.
-          SizedBox(height: 40.h), // 추가 Padding 역할
-          _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
-          SizedBox(height: 16.h), // 추가 Padding 역할
-          _terms(context), // 하위에 약관 이동 버튼이 있다.
-        ],
-      ),
-    ));
+        width: double.maxFinite, // 화면 전체 너비로 설정
+        padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
+          children: [
+            _title(), // 하위에 제목 및 설명이 있다.
+            SizedBox(height: 40.h), // 추가 Padding 역할
+            _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
+            SizedBox(height: 16.h), // 추가 Padding 역할
+            _terms(context), // 하위에 약관 이동 버튼이 있다.
+          ],
+        ),
+      )
+    );
   }
 
   /// 스크린 정보를 설명하는 텍스트 영역이다.
