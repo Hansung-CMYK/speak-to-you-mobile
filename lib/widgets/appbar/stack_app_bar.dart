@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// [StackAppBar]는 StackNavigation을 이용한 스크린에서 사용되는 AppBar이다.
 ///
@@ -19,24 +20,27 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      toolbarHeight: kToolbarHeight + 70, // 앱바 상단 영역 확장을 위한 70px 추가
-      centerTitle: true, // AppBar의 제목 중앙 정렬
-      leading: IconButton(
-        // 뒤로가기 버튼
-        onPressed: () => backScreenMethod(context),
-        highlightColor: Colors.transparent, // 터치 애니메이션 제거
-        icon: Icon(
-          Icons.arrow_back, // 뒤로가기 아이콘 (안드로이드 버전)
-          size: 25.0,
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 12.5.sp),
+      child: AppBar(
+        toolbarHeight: kToolbarHeight + 44.h, // 앱바 상단 영역 확장을 위한 70px 추가
+        centerTitle: true, // AppBar의 제목 중앙 정렬
+        leading: IconButton(
+          // 뒤로가기 버튼
+          onPressed: () => backScreenMethod(context),
+          highlightColor: Colors.transparent, // 터치 애니메이션 제거
+          icon: Icon(
+            Icons.arrow_back, // 뒤로가기 아이콘 (안드로이드 버전)
+            size: 24.w,
+          ),
         ),
-      ),
-      title: Text(
-        // 페이지의 제목
-        title,
-        style: TextStyle(
-          fontSize: 17.0,
-          fontWeight: FontWeight.bold,
+        title: Text(
+          // 페이지의 제목
+          title,
+          style: TextStyle(
+            fontSize: 16.sp,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

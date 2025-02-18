@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/color.dart';
 import '../button/image_button.dart';
@@ -29,10 +30,14 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.fromLTRB(0, 0, 18.0, 0), // 좌측 18px Padding을 준다.
+      padding: EdgeInsets.symmetric(
+        vertical: 12.h,
+        horizontal: 20.w,
+      ), // 좌측 18px Padding을 준다.
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 70, // 앱바 상단 영역 확장을 위한 70px 추가
-        title: DefaultTabController(
+        toolbarHeight: kToolbarHeight + 12.h + 44.h, // 앱바 상단 영역 확장을 위한 길이 추가. 44.0px은 피그마 기준 휴대폰 알림창
+        leadingWidth: double.maxFinite,
+        leading: DefaultTabController(
           // TabBar를 AppBar의 좌측에 배치하기 위함
           length: tabController.length, // 이용할 Tab은 2개로 지정
           child: TabBar(
@@ -42,7 +47,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             tabAlignment: TabAlignment
                 .start, // TabBar의 Tab들을 왼쪽으로 정렬시킨다. (Default: Center)
             labelPadding:
-                EdgeInsets.symmetric(horizontal: 8.0), // 각 텍스트 간의 간격 지정
+                EdgeInsets.symmetric(horizontal: 8.w), // 각 텍스트 간의 간격 지정
             indicator: BoxDecoration(), // 선택된 페이지의 밑줄 하이라이팅 제거
             dividerColor: AppColors.transparent, // TabBar의 영역 테두리를 제거
             overlayColor: WidgetStateProperty.all(
@@ -50,13 +55,13 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             labelStyle: TextStyle(
               // 선택된 Tab의 텍스트 속성
               color: AppColors.black,
-              fontSize: 21,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
             unselectedLabelStyle: TextStyle(
               // 선택되지 않은 Tab의 텍스트 속성
               color: AppColors.gray400,
-              fontSize: 21,
+              fontSize: 20.sp,
               fontWeight: FontWeight.bold,
             ),
             tabs: [
@@ -73,7 +78,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               IconButton(
                 // 알림 페이지로 이동하기 위한 Button
                 icon: Icon(Icons.alarm), // TODO: 디자인 확정되면 변경할 것
-                iconSize: 30,
+                iconSize: 32.w,
                 highlightColor: Colors.transparent, // 터치 애니메이션 제거
                 onPressed: () => alertMethod(context),
               ),
@@ -81,9 +86,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 // 설정 페이지로 이동하기 위한 Button
                 imagePath: egoIconPath,
                 onTab: () => settingsMethod(context),
-                width: 35.0,
-                height: 35.0,
-                radius: 100.0,
+                width: 32.w,
+                height: 32.h,
+                radius: 100,
               ),
             ],
           ),

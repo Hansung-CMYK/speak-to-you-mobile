@@ -1,6 +1,7 @@
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../theme/theme.dart';
 
@@ -19,14 +20,17 @@ class StackAppBarTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '앱 바 테스트 페이지',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      home: Consumer(
-        builder: (context, ref, child) {
-          return SampleStackAppBarScreen();
-        },
+    return ScreenUtilInit(
+      designSize: Size(393, 852),
+      builder: (context, child) => MaterialApp(
+        title: '앱 바 테스트 페이지',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        home: Consumer(
+          builder: (context, ref, child) {
+            return SampleStackAppBarScreen();
+          },
+        ),
       ),
     );
   }

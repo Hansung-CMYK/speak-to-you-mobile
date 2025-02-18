@@ -4,6 +4,7 @@ import 'package:ego/sample/cmky10/tmpscreen/tmp_settings_screen.dart';
 import 'package:ego/sample/cmky10/tmpscreen/tmp_speak_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../theme/theme.dart';
 import '../../widgets/appbar/main_app_bar.dart';
@@ -23,20 +24,23 @@ class MainAppBarTest extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '앱 바 테스트 페이지',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
-      initialRoute: 'Main',
-      routes: {
-        'Main': (context) => Consumer(
-          builder: (context, ref, child) {
-            return SampleMainAppBarScreen();
-          },
-        ),
-        'Settings': (context) => TmpSettingsScreen(),
-        'Alert': (context) => TmpAlertScreen(),
-      }
+    return ScreenUtilInit(
+      designSize: Size(393, 852),
+      builder: (context, child) => MaterialApp(
+        title: '앱 바 테스트 페이지',
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        initialRoute: 'Main',
+        routes: {
+          'Main': (context) => Consumer(
+            builder: (context, ref, child) {
+              return SampleMainAppBarScreen();
+            },
+          ),
+          'Settings': (context) => TmpSettingsScreen(),
+          'Alert': (context) => TmpAlertScreen(),
+        }
+      ),
     );
   }
 }
