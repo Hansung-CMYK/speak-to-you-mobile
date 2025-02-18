@@ -23,7 +23,7 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.5.sp),
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 44.h, // 앱바 상단 영역 확장을 위한 70px 추가
+        toolbarHeight: kToolbarHeight + 12.h, // 앱바 상단 영역 확장을 위한 70px 추가
         centerTitle: true, // AppBar의 제목 중앙 정렬
         leading: IconButton(
           // 뒤로가기 버튼
@@ -48,5 +48,5 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// AppBar의 사이즈 조정을 위한 필수 getter
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 70);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 12.h);
 }

@@ -35,9 +35,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         horizontal: 20.w,
       ), // 좌측 18px Padding을 준다.
       child: AppBar(
-        toolbarHeight: kToolbarHeight +
-            12.h +
-            44.h, // 앱바 상단 영역 확장을 위한 길이 추가. 44.0px은 피그마 기준 휴대폰 알림창
+        toolbarHeight: kToolbarHeight + 12.h, // 앱바 상단 영역 확장을 위한 길이 추가. 44.0px은 피그마 기준 휴대폰 알림창
         leadingWidth: double.maxFinite,
         leading: DefaultTabController(
           // TabBar를 AppBar의 좌측에 배치하기 위함
@@ -79,7 +77,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               IconButton(
                 // 알림 페이지로 이동하기 위한 Button
                 icon: Icon(Icons.alarm), // TODO: 디자인 확정되면 변경할 것
-                iconSize: 32.w,
+                iconSize: 28.w,
                 highlightColor: Colors.transparent, // 터치 애니메이션 제거
                 onPressed: () => alertMethod(context),
               ),
@@ -101,5 +99,5 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// AppBar의 사이즈 조정을 위한 필수 getter
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight + 70);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 12.h);
 }
