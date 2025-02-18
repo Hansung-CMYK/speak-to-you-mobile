@@ -101,7 +101,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
           title: '',
         ),
         body: Container(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
