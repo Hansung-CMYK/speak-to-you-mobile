@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/color.dart';
 
@@ -31,17 +32,17 @@ class _CustomButton1State extends State<CustomButton1> {
         disabledBackgroundColor: AppColors.gray300, // 비활성화 상태일 때, 배경 색상
         disabledForegroundColor: AppColors.white, // 비활성화 상태일 때, 텍스트 색상
         shape: RoundedRectangleBorder( // 텍스트 버튼 형태 설정
-          borderRadius: BorderRadius.circular(8.0), // 모서리 굴곡 8.0
+          borderRadius: BorderRadius.circular(8), // 모서리 굴곡 8.0
         ),
         fixedSize: Size(
           MediaQuery.of(context).size.width, // 너비 화면 최대 길이로 지정
-          56
+          56.h
         ), // TODO: 높이가 HardCoding 되어있음.
       ),
       child: Text(
         widget.text, // 사용자가 설정한 텍스트 설정
         style: TextStyle(
-          fontSize: 18.0,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w400
         ),
       ),

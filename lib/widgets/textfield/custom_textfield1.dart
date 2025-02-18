@@ -1,5 +1,6 @@
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// '로그인'과 '회원가입'에서 이용할 텍스트 필드를 모듈화 한 클래스이다.
 class CustomTextfield1 extends StatefulWidget {
@@ -47,18 +48,18 @@ class _CustomTextfield1State extends State<CustomTextfield1> {
         labelStyle: TextStyle(color: AppColors.black), // 작성한 텍스트 색상
         focusedBorder: OutlineInputBorder( // 텍스트 작성 시, 테두리 속성
           borderSide: BorderSide(color: Colors.black), // 테두리 색상
-          borderRadius: BorderRadius.circular(8.0), // 모서리 굴곡
+          borderRadius: BorderRadius.circular(8), // 모서리 굴곡
         ),
         enabledBorder: OutlineInputBorder( // 텍스트 미작성 시, 테두리 속성
           borderSide: BorderSide(color: AppColors.gray200), // 테두리 색상
-          borderRadius: BorderRadius.circular(8.0), // 모서리 굴곡
+          borderRadius: BorderRadius.circular(8), // 모서리 굴곡
         ),
         border: InputBorder.none, // 삭정 문구의 하이라이팅 제거
         suffixIcon: _controller.text.isNotEmpty // 문구 전체 제거 버튼, 문구가 있을 때만 나타난다.
           ? IconButton(
               icon: Icon(
                 Icons.close,
-                size: 18.0, // TODO: 아이콘에 맞게 조정할 것
+                size: 20.w, // TODO: 아이콘에 맞게 조정할 것
               ),
               onPressed: () => _controller.clear(), // 텍스트 필드 문구 전체를 제거하는 함수
             )

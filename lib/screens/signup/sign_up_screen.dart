@@ -2,6 +2,7 @@ import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/button/custom_button1.dart';
 import 'package:ego/widgets/textfield/custom_textfield1.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// 사용자를 구분하는 로그인 스크린이다.
 ///
@@ -64,14 +65,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
       //appBar: ,
       body: Container(
       width: MediaQuery.of(context).size.width, // 화면 전체 너비로 설정
-      padding: EdgeInsets.symmetric(horizontal: 20.0), // 위젯 간 패딩 20.0 설정
+      padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
         children: [
           _title(), // 하위에 제목 및 설명이 있다.
-          SizedBox(height: 40.0), // 추가 Padding 역할
+          SizedBox(height: 40.h), // 추가 Padding 역할
           _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
-          SizedBox(height: 20.0), // 추가 Padding 역할
+          SizedBox(height: 16.h), // 추가 Padding 역할
           _terms(context), // 하위에 약관 이동 버튼이 있다.
         ],
       ),
@@ -84,13 +85,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget _title() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-      spacing: 2.0, // 열간 간격 지정
+      // spacing: 8.0, // 열간 간격 지정
       children: [
         // '회원가입'을 명시하는 텍스트
         Text(
           "회원가입",
           style: TextStyle(
-            fontSize: 34.0,
+            fontSize: 34.sp,
             fontWeight: FontWeight.w800,
           ),
         ),
@@ -98,7 +99,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         Text(
           "로그인 시 사용할 이메일을 입력해주세요.",
           style: TextStyle(
-            fontSize: 15.0,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w400,
             color: AppColors.gray600,
           ),
@@ -117,17 +118,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
           controller: controller, // 텍스트필드에 작성된 정보를 알기 위한 controller 설정
         ),
         SizedBox( // 추가 Padding 역할
-          height: 5.0,
+          height: 8.h,
         ),
         Text( // 사용자가 올바르지 않은 이메일을 작성할 시 나타나는 문구이다.
           !active ? "잘못된 유형의 이메일 주소입니다." : "",
           style: TextStyle(
-            fontSize: 15.0,
+            fontSize: 14.sp,
             color: AppColors.errorBase,
           ),
         ),
         SizedBox( // 추가 Padding 역할
-          height: 10.0,
+          height: 14.h,
         ),
         CustomButton1( // 인증번호 전송 요청 버튼이다.
           text: "인증메일 발송",
@@ -145,17 +146,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
           color: AppColors.gray300,
         ),
         SizedBox( // 추가 Padding 역할
-          height: 20.0,
+          height: 16.h,
         ),
         Text( // 약관 동의에 대한 설명을하는 텍스트
           "가입과 동시에 아래의 약관에 동의합니다.",
           style: TextStyle(
               color: AppColors.gray600,
-              fontSize: 12.0
+              fontSize: 12.sp
           ),
         ),
         SizedBox( // 추가 Padding 역할
-          height: 5.0,
+          height: 8.h,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center, // 위젯이 화면 중심에 배치되도록 지정
@@ -171,11 +172,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               child: Text(
                 "서비스 이용약관",
-                style: TextStyle(color: AppColors.gray300, fontSize: 10.0),
+                style: TextStyle(
+                  color: AppColors.gray300,
+                  fontSize: 10.sp
+                ),
               ),
             ),
             Container( // '서비스 이용약관'과 '개인정보 처리방침' 버튼 간의 수직 경계선이다.
-              height: 10.0,
+              height: 10.h,
               child: VerticalDivider(
                 color: AppColors.gray300,
                 thickness: 1,
@@ -191,7 +195,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
               child: Text(
                 "개인정보 처리방침",
-                style: TextStyle(color: AppColors.gray300, fontSize: 10.0),
+                style: TextStyle(
+                  color: AppColors.gray300,
+                  fontSize: 10.sp
+                ),
               ),
             )
           ],
