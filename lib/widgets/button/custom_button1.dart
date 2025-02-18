@@ -2,10 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../theme/color.dart';
 
+/// '로그인'과 '회원가입'에서 이용할 버튼을 모듈화 한 클래스이다.
 class CustomButton1 extends StatefulWidget {
+  /// [text] 버튼 중앙에 나타날 텍스트
   final String text;
+  /// [confirmMethod] 버튼 클릭 시 이루어질 동작
   final Function? confirmMethod;
 
+  /// [text] 버튼 중앙에 나타날 텍스트
+  /// [confirmMethod] 버튼 클릭 시 이루어질 동작. null 주입 시, 버튼은 비활성화 된다.
   const CustomButton1({required this.text, this.confirmMethod});
 
   @override
@@ -17,21 +22,28 @@ class _CustomButton1State extends State<CustomButton1> {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed:
-          widget.confirmMethod != null ? () => widget.confirmMethod!() : null,
+          widget.confirmMethod != null // confirmMethod 가 null로 반환되면 Disable(비활성화) 상태이다.
+              ? () => widget.confirmMethod!() // 버튼 활성화
+              : null, // 버튼 비활성화
       style: TextButton.styleFrom(
-        disabledBackgroundColor: AppColors.gray300,
-        disabledForegroundColor: AppColors.white,
-        backgroundColor: AppColors.primary, // TODO: 애니메이션 넣을거면 넣기
-        foregroundColor: AppColors.white, // TODO: 애니메이션 넣을거면 넣기
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+        backgroundColor: AppColors.primary, // 활성화 상태일 때, 배경 색상
+        foregroundColor: AppColors.white, // 비활성화 상태일 때, 텍스트 색상
+        disabledBackgroundColor: AppColors.gray300, // 비활성화 상태일 때, 배경 색상
+        disabledForegroundColor: AppColors.white, // 비활성화 상태일 때, 텍스트 색상
+        shape: RoundedRectangleBorder( // 텍스트 버튼 형태 설정
+          borderRadius: BorderRadius.circular(8.0), // 모서리 굴곡 8.0
         ),
-        fixedSize: Size(MediaQuery.of(context).size.width,
-            56), // TODO: 높이가 HardCoding 되어있음.
+        fixedSize: Size(
+          MediaQuery.of(context).size.width, // 너비 화면 최대 길이로 지정
+          56
+        ), // TODO: 높이가 HardCoding 되어있음.
       ),
       child: Text(
-        widget.text,
-        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w400),
+        widget.text, // 사용자가 설정한 텍스트 설정
+        style: TextStyle(
+          fontSize: 18.0,
+          fontWeight: FontWeight.w400
+        ),
       ),
     );
   }
