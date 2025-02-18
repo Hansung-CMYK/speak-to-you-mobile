@@ -47,7 +47,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             tabAlignment: TabAlignment
                 .start, // TabBar의 Tab들을 왼쪽으로 정렬시킨다. (Default: Center)
             labelPadding:
-                EdgeInsets.symmetric(horizontal: 8.w), // 각 텍스트 간의 간격 지정
+                EdgeInsets.fromLTRB(0, 0, 8.w, 0), // 각 텍스트 간의 간격 지정
             indicator: BoxDecoration(), // 선택된 페이지의 밑줄 하이라이팅 제거
             dividerColor: AppColors.transparent, // TabBar의 영역 테두리를 제거
             overlayColor: WidgetStateProperty.all(
