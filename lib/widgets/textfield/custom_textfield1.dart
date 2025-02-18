@@ -5,7 +5,8 @@ class CustomTextfield1 extends StatefulWidget {
   final String hintText;
   final TextEditingController controller;
 
-  const CustomTextfield1({super.key, required this.hintText, required this.controller});
+  const CustomTextfield1(
+      {super.key, required this.hintText, required this.controller});
 
   @override
   _CustomTextfield1State createState() => _CustomTextfield1State();
@@ -51,17 +52,16 @@ class _CustomTextfield1State extends State<CustomTextfield1> {
           borderRadius: BorderRadius.circular(8.0),
         ),
         border: InputBorder.none,
-
         suffixIcon: _controller.text.isNotEmpty
             ? IconButton(
-          icon: Icon(
-            Icons.close,
-            size: 18.0,
-          ),
-          onPressed: () {
-            _controller.clear();
-          },
-        )
+                icon: Icon(
+                  Icons.close,
+                  size: 18.0,
+                ),
+                onPressed: () {
+                  _controller.clear();
+                },
+              )
             : null,
       ),
     );

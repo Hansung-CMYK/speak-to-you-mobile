@@ -1,8 +1,11 @@
+import 'package:ego/sample/cmky11/tmpscreen/tmp_privacy_policy_screen.dart';
+import 'package:ego/sample/cmky11/tmpscreen/tmp_send_mail_screen.dart';
+import 'package:ego/sample/cmky11/tmpscreen/tmp_terms_of_use_screen.dart';
 import 'package:ego/screens/signup/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../theme/theme.dart';
+import '../../theme/theme.dart';
 
 void main() {
   runApp(
@@ -21,11 +24,13 @@ class SignUpScreenTest extends StatelessWidget {
       title: '앱 바 테스트 페이지',
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      home: Consumer(
-        builder: (context, ref, child) {
-          return SignUpScreen();
-        },
-      ),
+      initialRoute: 'SignUp',
+      routes: {
+        'SignUp': (context) => SignUpScreen(),
+        'SendMail': (context) => TmpSendMailScreen(),
+        'TermsOfUse': (context) => TmpTermsOfUseScreen(),
+        'PrivacyPolicy': (context) => TmpPrivacyPolicyScreen(),
+      },
     );
   }
 }
