@@ -58,7 +58,8 @@ class _CustomTextfield1State extends State<CustomTextfield1> {
         suffixIcon: _controller.text.isNotEmpty // 문구 전체 제거 버튼, 문구가 있을 때만 나타난다.
           ? IconButton(
               icon: Icon(
-                Icons.close,
+                Icons.cancel,
+                color: AppColors.gray400,
                 size: 20.w, // TODO: 아이콘에 맞게 조정할 것
               ),
               onPressed: () => _controller.clear(), // 텍스트 필드 문구 전체를 제거하는 함수
