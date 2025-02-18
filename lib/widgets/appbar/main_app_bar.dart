@@ -35,7 +35,9 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         horizontal: 20.w,
       ), // 좌측 18px Padding을 준다.
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 12.h + 44.h, // 앱바 상단 영역 확장을 위한 길이 추가. 44.0px은 피그마 기준 휴대폰 알림창
+        toolbarHeight: kToolbarHeight +
+            12.h +
+            44.h, // 앱바 상단 영역 확장을 위한 길이 추가. 44.0px은 피그마 기준 휴대폰 알림창
         leadingWidth: double.maxFinite,
         leading: DefaultTabController(
           // TabBar를 AppBar의 좌측에 배치하기 위함
@@ -46,8 +48,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 true, // TabBar의 너비를 지정할 수 있게 한다.(Default: Maximum Width)
             tabAlignment: TabAlignment
                 .start, // TabBar의 Tab들을 왼쪽으로 정렬시킨다. (Default: Center)
-            labelPadding:
-                EdgeInsets.fromLTRB(0, 0, 8.w, 0), // 각 텍스트 간의 간격 지정
+            labelPadding: EdgeInsets.fromLTRB(0, 0, 16.w, 0), // 각 텍스트 간의 간격 지정
             indicator: BoxDecoration(), // 선택된 페이지의 밑줄 하이라이팅 제거
             dividerColor: AppColors.transparent, // TabBar의 영역 테두리를 제거
             overlayColor: WidgetStateProperty.all(
@@ -82,6 +83,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 highlightColor: Colors.transparent, // 터치 애니메이션 제거
                 onPressed: () => alertMethod(context),
               ),
+              SizedBox(width: 8.w),
               ImageButton(
                 // 설정 페이지로 이동하기 위한 Button
                 imagePath: egoIconPath,
