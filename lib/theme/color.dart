@@ -25,6 +25,9 @@ class AppColors {
   static const Color gray800 = Color(0xFF26282B);
   static const Color gray900 = Color(0xFF1E1E1E);
 
+  static const Color blueGray500 = Color(0xFF777B84);
+  static const Color blueGray900 = Color(0xFF090E18);
+
   static const Color successLight = Color(0xFF4ADE80);
   static const Color successBase = Color(0xFF22C55E);
   static const Color successDark = Color(0xFF16A34A);
