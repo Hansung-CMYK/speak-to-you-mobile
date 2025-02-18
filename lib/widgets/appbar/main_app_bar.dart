@@ -1,5 +1,5 @@
-import 'package:ego/widgets/appbar/tmpscreen/tmp_alert_screen.dart';
-import 'package:ego/widgets/appbar/tmpscreen/tmp_settings_screen.dart';
+import 'package:ego/widgets/appbar/sample/tmpscreen/tmp_alert_screen.dart';
+import 'package:ego/widgets/appbar/sample/tmpscreen/tmp_settings_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../theme/color.dart';
@@ -21,13 +21,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// 페이지 이동 함수이다.
   void alertMethod(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TmpAlertScreen()));
+    Navigator.pushNamed(context, 'Alert');
   }
 
   void settingsMethod(BuildContext context) {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TmpSettingsScreen()));
+    Navigator.pushNamed(context, 'Settings');
   }
 
   @override
