@@ -94,125 +94,172 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
     return Scaffold(
         appBar: StackAppBar(title: ''),
         body: Container(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                '인증 메일을 발송했어요',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w900,
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+          padding: const EdgeInsets.all(20),
+          child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   Text(
-                    'blahblah@gmail.com',
+                    '인증 메일을 발송했어요',
                     style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w800,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
                     ),
-                  ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        'blahblah@gmail.com',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      Text(
+                        '로 인증 번호가 발송됐어요.',
+                        style:
+                            TextStyle(fontSize: 14, color: AppColors.gray600),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
                   Text(
-                    '로 인증 번호가 발송됐어요.',
+                    '받은 번호를 입력하면 인증이 완료 돼요.',
                     style: TextStyle(fontSize: 14, color: AppColors.gray600),
                   ),
                 ],
-              )
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Text(
-                '받은 번호를 입력하면 인증이 완료 돼요.',
-                style: TextStyle(fontSize: 14, color: AppColors.gray600),
               ),
-            ],
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Center(
-                child: GestureDetector(
-                  onTap: () {
-                    FocusScope.of(context).requestFocus(_hiddenFocusNode);
-                  },
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // 실제 입력을 받는 숨겨진 TextField
-                        SizedBox(
-                          width: 0,
-                          height: 0,
-                          child: TextField(
-                            controller: _controller,
-                            focusNode: _hiddenFocusNode,
-                            autofocus: true,
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly,
-                              LengthLimitingTextInputFormatter(pinLength),
-                            ],
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        FocusScope.of(context).requestFocus(_hiddenFocusNode);
+                      },
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // 실제 입력을 받는 숨겨진 TextField
+                            SizedBox(
+                              width: 0,
+                              height: 0,
+                              child: TextField(
+                                controller: _controller,
+                                focusNode: _hiddenFocusNode,
+                                autofocus: true,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(pinLength),
+                                ],
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
+                              ),
                             ),
+                            // 입력된 내용을 표시하는 4칸
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(pinLength, _buildPinCell),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              const SizedBox(height: 40),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        '인증 메일이 오지 않는 경우 스팸함을 확인해주세요.',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppColors.gray600,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      GestureDetector(
+                        onTap: () {
+                          /// TODO 인증번호 재전송 로직
+                        },
+                        child: Text(
+                          '인증번호 재전송',
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.gray900,
                           ),
                         ),
-                        // 입력된 내용을 표시하는 4칸
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(pinLength, _buildPinCell),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 40),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Column(
+                      )
+                    ],
+                  )
+                ],
+              ),
+              const SizedBox(height: 40),
+              Row(
                 children: [
-                  Text(
-                    '인증 메일이 오지 않는 경우 스팸함을 확인해주세요.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.gray600,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  GestureDetector(
-                    onTap: () {
-                      /// TODO 인증번호 재전송 로직
-                    },
-                    child: Text(
-                      '인증번호 재전송',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.gray900,
+                  Expanded(
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      decoration: BoxDecoration(
+                        color: codeBuffer.length == 4
+                            ? AppColors.primary
+                            : AppColors.gray300,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextButton(
+                        onPressed: codeBuffer.length == 4
+                            ? () {
+                                /// TODO 인증번호 검증 & 다음 페이지로
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => widget.nextPage,
+                                  ),
+                                );
+                              }
+                            : null,
+                        style: TextButton.styleFrom(
+                          foregroundColor: AppColors.white,
+                          backgroundColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        child: const Text(
+                          '확인',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
                       ),
                     ),
                   )
@@ -220,52 +267,6 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
               )
             ],
           ),
-          const SizedBox(height: 40),
-          Row(
-            children: [
-              Expanded(
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  decoration: BoxDecoration(
-                    color: codeBuffer.length == 4
-                        ? AppColors.primary
-                        : AppColors.gray300,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: TextButton(
-                    onPressed: codeBuffer.length == 4
-                        ? () {
-                            /// TODO 인증번호 검증 & 다음 페이지로
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => widget.nextPage,
-                              ),
-                            );
-                          }
-                        : null,
-                    style: TextButton.styleFrom(
-                      foregroundColor: AppColors.white,
-                      backgroundColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: const Text(
-                      '확인',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ),
-                ),
-              )
-            ],
-          )
-        ],
-      ),
-    ));
+        ));
   }
 }
