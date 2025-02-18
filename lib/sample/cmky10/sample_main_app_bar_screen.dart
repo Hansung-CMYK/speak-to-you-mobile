@@ -1,12 +1,12 @@
-import 'package:ego/widgets/appbar/sample/tmpscreen/tmp_alert_screen.dart';
-import 'package:ego/widgets/appbar/sample/tmpscreen/tmp_calendar_screen.dart';
-import 'package:ego/widgets/appbar/sample/tmpscreen/tmp_settings_screen.dart';
-import 'package:ego/widgets/appbar/sample/tmpscreen/tmp_speak_screen.dart';
+import 'package:ego/sample/cmky10/tmpscreen/tmp_alert_screen.dart';
+import 'package:ego/sample/cmky10/tmpscreen/tmp_calendar_screen.dart';
+import 'package:ego/sample/cmky10/tmpscreen/tmp_settings_screen.dart';
+import 'package:ego/sample/cmky10/tmpscreen/tmp_speak_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../theme/theme.dart';
-import '../main_app_bar.dart';
+import '../../widgets/appbar/main_app_bar.dart';
 
 /// AppBar 단위 테스트 코드
 /// SampleAppBarTest를 통해 위젯 비율을 조정하고 관리함

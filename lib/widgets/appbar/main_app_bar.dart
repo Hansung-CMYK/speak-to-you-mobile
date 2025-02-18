@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../theme/color.dart';
-import '../image_button.dart';
+import '../button/image_button.dart';
 
 /// [MainAppBar]는 SpeakToYou에서 가장 기본적으로 사용되는 AppBar이다.
 ///
