@@ -66,6 +66,8 @@ flutter:
     - assets/icon/TextLogo-E.svg
     - assets/icon/TextLogo-G.svg
     - assets/icon/TextLogo-O.svg
+    - assets/icon/NaverLogo.svg
+    - assets/icon/GoogleLogo.svg
     - assets/image/sent.gif
 
   # An image asset can refer to one or more resolution-specific "variants", see

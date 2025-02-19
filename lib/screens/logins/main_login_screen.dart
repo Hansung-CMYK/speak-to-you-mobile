@@ -1,6 +1,6 @@
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
-import 'package:ego/widgets/button/custom_button1.dart';
+import 'package:ego/widgets/button/radius8_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -102,10 +102,17 @@ class MainLoginScreen extends StatelessWidget {
     return Column(
       spacing: 8.h,
       children: [
-        CustomButton1(
-          text: "이메일로 계속하기",
-          confirmMethod: () => emailClickMethod(context),
+        Radius8Button(
+          logoPath: '',
+          text: '이메일로 계속하기',
+          foregroundColor: AppColors.white,
+          backgroundColor: AppColors.primary,
+          confirmMethod: emailClickMethod,
           height: 48.h,
+          textStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14.sp
+          ),
         ),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -135,15 +142,30 @@ class MainLoginScreen extends StatelessWidget {
             ],
           ),
         ),
-        CustomButton1(
-          text: "네이버로 계속하기",
-          confirmMethod: () => naverClickMethod(context),
+        Radius8Button(
+          logoPath: 'assets/icon/NaverLogo.svg',
+          text: '네이버로 계속하기',
+          foregroundColor: AppColors.white,
+          backgroundColor: AppColors.naverBg,
+          confirmMethod: naverClickMethod,
           height: 48.h,
+          textStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14.sp
+          ),
         ),
-        CustomButton1(
-          text: "Google로 계속하기",
-          confirmMethod: () => googleClickMethod(context),
+        Radius8Button(
+          logoPath: 'assets/icon/GoogleLogo.svg',
+          text: 'Google로 계속하기',
+          foregroundColor: AppColors.gray900,
+          backgroundColor: AppColors.white,
+          confirmMethod: naverClickMethod,
+          borderColor: AppColors.gray300,
           height: 48.h,
+          textStyle: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 14.sp
+          ),
         ),
       ],
     );
