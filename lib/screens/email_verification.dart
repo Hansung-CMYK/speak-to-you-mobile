@@ -86,7 +86,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
             key: ValueKey(displayChar),
             style: TextStyle(
                 fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w500,
                 color: AppColors.gray900),
           ),
         ),
@@ -113,7 +113,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                     '인증 메일을 발송했어요',
                     style: TextStyle(
                       fontSize: 24,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w800,
                     ),
                   )
                 ],
@@ -130,13 +130,15 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                         style: TextStyle(
                           fontSize: 14,
                           color: AppColors.primary,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                       Text(
                         '로 인증 번호가 발송됐어요.',
-                        style:
-                            TextStyle(fontSize: 14, color: AppColors.gray600),
+                        style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.gray600,
+                            fontWeight: FontWeight.w500),
                       ),
                     ],
                   )
@@ -148,7 +150,10 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                 children: [
                   Text(
                     '받은 번호를 입력하면 인증이 완료 돼요.',
-                    style: TextStyle(fontSize: 14, color: AppColors.gray600),
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.gray600,
+                        fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -206,9 +211,9 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                       Text(
                         '인증 메일이 오지 않는 경우 스팸함을 확인해주세요.',
                         style: TextStyle(
-                          fontSize: 14,
-                          color: AppColors.gray600,
-                        ),
+                            fontSize: 14,
+                            color: AppColors.gray600,
+                            fontWeight: FontWeight.w500),
                       ),
                       SizedBox(height: 8),
                       GestureDetector(
