@@ -8,10 +8,13 @@ class CustomTextfield1 extends StatefulWidget {
   final String hintText;
   /// [controller] Textfield를 조작하기 위한 객체이다.
   final TextEditingController controller;
+  /// [isObscure] 텍스트 공개 여부이다.
+  final bool isObscure;
 
   /// [hintText] 텍스트 필트 초기에 나타날 내용 문구
   /// [controller] Textfield를 조작하기 위한 객체이다.
-  const CustomTextfield1({super.key, required this.hintText, required this.controller});
+  /// [isObscure] 텍스트 공개 여부 (default: false)
+  const CustomTextfield1({super.key, required this.hintText, required this.controller, this.isObscure = false});
 
   @override
   _CustomTextfield1State createState() => _CustomTextfield1State();
@@ -40,6 +43,7 @@ class _CustomTextfield1State extends State<CustomTextfield1> {
   Widget build(BuildContext context) {
     return TextField(
       controller: _controller, // 텍스트필드 정보를 알기 위한 controller 설정
+      obscureText: widget.isObscure,
       decoration: InputDecoration(
         filled: true, // 텍스트 필트 배경 색상 추가 여부
         fillColor: AppColors.gray100, // 배경 색상

@@ -20,15 +20,13 @@ class Radius8Button extends StatefulWidget {
   /// [text] 버튼 중앙에 나타날 텍스트 <br>
   /// [foregroundColor] 활성화 상태일 때, 텍스트 색상 <br>
   /// [backgroundColor] 활성화 상태일 때, 배경 색상 <br>
-  /// [disabledForegroundColor] 비활성화 상태일 때, 텍스트 색상 <br>
-  /// [disabledBackgroundColor] 비활성화 상태일 때, 배경 색상 <br>
+  /// [disabledForegroundColor] 비활성화 상태일 때, 텍스트 색상 **Default** AppColors.white <br>
+  /// [disabledBackgroundColor] 비활성화 상태일 때, 배경 색상 **Default** AppColors.gray300 <br>
   /// [confirmMethod] 버튼 클릭 시 이루어질 동작 <br>
   /// [logoPath] 로고 Asset이 위치한 경로 <br>
-  /// [height] 버튼의 높이 <br>
-  /// **Default** 56.h
+  /// [height] 버튼의 높이 **Default** 56.h  <br>
   /// [borderColor] 테두리 색상 (두께는 1.w 고정이다.) <br>
-  /// [textStyle] 텍스트의 속성을 조정한다. ex) fontSize, fontWeight <br>
-  /// **Default** fontSize: 18.sp, fontWeight: w400 <br>
+  /// [textStyle] 텍스트의 속성을 조정한다. ex) fontSize, fontWeight **Default** fontSize: 18.sp, fontWeight: w400 <br>
   const Radius8Button({
     required this.text,
     required this.foregroundColor,

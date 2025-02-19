@@ -1,4 +1,7 @@
+import 'package:ego/sample/cmyk11/tmpscreen/tmp_find_id_screen.dart';
+import 'package:ego/sample/cmyk11/tmpscreen/tmp_find_password_screen.dart';
 import 'package:ego/sample/cmyk11/tmpscreen/tmp_google_login_screen.dart';
+import 'package:ego/sample/cmyk11/tmpscreen/tmp_home_screen.dart';
 import 'package:ego/sample/cmyk11/tmpscreen/tmp_naver_login_screen.dart';
 import 'package:ego/screens/signup/sign_up_screen.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +38,9 @@ class LoginScreenTest extends StatelessWidget {
           'EmailLogin': (context) => EmailLoginScreen(),
           'NaverLogin': (context) => TmpNaverLoginScreen(),
           'GoogleLogin': (context) => TmpGoogleLoginScreen(),
+          'FindId': (context) => TmpFindIdScreen(),
+          'FindPassword': (context) => TmpFindPasswordScreen(),
+          'Home': (context) => TmpHomeScreen(),
         },
       ),
     );
