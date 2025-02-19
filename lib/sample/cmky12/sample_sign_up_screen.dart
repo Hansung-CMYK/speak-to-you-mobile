@@ -1,6 +1,6 @@
-import 'package:ego/sample/cmky11/tmpscreen/tmp_privacy_policy_screen.dart';
-import 'package:ego/sample/cmky11/tmpscreen/tmp_send_mail_screen.dart';
-import 'package:ego/sample/cmky11/tmpscreen/tmp_terms_of_use_screen.dart';
+import 'package:ego/sample/cmky12/tmpscreen/tmp_privacy_policy_screen.dart';
+import 'package:ego/sample/cmky12/tmpscreen/tmp_send_mail_screen.dart';
+import 'package:ego/sample/cmky12/tmpscreen/tmp_terms_of_use_screen.dart';
 import 'package:ego/screens/signup/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
