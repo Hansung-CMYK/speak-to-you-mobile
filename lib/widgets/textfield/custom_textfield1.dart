@@ -45,6 +45,7 @@ class _CustomTextfield1State extends State<CustomTextfield1> {
       controller: _controller, // 텍스트필드 정보를 알기 위한 controller 설정
       obscureText: widget.isObscure,
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(horizontal: 20.w),
         filled: true, // 텍스트 필트 배경 색상 추가 여부
         fillColor: AppColors.gray100, // 배경 색상
         hintText: widget.hintText, // 사용자가 설정한 힌트 텍스트 설정
