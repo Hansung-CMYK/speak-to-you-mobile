@@ -7,19 +7,19 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class MainLoginScreen extends StatelessWidget {
   void emailClickMethod(BuildContext context) {
-
+    Navigator.pushNamed(context, 'EmailLogin');
   }
 
   void naverClickMethod(BuildContext context) {
-
+    Navigator.pushNamed(context, 'NaverLogin');
   }
 
   void googleClickMethod(BuildContext context) {
-
+    Navigator.pushNamed(context, 'GoogleLogin');
   }
 
   void signUpClickMethod(BuildContext context) {
-
+    Navigator.pushNamed(context, 'SignUp');
   }
 
   const MainLoginScreen({super.key});
@@ -107,7 +107,7 @@ class MainLoginScreen extends StatelessWidget {
           text: '이메일로 계속하기',
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.primary,
-          confirmMethod: emailClickMethod,
+          confirmMethod: () => emailClickMethod(context),
           height: 48.h,
           textStyle: TextStyle(
             fontWeight: FontWeight.w600,
@@ -147,7 +147,7 @@ class MainLoginScreen extends StatelessWidget {
           text: '네이버로 계속하기',
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.naverBg,
-          confirmMethod: naverClickMethod,
+          confirmMethod: () => naverClickMethod(context),
           height: 48.h,
           textStyle: TextStyle(
             fontWeight: FontWeight.w600,
@@ -159,7 +159,7 @@ class MainLoginScreen extends StatelessWidget {
           text: 'Google로 계속하기',
           foregroundColor: AppColors.gray900,
           backgroundColor: AppColors.white,
-          confirmMethod: naverClickMethod,
+          confirmMethod: () => googleClickMethod(context),
           borderColor: AppColors.gray300,
           height: 48.h,
           textStyle: TextStyle(

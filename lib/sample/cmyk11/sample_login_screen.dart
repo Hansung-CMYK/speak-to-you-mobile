@@ -1,7 +1,11 @@
+import 'package:ego/sample/cmyk11/tmpscreen/tmp_google_login_screen.dart';
+import 'package:ego/sample/cmyk11/tmpscreen/tmp_naver_login_screen.dart';
+import 'package:ego/screens/signup/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../screens/logins/email_login_screen.dart';
 import '../../screens/logins/main_login_screen.dart';
 import '../../theme/theme.dart';
 
@@ -27,6 +31,10 @@ class LoginScreenTest extends StatelessWidget {
         initialRoute: 'Login',
         routes: {
           'Login': (context) => MainLoginScreen(),
+          'SignUp': (context) => SignUpScreen(),
+          'EmailLogin': (context) => EmailLoginScreen(),
+          'NaverLogin': (context) => TmpNaverLoginScreen(),
+          'GoogleLogin': (context) => TmpGoogleLoginScreen(),
         },
       ),
     );
