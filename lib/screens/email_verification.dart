@@ -257,6 +257,8 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                                 WidgetStateProperty.all(AppColors.white),
                             backgroundColor:
                                 WidgetStateProperty.all(Colors.transparent),
+                            overlayColor: WidgetStateProperty.all(
+                                AppColors.white.withValues(alpha: 0.1)),
                             shape: WidgetStateProperty.all(
                               RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
