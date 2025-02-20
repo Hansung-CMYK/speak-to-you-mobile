@@ -2,6 +2,17 @@ import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// 간단한 알림창(다이얼로그)을 보여주는 함수.
+///
+/// [context] : 빌드 컨텍스트
+/// [title] : 다이얼로그 제목
+/// [content] : 다이얼로그 내용
+/// [titleColor] : 제목 텍스트 컬러
+/// [contentColor] : 내용 텍스트 컬러
+/// [buttonBackgroundColor] : 버튼 배경 컬러
+/// [buttonForegroundColor] : 버튼 텍스트 컬러
+/// [buttonOverlayColor] : 버튼 누를 때 효과 컬러(리플 등)
+/// [buttonText] : 버튼에 표시될 텍스트 (기본값: '닫기')
 Future<void> showAlertDialog({
   required BuildContext context,
   required String title,
@@ -50,8 +61,10 @@ Future<void> showAlertDialog({
               ),
               SizedBox(height: 24.h),
               Align(
-                  alignment: Alignment.center,
-                  child: Row(mainAxisSize: MainAxisSize.max, children: [
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
                     Expanded(
                       child: TextButton(
                         onPressed: () => Navigator.of(context).pop(),
@@ -60,19 +73,25 @@ Future<void> showAlertDialog({
                           backgroundColor: buttonBackgroundColor,
                           overlayColor: buttonOverlayColor,
                           padding: EdgeInsets.symmetric(
-                              horizontal: 24.w, vertical: 12.h),
+                            horizontal: 24.w,
+                            vertical: 12.h,
+                          ),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                         ),
-                        child: Text(buttonText,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 16.sp,
-                            )),
+                        child: Text(
+                          buttonText,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16.sp,
+                          ),
+                        ),
                       ),
                     ),
-                  ])),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
