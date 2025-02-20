@@ -1,7 +1,7 @@
-import 'package:ego/sample/cmky10/tmpscreen/tmp_alert_screen.dart';
-import 'package:ego/sample/cmky10/tmpscreen/tmp_calendar_screen.dart';
-import 'package:ego/sample/cmky10/tmpscreen/tmp_settings_screen.dart';
-import 'package:ego/sample/cmky10/tmpscreen/tmp_speak_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_alert_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_calendar_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_settings_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_speak_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
