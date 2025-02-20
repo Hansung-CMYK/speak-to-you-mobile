@@ -246,6 +246,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                               : AppColors.gray300,
                           borderRadius: BorderRadius.circular(8),
                         ),
+                        height: 56.h,
                         child: TextButton(
                           onPressed: codeBuffer.length == 4
                               ? () {
