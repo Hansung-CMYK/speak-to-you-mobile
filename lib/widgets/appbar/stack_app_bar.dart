@@ -8,8 +8,8 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 스크린의 이름이다.
   final String title;
 
-  /// [title] AppBar 중앙에 나타날 문구 주입 (스크린 명 권장).
-  const StackAppBar({super.key, required this.title});
+  /// [title] AppBar 중앙에 나타날 문구 주입 (스크린 명 권장). default: ""
+  const StackAppBar({super.key, this.title = ""});
 
   /// 이전 페이지로 이동하는 함수이다.
   void backScreenMethod(BuildContext context) {
