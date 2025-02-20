@@ -238,43 +238,40 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                 children: [
                   Expanded(
                     child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      decoration: BoxDecoration(
-                        color: codeBuffer.length == 4
-                            ? AppColors.primary
-                            : AppColors.gray300,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: TextButton(
-                        onPressed: codeBuffer.length == 4
-                            ? () {
-                                /// TODO 인증번호 검증 & 다음 페이지로
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => widget.nextPage,
-                                  ),
-                                );
-                              }
-                            : null,
-                        style: TextButton.styleFrom(
-                          foregroundColor: AppColors.white,
-                          backgroundColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        decoration: BoxDecoration(
+                          color: codeBuffer.length == 4
+                              ? AppColors.primary
+                              : AppColors.gray300,
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        child: const Text(
-                          '확인',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w900,
+                        child: TextButton(
+                          onPressed: codeBuffer.length == 4
+                              ? () {
+                                  /// TODO 인증번호 검증 & 다음 페이지로
+                                }
+                              : null,
+                          style: ButtonStyle(
+                            foregroundColor:
+                                WidgetStateProperty.all(AppColors.white),
+                            backgroundColor:
+                                WidgetStateProperty.all(Colors.transparent),
+                            shape: WidgetStateProperty.all(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    ),
-                  )
+                          child: const Text(
+                            '확인',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        )),
+                  ),
                 ],
               )
             ],
