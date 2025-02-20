@@ -62,7 +62,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         curve: Curves.easeInOut,
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        margin: EdgeInsets.symmetric(horizontal: 8.0.w),
         width: 64.w,
         height: 64.h,
         alignment: Alignment.center,
@@ -71,7 +71,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
           border: Border.all(
             color: isFilled ? AppColors.gray900 : AppColors.gray200,
           ),
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(8.0.r),
         ),
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 100),
@@ -85,7 +85,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
             displayChar,
             key: ValueKey(displayChar),
             style: TextStyle(
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.w500,
                 color: AppColors.gray900),
           ),
@@ -101,7 +101,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
           title: '',
         ),
         body: Container(
-          padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 20.0),
+          padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 20.0.w),
           child: Column(
             mainAxisSize: MainAxisSize.max,
             children: [
@@ -112,13 +112,13 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                   Text(
                     '인증 메일을 발송했어요',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 24.sp,
                       fontWeight: FontWeight.w800,
                     ),
                   )
                 ],
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
@@ -128,7 +128,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                       Text(
                         'blahblah@gmail.com',
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           color: AppColors.primary,
                           fontWeight: FontWeight.w600,
                         ),
@@ -136,7 +136,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                       Text(
                         '로 인증 번호가 발송됐어요.',
                         style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: AppColors.gray600,
                             fontWeight: FontWeight.w500),
                       ),
@@ -151,7 +151,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                   Text(
                     '받은 번호를 입력하면 인증이 완료 돼요.',
                     style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         color: AppColors.gray600,
                         fontWeight: FontWeight.w500),
                   ),
@@ -173,8 +173,8 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                           children: [
                             // 실제 입력을 받는 숨겨진 TextField
                             SizedBox(
-                              width: 0,
-                              height: 0,
+                              width: 0.w,
+                              height: 0.h,
                               child: TextField(
                                 controller: _controller,
                                 focusNode: _hiddenFocusNode,
@@ -201,7 +201,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                   )
                 ],
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: 40.h),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 mainAxisSize: MainAxisSize.max,
@@ -211,7 +211,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                       Text(
                         '인증 메일이 오지 않는 경우 스팸함을 확인해주세요.',
                         style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             color: AppColors.gray600,
                             fontWeight: FontWeight.w500),
                       ),
@@ -223,7 +223,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                         child: Text(
                           '인증번호 재전송',
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w700,
                             color: AppColors.gray900,
                           ),
@@ -263,10 +263,10 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                               ),
                             ),
                           ),
-                          child: const Text(
+                          child: Text(
                             '확인',
                             style: TextStyle(
-                              fontSize: 18,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

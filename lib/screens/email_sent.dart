@@ -2,6 +2,7 @@ import 'package:ego/screens/email_verification.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailSentScreen extends StatefulWidget {
   final Widget nextPage;
@@ -41,13 +42,13 @@ class _EmailSentScreenState extends State<EmailSentScreen> {
           children: [
             Image.asset(
               'assets/image/sent.gif', // 발송 완료 GIF
-              width: 200,
-              height: 200,
+              width: 200.w,
+              height: 200.h,
             ),
-            const Text(
+            Text(
               '발송 완료!',
               style: TextStyle(
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
                 color: AppColors.black,
               ),
