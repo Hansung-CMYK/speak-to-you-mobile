@@ -112,7 +112,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
             displayChar,
             key: ValueKey(displayChar),
             style: TextStyle(
-              fontSize: 24.sp,
+              fontSize: 34.sp,
               fontWeight: FontWeight.w500,
               color: AppColors.gray900,
             ),
@@ -257,7 +257,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                             fontWeight: FontWeight.w500,
                           ),
                         ),
-                        SizedBox(height: 8),
+                        SizedBox(height: 4.h),
                         GestureDetector(
                           onTap: () {
                             /// TODO: 인증번호 재전송 로직
@@ -300,31 +300,34 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                   ),
                   height: 56.h,
                   child: TextButton(
-                    onPressed: codeBuffer.length == pinLength
-                        ? () {
-                            /// TODO 인증번호 검증 & 다음 페이지로 이동
-                          }
-                        : null,
-                    style: ButtonStyle(
-                      foregroundColor: WidgetStateProperty.all(AppColors.white),
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.transparent),
-                      overlayColor: WidgetStateProperty.all(
-                          AppColors.white.withValues(alpha: 0.1)),
-                      shape: WidgetStateProperty.all(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                      onPressed: codeBuffer.length == pinLength
+                          ? () {
+                              /// TODO 인증번호 검증 & 다음 페이지로 이동
+                            }
+                          : null,
+                      style: ButtonStyle(
+                        padding: WidgetStateProperty.all(EdgeInsets.zero),
+                        foregroundColor:
+                            WidgetStateProperty.all(AppColors.white),
+                        backgroundColor:
+                            WidgetStateProperty.all(Colors.transparent),
+                        overlayColor: WidgetStateProperty.all(
+                            AppColors.white.withValues(alpha: 0.1)),
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
                         ),
                       ),
-                    ),
-                    child: Text(
-                      '확인',
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ),
+                      child: Center(
+                        child: Text(
+                          '확인',
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      )),
                 ),
               ),
             ],
