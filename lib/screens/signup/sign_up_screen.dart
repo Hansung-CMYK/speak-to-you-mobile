@@ -1,5 +1,5 @@
 import 'package:ego/theme/color.dart';
-import 'package:ego/widgets/button/custom_button1.dart';
+import 'package:ego/widgets/button/radius_button.dart';
 import 'package:ego/widgets/textfield/radius_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -135,10 +135,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         SizedBox( // 추가 Padding 역할
           height: 14.h,
         ),
-        CustomButton1( // 인증번호 전송 요청 버튼이다.
+        RadiusButton(
           text: "인증메일 발송",
+          foregroundColor: AppColors.white,
+          backgroundColor: AppColors.primary,
           confirmMethod: active ? () => sendMailMethod(context) : null, // active가 true일 때만 작동한다.
-        )
+        ),
       ],
     );
   }
