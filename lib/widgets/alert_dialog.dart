@@ -16,7 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 Future<void> showAlertDialog({
   required BuildContext context,
   required String title,
-  required String content,
+  String? content,
   Color titleColor = AppColors.black,
   Color contentColor = AppColors.gray700,
   Color buttonBackgroundColor = AppColors.primary,
@@ -48,17 +48,19 @@ Future<void> showAlertDialog({
                   ),
                 ),
               ),
-              SizedBox(height: 12.h),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  content,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: contentColor,
+              if (content != null) ...[
+                SizedBox(height: 12.h),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: contentColor,
+                    ),
                   ),
                 ),
-              ),
+              ],
               SizedBox(height: 24.h),
               Align(
                 alignment: Alignment.center,

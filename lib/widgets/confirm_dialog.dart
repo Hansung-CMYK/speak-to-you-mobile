@@ -38,7 +38,7 @@ extension DialogTypeExtension on DialogType {
 Future<bool?> showConfirmDialog({
   required BuildContext context,
   required String title,
-  required String content,
+  String? content,
   DialogType? dialogType,
   bool stack = false,
   Color titleColor = AppColors.blueGray900,
@@ -198,17 +198,19 @@ Future<bool?> showConfirmDialog({
                   ),
                 ),
               ),
-              SizedBox(height: 12.h),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  content,
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: contentColor,
+              if (content != null) ...[
+                SizedBox(height: 12.h),
+                Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    content,
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: contentColor,
+                    ),
                   ),
                 ),
-              ),
+              ],
               SizedBox(height: 24.h),
               Align(
                 alignment: Alignment.center,
