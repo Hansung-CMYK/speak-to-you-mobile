@@ -78,8 +78,8 @@ class _RadiusButtonState extends State<RadiusButton> {
           children: [
             SvgPicture.asset(
               widget.logoPath ?? '',
-              width: 16.w,
-              height: 16.w,
+              width: widget.logoPath != null ? 16.w : 0.w,
+              height: widget.logoPath != null ? 16.h : 0.h,
             ),
             Expanded(
               child: Text(
