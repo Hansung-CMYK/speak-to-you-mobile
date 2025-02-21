@@ -166,7 +166,7 @@ class _EmailVerificationPageState extends State<EmailVerificationScreen> {
                           style: TextStyle(
                             fontSize: 14.sp,
                             color: AppColors.primary,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         Text(
