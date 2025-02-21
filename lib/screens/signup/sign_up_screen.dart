@@ -1,6 +1,6 @@
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/button/custom_button1.dart';
-import 'package:ego/widgets/textfield/custom_textfield1.dart';
+import 'package:ego/widgets/textfield/radius_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -65,20 +65,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StackAppBar(title: ""),
-      body: Container(
-        width: double.maxFinite, // 화면 전체 너비로 설정
-        padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
-          children: [
-            _title(), // 하위에 제목 및 설명이 있다.
-            SizedBox(height: 40.h), // 추가 Padding 역할
-            _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
-            SizedBox(height: 16.h), // 추가 Padding 역할
-            _terms(context), // 하위에 약관 이동 버튼이 있다.
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.maxFinite, // 화면 전체 너비로 설정
+          padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
+            children: [
+              _title(), // 하위에 제목 및 설명이 있다.
+              SizedBox(height: 40.h), // 추가 Padding 역할
+              _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
+              SizedBox(height: 16.h), // 추가 Padding 역할
+              _terms(context), // 하위에 약관 이동 버튼이 있다.
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 
@@ -116,7 +118,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
       children: [
-        CustomTextfield1( // 사용자가 인증번호를 전송할 이메일을 작성하는 영역이다.
+        RadiusTextfield( // 사용자가 인증번호를 전송할 이메일을 작성하는 영역이다.
           hintText: '이메일', // 아무것도 작성하지 않으면, '이메일'을 작성해둔다.
           controller: controller, // 텍스트필드에 작성된 정보를 알기 위한 controller 설정
         ),

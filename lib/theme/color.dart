@@ -38,4 +38,5 @@ class AppColors {
   static const Color errorDark = Color(0xFFDD3333);
 
   static const Color transparent = Colors.transparent;
+  static const Color naverColor = Color(0xFF03C754);
 }

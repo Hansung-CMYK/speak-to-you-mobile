@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../theme/color.dart';
 
@@ -9,10 +10,13 @@ class CustomButton1 extends StatefulWidget {
   final String text;
   /// [confirmMethod] 버튼 클릭 시 이루어질 동작
   final Function? confirmMethod;
+  /// [height] 버튼의 높이
+  final double? height;
 
   /// [text] 버튼 중앙에 나타날 텍스트
   /// [confirmMethod] 버튼 클릭 시 이루어질 동작. null 주입 시, 버튼은 비활성화 된다.
-  const CustomButton1({required this.text, this.confirmMethod});
+  /// [height] 버튼의 높이 (default: 56.h)
+  const CustomButton1({required this.text, this.confirmMethod, this.height});
 
   @override
   _CustomButton1State createState() => _CustomButton1State();
@@ -32,11 +36,11 @@ class _CustomButton1State extends State<CustomButton1> {
         disabledBackgroundColor: AppColors.gray300, // 비활성화 상태일 때, 배경 색상
         disabledForegroundColor: AppColors.white, // 비활성화 상태일 때, 텍스트 색상
         shape: RoundedRectangleBorder( // 텍스트 버튼 형태 설정
-          borderRadius: BorderRadius.circular(8), // 모서리 굴곡 8.0
+          borderRadius: BorderRadius.circular(8.r), // 모서리 굴곡 8.0
         ),
         fixedSize: Size(
-          MediaQuery.of(context).size.width, // 너비 화면 최대 길이로 지정
-          56.h
+          double.maxFinite, // 너비 화면 최대 길이로 지정
+          widget.height == null ? 56.h : widget.height!
         ), // TODO: 높이가 HardCoding 되어있음.
       ),
       child: Text(

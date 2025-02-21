@@ -88,7 +88,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 onTab: () => settingsMethod(context),
                 width: 32.w,
                 height: 32.h,
-                radius: 100,
+                radius: 56.r,
               ),
             ],
           ),

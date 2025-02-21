@@ -79,12 +79,14 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainAppBarScreen>
       appBar: MainAppBar(_tabController),
 
       /// MainAppBar에서 선택된 Tab의 Screen이 나타나는 영역이다.
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          TmpSpeakScreen(), // TODO: 스피크 스크린에 연결
-          TmpCalendarScreen(), // TODO: 캘린더 스크린에 연결
-        ],
+      body: SingleChildScrollView(
+        child: TabBarView(
+          controller: _tabController,
+          children: [
+            TmpSpeakScreen(), // TODO: 스피크 스크린에 연결
+            TmpCalendarScreen(), // TODO: 캘린더 스크린에 연결
+          ],
+        ),
       ),
     );
   }
