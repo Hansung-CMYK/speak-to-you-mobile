@@ -63,19 +63,21 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StackAppBar(title: ""),
-      body: SizedBox(
-        width: double.maxFinite,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _title(),
-              SizedBox(height: 40.h,),
-              _login(context),
-              SizedBox(height: 24.h,),
-              _findAccount(context),
-            ],
+      body: SingleChildScrollView(
+        child: SizedBox(
+          width: double.maxFinite,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _title(),
+                SizedBox(height: 40.h,),
+                _login(context),
+                SizedBox(height: 24.h,),
+                _findAccount(context),
+              ],
+            ),
           ),
         ),
       ),

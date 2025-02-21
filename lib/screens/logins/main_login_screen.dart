@@ -28,21 +28,23 @@ class MainLoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StackAppBar(title: ""), // TODO: 임시 배치
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _slogan(),
-            SizedBox(height: 55.h,),
-            _title(),
-            SizedBox(height: 50.h,),
-            _buttons(context),
-            SizedBox(height: 24.h,),
-            _textLogo(context),
-          ],
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 16.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _slogan(),
+              SizedBox(height: 55.h,),
+              _title(),
+              SizedBox(height: 50.h,),
+              _buttons(context),
+              SizedBox(height: 24.h,),
+              _textLogo(context),
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 

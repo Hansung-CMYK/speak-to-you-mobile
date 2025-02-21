@@ -65,20 +65,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StackAppBar(title: ""),
-      body: Container(
-        width: double.maxFinite, // 화면 전체 너비로 설정
-        padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
-          children: [
-            _title(), // 하위에 제목 및 설명이 있다.
-            SizedBox(height: 40.h), // 추가 Padding 역할
-            _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
-            SizedBox(height: 16.h), // 추가 Padding 역할
-            _terms(context), // 하위에 약관 이동 버튼이 있다.
-          ],
+      body: SingleChildScrollView(
+        child: Container(
+          width: double.maxFinite, // 화면 전체 너비로 설정
+          padding: EdgeInsets.symmetric(horizontal: 20.w), // 위젯 간 패딩 20.0 설정
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start, // 좌측 정렬
+            children: [
+              _title(), // 하위에 제목 및 설명이 있다.
+              SizedBox(height: 40.h), // 추가 Padding 역할
+              _input(context), // 하위에 텍스트필드 및 전송 버튼이 있다.
+              SizedBox(height: 16.h), // 추가 Padding 역할
+              _terms(context), // 하위에 약관 이동 버튼이 있다.
+            ],
+          ),
         ),
-      )
+      ),
     );
   }
 
