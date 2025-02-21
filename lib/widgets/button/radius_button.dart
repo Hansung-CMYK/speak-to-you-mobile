@@ -76,11 +76,12 @@ class _RadiusButtonState extends State<RadiusButton> {
         padding: EdgeInsets.symmetric(horizontal: 10.w),
         child: Row(
           children: [
-            SvgPicture.asset(
-              widget.logoPath ?? '',
-              width: widget.logoPath != null ? 16.w : 0.w,
-              height: widget.logoPath != null ? 16.h : 0.h,
-            ),
+            widget.logoPath != null
+            ? SvgPicture.asset(
+              widget.logoPath!,
+              width: 16.w,
+              height: 16.h,
+            ) : SizedBox(),
             Expanded(
               child: Text(
                 widget.text,
