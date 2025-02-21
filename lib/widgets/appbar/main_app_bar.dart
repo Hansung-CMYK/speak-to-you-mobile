@@ -99,5 +99,5 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// AppBar의 사이즈 조정을 위한 필수 getter
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 14.h);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 12.h);
 }

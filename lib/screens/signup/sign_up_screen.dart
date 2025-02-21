@@ -133,7 +133,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ),
         SizedBox( // 추가 Padding 역할
-          height: 14.h,
+          height: 12.h,
         ),
         RadiusButton(
           text: "인증메일 발송",
