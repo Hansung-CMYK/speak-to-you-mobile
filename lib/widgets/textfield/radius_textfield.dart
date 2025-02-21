@@ -26,22 +26,6 @@ class RadiusTextfield extends StatefulWidget {
 class _RadiusTextfieldState extends State<RadiusTextfield> {
   late final TextEditingController _controller = widget.controller;
 
-  /// _controller 초기화
-  @override
-  void initState() {
-    super.initState();
-    _controller.addListener(() {
-      setState(() {});
-    });
-  }
-
-  /// _controller 제거
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return TextField(
