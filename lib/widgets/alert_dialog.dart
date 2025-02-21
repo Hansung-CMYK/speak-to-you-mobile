@@ -20,8 +20,8 @@ Future<void> showAlertDialog({
   required String title,
   DialogType? dialogType,
   String? content,
-  Color titleColor = AppColors.black,
-  Color contentColor = AppColors.gray700,
+  Color titleColor = AppColors.blueGray900,
+  Color contentColor = AppColors.blueGray500,
   Color buttonBackgroundColor = AppColors.primary,
   Color buttonForegroundColor = AppColors.white,
   Color buttonOverlayColor = AppColors.white,
@@ -69,9 +69,9 @@ Future<void> showAlertDialog({
                   child: Text(
                     content,
                     style: TextStyle(
-                      fontSize: 14.sp,
-                      color: contentColor,
-                    ),
+                        fontSize: 14.sp,
+                        color: contentColor,
+                        fontWeight: FontWeight.w400),
                   ),
                 ),
               ],
