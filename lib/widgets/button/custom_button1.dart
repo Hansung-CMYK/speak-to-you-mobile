@@ -36,7 +36,7 @@ class _CustomButton1State extends State<CustomButton1> {
         disabledBackgroundColor: AppColors.gray300, // 비활성화 상태일 때, 배경 색상
         disabledForegroundColor: AppColors.white, // 비활성화 상태일 때, 텍스트 색상
         shape: RoundedRectangleBorder( // 텍스트 버튼 형태 설정
-          borderRadius: BorderRadius.circular(8), // 모서리 굴곡 8.0
+          borderRadius: BorderRadius.circular(8.r), // 모서리 굴곡 8.0
         ),
         fixedSize: Size(
           double.maxFinite, // 너비 화면 최대 길이로 지정

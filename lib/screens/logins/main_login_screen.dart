@@ -1,6 +1,6 @@
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
-import 'package:ego/widgets/button/radius8_button.dart';
+import 'package:ego/widgets/button/radius_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -28,24 +28,21 @@ class MainLoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: StackAppBar(title: ""), // TODO: 임시 배치
-      body: SizedBox(
-        width: double.maxFinite,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _slogan(),
-              SizedBox(height: 56.h,),
-              _title(),
-              SizedBox(height: 52.h,),
-              _buttons(context),
-              SizedBox(height: 24.h,),
-              _textLogo(context),
-            ],
-          ),
-        )
-      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _slogan(),
+            SizedBox(height: 55.h,),
+            _title(),
+            SizedBox(height: 50.h,),
+            _buttons(context),
+            SizedBox(height: 24.h,),
+            _textLogo(context),
+          ],
+        ),
+      )
     );
   }
 
@@ -60,6 +57,7 @@ class MainLoginScreen extends StatelessWidget {
             fontWeight: FontWeight.w800,
           ),
         ),
+        SizedBox(height: 10.h,),
         Text(
           "나와 딱맞는 EGO를",
           style: TextStyle(
@@ -102,7 +100,7 @@ class MainLoginScreen extends StatelessWidget {
     return Column(
       spacing: 8.h,
       children: [
-        Radius8Button(
+        RadiusButton(
           logoPath: '',
           text: '이메일로 계속하기',
           foregroundColor: AppColors.white,
@@ -142,11 +140,11 @@ class MainLoginScreen extends StatelessWidget {
             ],
           ),
         ),
-        Radius8Button(
+        RadiusButton(
           logoPath: 'assets/icon/NaverLogo.svg',
           text: '네이버로 계속하기',
           foregroundColor: AppColors.white,
-          backgroundColor: AppColors.naverBg,
+          backgroundColor: AppColors.naverColor,
           confirmMethod: () => naverClickMethod(context),
           height: 48.h,
           textStyle: TextStyle(
@@ -154,7 +152,7 @@ class MainLoginScreen extends StatelessWidget {
             fontSize: 14.sp
           ),
         ),
-        Radius8Button(
+        RadiusButton(
           logoPath: 'assets/icon/GoogleLogo.svg',
           text: 'Google로 계속하기',
           foregroundColor: AppColors.gray900,

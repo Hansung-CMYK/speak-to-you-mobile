@@ -1,7 +1,7 @@
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
-import 'package:ego/widgets/button/radius8_button.dart';
-import 'package:ego/widgets/textfield/custom_textfield1.dart';
+import 'package:ego/widgets/button/radius_button.dart';
+import 'package:ego/widgets/textfield/radius_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -108,14 +108,14 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   Widget _login(BuildContext context) {
     return Column(
       children: [
-        CustomTextfield1(
+        RadiusTextfield(
           hintText: "이메일",
           controller: _emailController,
         ),
         SizedBox(
           height: 8.h,
         ),
-        CustomTextfield1(
+        RadiusTextfield(
           hintText: "비밀번호(8~16자 영문,숫자,특수문자)",
           controller: _passwordController,
           isObscure: true,
@@ -123,7 +123,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
         SizedBox(
           height: 40.h,
         ),
-        Radius8Button(
+        RadiusButton(
           text: "로그인",
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.primary,
