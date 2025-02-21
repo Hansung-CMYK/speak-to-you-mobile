@@ -62,7 +62,7 @@ class _EmailLoginScreenState extends State<EmailLoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StackAppBar(title: ""),
+      appBar: StackAppBar(),
       body: SingleChildScrollView(
         child: SizedBox(
           width: double.maxFinite,

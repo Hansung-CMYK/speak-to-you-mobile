@@ -64,7 +64,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StackAppBar(title: ""),
+      appBar: StackAppBar(),
       body: SingleChildScrollView(
         child: Container(
           width: double.maxFinite, // 화면 전체 너비로 설정

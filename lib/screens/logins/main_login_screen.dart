@@ -104,7 +104,6 @@ class MainLoginScreen extends StatelessWidget {
       spacing: 8.h,
       children: [
         RadiusButton(
-          logoPath: '',
           text: '이메일로 계속하기',
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.primary,
