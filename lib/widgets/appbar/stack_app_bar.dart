@@ -21,9 +21,10 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.5.sp),
+      padding: EdgeInsets.symmetric(
+        vertical: 12.w,
+      ),
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 12.h, // 앱바 상단 영역 확장을 위한 70px 추가
         centerTitle: true, // AppBar의 제목 중앙 정렬
         leading: IconButton(
           // 뒤로가기 버튼
@@ -39,7 +40,7 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
           title,
           style: TextStyle(
             fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
@@ -48,5 +49,5 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// AppBar의 사이즈 조정을 위한 필수 getter
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 12.h);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 14.h);
 }

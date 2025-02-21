@@ -28,7 +28,7 @@ class MainLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: EmptyAppBar(), // TODO: 임시 배치
+      appBar: EmptyAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),

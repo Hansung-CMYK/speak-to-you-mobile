@@ -35,8 +35,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         horizontal: 20.w,
       ), // 좌측 18px Padding을 준다.
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 12.h, // 앱바 상단 영역 확장을 위한 길이 추가. 44.0px은 피그마 기준 휴대폰 알림창
-        leadingWidth: double.maxFinite,
         automaticallyImplyLeading: false,
         titleSpacing: 0.w,
         title: DefaultTabController(
@@ -101,5 +99,5 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   /// AppBar의 사이즈 조정을 위한 필수 getter
   @override
-  Size get preferredSize => Size.fromHeight(kToolbarHeight + 12.h);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight + 14.h);
 }
