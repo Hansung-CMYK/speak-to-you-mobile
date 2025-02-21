@@ -1,24 +1,8 @@
 import 'package:ego/theme/color.dart';
+import 'package:ego/types/dialog_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-/// 다이얼로그 타입을 관리하는 enum
-/// - info: 정보성 다이얼로그
-/// - success: 성공 메시지 다이얼로그
-enum DialogType { info, success }
-
-/// DialogType에 따라 다른 SVG 에셋 파일 경로를 반환하는 Extension
-extension DialogTypeExtension on DialogType {
-  String get asset {
-    switch (this) {
-      case DialogType.info:
-        return 'assets/icon/info.svg';
-      case DialogType.success:
-        return 'assets/icon/success.svg';
-    }
-  }
-}
 
 /// 확인(Confirm) 다이얼로그를 표시하는 함수.
 ///

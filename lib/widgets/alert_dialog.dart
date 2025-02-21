@@ -1,6 +1,8 @@
 import 'package:ego/theme/color.dart';
+import 'package:ego/types/dialog_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 /// 간단한 알림창(다이얼로그)을 보여주는 함수.
 ///
@@ -16,6 +18,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 Future<void> showAlertDialog({
   required BuildContext context,
   required String title,
+  DialogType? dialogType,
   String? content,
   Color titleColor = AppColors.black,
   Color contentColor = AppColors.gray700,
@@ -37,6 +40,17 @@ Future<void> showAlertDialog({
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (dialogType != null) ...[
+                Align(
+                  alignment: Alignment.center,
+                  child: SvgPicture.asset(
+                    dialogType.asset,
+                    width: 48.w,
+                    height: 48.h,
+                  ),
+                ),
+                SizedBox(height: 12.h),
+              ],
               Align(
                 alignment: Alignment.center,
                 child: Text(
