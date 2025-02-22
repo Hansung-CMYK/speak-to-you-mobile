@@ -398,5 +398,9 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
+<<<<<<< HEAD
   dart: ">=3.7.0 <4.0.0"
+=======
+  dart: ">=3.7.0-0 <4.0.0"
+>>>>>>> 6bfd02a (feat: Splash UI 제작)
   flutter: ">=3.22.0"
