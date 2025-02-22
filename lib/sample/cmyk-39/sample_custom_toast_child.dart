@@ -16,6 +16,7 @@ class SampleCustomToastChild extends StatefulWidget {
 
 class _SampleCustomToastChildState extends State<SampleCustomToastChild> {
   late FToast fToast;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   void initState() {
@@ -51,16 +52,42 @@ class _SampleCustomToastChildState extends State<SampleCustomToastChild> {
               ElevatedButton(
                 onPressed: () {
                   final customToast = CustomToast(
-                    toastMsg: "인증메일 발송 완료!",
+                    toastMsg: "인증메일 발송 완료!(Icon X)",
                     backgroundColor: AppColors.accent,
                     fontColor: AppColors.white,
-                    iconPath: "assets/icon/complete.svg",
                   );
                   customToast.init(fToast);
                   customToast.showTopToast();
                 },
                 child: Text("show top toast"),
               ),
+              SizedBox(height: 20.h),
+              ElevatedButton(
+                onPressed: () {
+                  final customToast = CustomToast(
+                    toastMsg: "인증메일 발송 완료!",
+                    backgroundColor: AppColors.accent,
+                    fontColor: AppColors.white,
+                    iconPath: "assets/icon/complete.svg",
+                  );
+                  customToast.init(fToast);
+                  customToast.showKeyboardTopToast();
+                },
+                child: Text("show custom positioned toast"),
+              ),
+              SizedBox(height: 20.h),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 0.h, horizontal: 32.w),
+                child: TextField(
+                  controller: _controller,
+                  decoration: InputDecoration(
+                    hintText: "문자를 입력하세요",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),
