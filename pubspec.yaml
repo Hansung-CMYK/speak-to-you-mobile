@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   flutter_keyboard_visibility: ^6.0.0
+  fluttertoast: ^8.2.12
   flutter_svg: ^2.0.17
 
 dev_dependencies:
@@ -72,6 +73,7 @@ flutter:
     - assets/icon/info.svg
     - assets/icon/success.svg
     - assets/icon/notification.svg
+    - assets/icon/complete.svg
     - assets/icon/splash_characters.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
