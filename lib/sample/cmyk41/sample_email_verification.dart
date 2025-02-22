@@ -1,4 +1,4 @@
-import 'package:ego/sample/cmky10/sample_stack_app_bar.dart';
+import 'package:ego/sample/cmyk10/sample_stack_app_bar.dart';
 import 'package:ego/screens/email_sent.dart';
 import 'package:ego/theme/theme.dart';
 import 'package:flutter/material.dart';

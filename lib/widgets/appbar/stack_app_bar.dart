@@ -8,8 +8,8 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// 스크린의 이름이다.
   final String title;
 
-  /// [title] AppBar 중앙에 나타날 문구 주입 (스크린 명 권장).
-  const StackAppBar({super.key, required this.title});
+  /// [title] AppBar 중앙에 나타날 문구 주입 (스크린 명 권장). default: ""
+  const StackAppBar({super.key, this.title = ""});
 
   /// 이전 페이지로 이동하는 함수이다.
   void backScreenMethod(BuildContext context) {
@@ -21,9 +21,10 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 12.5.sp),
+      padding: EdgeInsets.symmetric(
+        vertical: 12.w,
+      ),
       child: AppBar(
-        toolbarHeight: kToolbarHeight + 12.h, // 앱바 상단 영역 확장을 위한 70px 추가
         centerTitle: true, // AppBar의 제목 중앙 정렬
         leading: IconButton(
           // 뒤로가기 버튼
@@ -39,7 +40,7 @@ class StackAppBar extends StatelessWidget implements PreferredSizeWidget {
           title,
           style: TextStyle(
             fontSize: 16.sp,
-            fontWeight: FontWeight.bold,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

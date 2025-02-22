@@ -1,7 +1,7 @@
-import 'package:ego/sample/cmky10/tmpscreen/tmp_alert_screen.dart';
-import 'package:ego/sample/cmky10/tmpscreen/tmp_calendar_screen.dart';
-import 'package:ego/sample/cmky10/tmpscreen/tmp_settings_screen.dart';
-import 'package:ego/sample/cmky10/tmpscreen/tmp_speak_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_alert_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_calendar_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_settings_screen.dart';
+import 'package:ego/sample/cmyk10/tmpscreen/tmp_speak_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,14 +79,12 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainAppBarScreen>
       appBar: MainAppBar(_tabController),
 
       /// MainAppBar에서 선택된 Tab의 Screen이 나타나는 영역이다.
-      body: SingleChildScrollView(
-        child: TabBarView(
-          controller: _tabController,
-          children: [
-            TmpSpeakScreen(), // TODO: 스피크 스크린에 연결
-            TmpCalendarScreen(), // TODO: 캘린더 스크린에 연결
-          ],
-        ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          TmpSpeakScreen(), // TODO: 스피크 스크린에 연결
+          TmpCalendarScreen(), // TODO: 캘린더 스크린에 연결
+        ],
       ),
     );
   }

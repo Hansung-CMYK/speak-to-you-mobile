@@ -1,4 +1,5 @@
 import 'package:ego/theme/color.dart';
+import 'package:ego/widgets/appbar/empty_app_bar.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:ego/widgets/button/radius_button.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class MainLoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StackAppBar(title: ""), // TODO: 임시 배치
+      appBar: EmptyAppBar(),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.w),
@@ -103,7 +104,6 @@ class MainLoginScreen extends StatelessWidget {
       spacing: 8.h,
       children: [
         RadiusButton(
-          logoPath: '',
           text: '이메일로 계속하기',
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.primary,
