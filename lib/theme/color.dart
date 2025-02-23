@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 /// Figma에 정의되지 않은 색상은 다음을 참고
@@ -26,6 +25,9 @@ class AppColors {
   static const Color gray800 = Color(0xFF26282B);
   static const Color gray900 = Color(0xFF1E1E1E);
 
+  static const Color blueGray500 = Color(0xFF777B84);
+  static const Color blueGray900 = Color(0xFF090E18);
+
   static const Color successLight = Color(0xFF4ADE80);
   static const Color successBase = Color(0xFF22C55E);
   static const Color successDark = Color(0xFF16A34A);
@@ -34,8 +36,10 @@ class AppColors {
   static const Color warningBase = Color(0xFFFACC15);
   static const Color warningDark = Color(0xFFEAB308);
 
-
   static const Color errorLight = Color(0xFFFF7171);
   static const Color errorBase = Color(0xFFFF4747);
   static const Color errorDark = Color(0xFFDD3333);
+
+  static const Color transparent = Colors.transparent;
+  static const Color naverColor = Color(0xFF03C754);
 }

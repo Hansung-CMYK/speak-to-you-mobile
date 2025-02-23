@@ -53,13 +53,10 @@ class AppTheme {
         brightness: Brightness.dark,
         primary: AppColors.primary,
         onPrimary: AppColors.white,
-
         secondary: AppColors.accent,
         onSecondary: AppColors.white,
-
         surface: AppColors.gray800,
         onSurface: AppColors.gray100,
-
         error: AppColors.errorBase,
         onError: AppColors.white,
       ),
