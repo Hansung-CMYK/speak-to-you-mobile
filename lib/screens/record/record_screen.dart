@@ -41,7 +41,10 @@ class _RecordScreenState extends State<RecordScreen> with SingleTickerProviderSt
 
   Widget _tabBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
+      padding: EdgeInsets.symmetric(
+        vertical: 12.h,
+        horizontal: 20.w,
+      ),
       child: TabBar( //TODO: 패딩 주기
         controller: _tabController,
         labelStyle: TextStyle(
