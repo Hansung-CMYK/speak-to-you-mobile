@@ -43,5 +43,4 @@ class AppColors {
   // 기타 색상
   static const Color transparent = Colors.transparent;
   static const Color naverColor = Color(0xFF03C754);
-  static const Color servicenamecolor = Color(0xFFFF7410);
 }

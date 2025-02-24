@@ -10,30 +10,32 @@ class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: Container(
+        alignment: Alignment.center,
+        margin: EdgeInsets.only(top: 224.h),
         child: Column(
           children: [
-            Container(
-              margin: EdgeInsets.only(top: 180.h),
-              child: Text(
-                "HELLO EGO :)\n${SERVICE_NAME}",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: AppColors.servicenamecolor,
-                    fontWeight: FontWeight.w400,
-                    fontSize: 43.sp,
-                    height: 1.5),
+            Text(
+              "HELLO EGO :)\n${SERVICE_NAME}",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColors.primary,
+                fontWeight: FontWeight.w400,
+                fontSize: 43.sp,
+                height: 1.5,
               ),
             ),
             Container(
-              margin: EdgeInsets.only(top: 50.h,bottom: 388.h),
+              margin: EdgeInsets.only(top: 50.h),
               child: SizedBox(
                 width: 260.w,
                 height: 72.h,
-                child: SvgPicture.asset("assets/icon/splash_characters.svg",
-                    fit: BoxFit.contain),
+                child: SvgPicture.asset(
+                  "assets/icon/splash_characters.svg",
+                  fit: BoxFit.contain,
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
