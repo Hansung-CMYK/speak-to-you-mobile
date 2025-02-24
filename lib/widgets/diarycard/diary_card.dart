@@ -1,32 +1,55 @@
 import 'package:ego/utils/constants.dart';
 import 'package:ego/utils/util_function.dart';
+import 'package:ego/widgets/button/svg_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../theme/color.dart';
 
+/// 사용자의 일기가 요약되어 나타나는 화면이다.
+///
+/// `캘린더`, `감정차트` 스크린에서 이용한다.
+/// TODO: 생성자는 일기 클래스(테이블) 완성 시, 수정할 것
 class DiaryCard extends StatelessWidget {
+  /// [date] 일기가 작성된 날짜
   final DateTime date;
-  final Emotion emotion;
-  final String videoPlayPath = 'assets/icon/video_play.svg';
+  /// [emotion] 당일 사용자가 느낀 감정들
+  final List<Emotion> emotions;
+  /// [egoName] 일기를 작성해준 에고의 이름
   final String egoName;
+  /// [story] 요약된 일기의 내용
   final String story;
 
-  const DiaryCard({super.key, required this.date, required this.emotion, required this.egoName, required this.story});
+  /// [recapIconPath] 리캡보기 아이콘의 경로
+  final String recapIconPath = 'assets/icon/video_play.svg';
 
-  void onTap(BuildContext context) {
+  /// 사용자의 일기가 요약되어 나타나는 화면이다.
+  ///
+  /// [date] 일기가 작성된 날짜
+  /// [emotion] 당일 사용자가 느낀 감정들
+  /// [egoName] 일기를 작성해준 에고의 이름
+  /// [story] 요약된 일기의 내용
+  const DiaryCard({super.key, required this.date, required this.emotions, required this.egoName, required this.story});
+
+  /// 일기보기 화면으로 이동하는 함수이다.
+  void diaryMethod(BuildContext context) {
     Navigator.pushNamed(context, 'Diary');
+  }
+
+  /// RECAP 화면으로 이동하는 함수이다.
+  void recapMethod(BuildContext context) {
+    Navigator.pushNamed(context, 'Recap');
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(context),
+    return GestureDetector( // 카드 위젯을 클릭 시, 해당 일기로 이동한다.
+      onTap: () => diaryMethod(context),
       child: Card(
-        color: Colors.white,
+        color: AppColors.white, // 배경색 설정
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r), // 모서리 굴곡 설정
         ),
         child: Container(
           width: 353.w,
@@ -34,7 +57,7 @@ class DiaryCard extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _gradationBox(),
+              _gradationBox(context),
               _dateCard(),
             ],
           ),
@@ -43,7 +66,7 @@ class DiaryCard extends StatelessWidget {
     );
   }
 
-  Widget _gradationBox() {
+  Widget _gradationBox(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 8, left: 12, right: 16, bottom: 8),
       decoration: ShapeDecoration(
@@ -79,7 +102,7 @@ class DiaryCard extends StatelessWidget {
                   ),
                   child: ClipOval(
                     child: SvgPicture.asset(
-                      UtilFunction.emotionTypeToPath(emotion),
+                      UtilFunction.emotionTypeToPath(emotions[0]),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -95,10 +118,11 @@ class DiaryCard extends StatelessWidget {
               ],
             )
           ),
-          SvgPicture.asset(
-            videoPlayPath,
+          SvgButton(
+            svgPath: recapIconPath,
             width: 24.w,
             height: 24.h,
+            onTab: () => recapMethod(context),
           ),
         ],
       ),

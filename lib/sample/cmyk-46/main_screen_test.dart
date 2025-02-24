@@ -82,7 +82,7 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
         controller: _tabController,
         children: [
           TmpScreen(), // TODO: 스피크 스크린에 연결
-          RecordScreen(), // TODO: 캘린더 스크린에 연결
+          RecordScreen(), // 캘린더 페이지
         ],
       ),
     );
