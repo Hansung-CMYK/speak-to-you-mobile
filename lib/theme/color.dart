@@ -48,5 +48,5 @@ class AppColors {
   static const Color softCoralPink = Color(0xFFE6968D);
   static const Color amethystPurple = Color(0xFFC779D0);
   static const Color royalBlue = Color(0xFF5865F2);
-  static const Color labelColor = Color(0xFFFF7410);
+  static const Color birthDayTagColor = Color(0xFFFF7410);
 }

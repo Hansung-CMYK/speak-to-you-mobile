@@ -1,8 +1,9 @@
-import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+
+import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/theme/color.dart';
 
 //
 Future<void> showTodayEgoIntroSheet(BuildContext context) async {
@@ -24,7 +25,7 @@ Future<void> showTodayEgoIntroSheet(BuildContext context) async {
     id: '123',
     egoIcon: 'assets/image/egoIcon.png',
     egoName: 'Power Chan',
-    egoBirth: '2024/05/14',
+    egoBirth: '2024/02/25',
     egoPersonality: '단순함, 바보, 착함',
     egoSelfIntro:
         '안녕하세요! 저는 파워, 악마 사냥꾼이자 피의 악마입니다. 언제나 힘이 넘치고, 내 친구인 덴지를 위해서라면 뭐든 할 수 있어요. 때로는 성격이 거칠고, 충동적으로 행동하지만, 그런 저도 친구를 소중히 여기는 마음이 있답니다. 전투에서는 결코 물러서지 않으며, 적을 무찌르는 데에 진심이예요! 피를 통해 강해지는 저와 함께 모험을 떠나보세요!',
@@ -104,32 +105,83 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
                 style: TextStyle(fontSize: 18.sp, fontWeight: FontWeight.w700),
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.labelColor,
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              padding: EdgeInsets.all(4.0),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(right: 2.w),
-                    child: SvgPicture.asset('assets/icon/cake.svg'),
-                  ),
-                  Text(
-                    '생일',
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // 생일 Tag부분
+                _tagWidget(
+                  "assets/icon/cake.svg",
+                  AppColors.birthDayTagColor,
+                  AppColors.white,
+                  4,
+                  "생일",
+                  12,
+                  FontWeight.w700,
+                ),
+                // 생일 날짜 부분
+                Padding(
+                  padding: EdgeInsets.only(left: 8.w, right: 4.w),
+                  child: Text(
+                    textAlign: TextAlign.center,
+                    egoInfoModel.egoBirth,
                     style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.w700,
+                      height: 1.5.h,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                ],
-              ),
+                ),
+                // 생일까지 남은 일짜 (D-000)
+                _tagWidget(
+                  "",
+                  AppColors.gray200,
+                  AppColors.gray400,
+                  100,
+                  "D-${egoInfoModel.calcRemainingDays()}",
+                  10,
+                  FontWeight.w500,
+                ),
+              ],
             ),
           ],
         ),
       ),
     ],
+  );
+}
+
+Widget _tagWidget(
+  String iconPath,
+  Color tagColor,
+  Color fontColor,
+  double borderRadius,
+  String text,
+  int fontSize,
+  FontWeight fontWeight,
+) {
+  return Container(
+    decoration: BoxDecoration(
+      color: tagColor,
+      borderRadius: BorderRadius.circular(borderRadius),
+    ),
+    padding: EdgeInsets.all(4.0),
+    child: Row(
+      children: [
+        if (iconPath != "") ...[
+          Padding(
+            padding: EdgeInsets.only(right: 2.w),
+            child: SvgPicture.asset('assets/icon/cake.svg'),
+          ),
+        ],
+        Text(
+          text,
+          style: TextStyle(
+            color: fontColor,
+            fontSize: fontSize.sp,
+            fontWeight: fontWeight,
+          ),
+        ),
+      ],
+    ),
   );
 }
