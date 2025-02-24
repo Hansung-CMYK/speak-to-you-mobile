@@ -40,6 +40,7 @@ class AppColors {
   static const Color errorBase = Color(0xFFFF4747);
   static const Color errorDark = Color(0xFFDD3333);
 
+  // 기타 색상
   static const Color transparent = Colors.transparent;
   static const Color naverColor = Color(0xFF03C754);
 }
