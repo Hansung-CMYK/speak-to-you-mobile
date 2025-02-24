@@ -1,5 +1,4 @@
-  import 'package:flutter/cupertino.dart';
-  import 'package:intl/intl.dart';
+    import 'package:intl/intl.dart';
 
   class EgoInfoModel {
     final String id;
@@ -47,11 +46,18 @@
 
       // 문자열을 DateTime으로 변환
       DateTime targetDate = DateFormat('yyyy/MM/dd').parse(dateString);
-
       DateTime today = DateTime.now();
+
+      // 생일의 연도를 현재 연도로 설정
+      targetDate = DateTime(today.year, targetDate.month, targetDate.day);
+
+      // 생일이 이미 지났다면 내년 생일로 설정
+      if (targetDate.isBefore(today)) {
+        targetDate = DateTime(today.year + 1, targetDate.month, targetDate.day);
+      }
 
       int remainingDays = targetDate.difference(today).inDays;
 
-      return remainingDays;
+      return remainingDays+1;
     }
   }

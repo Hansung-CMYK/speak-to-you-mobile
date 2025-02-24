@@ -1,9 +1,9 @@
-import 'package:ego/theme/theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../widgets/bottomsheet/today_ego_intro.dart';
+import 'package:ego/theme/theme.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
 
 void main() {
   runApp(
