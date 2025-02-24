@@ -78,14 +78,18 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 12.w,
             children: [
-              IconButton(
-                // 알림 페이지로 이동하기 위한 Button
-                icon: SvgPicture.asset(notificationIconPath),
-                iconSize: 24.w,
-                highlightColor: Colors.transparent, // 터치 애니메이션 제거
-                onPressed: () => alertMethod(context),
-                padding: EdgeInsets.zero,
+              Container(
+                width: 24.w,
+                height: 24.h,
+                child: IconButton(
+                  // 알림 페이지로 이동하기 위한 Button
+                  icon: SvgPicture.asset(notificationIconPath, fit: BoxFit.cover,),
+                  highlightColor: Colors.transparent, // 터치 애니메이션 제거
+                  onPressed: () => alertMethod(context),
+                  padding: EdgeInsets.zero,
+                ),
               ), // TODO: 패딩이 0인데, 사이즈가 맞음... 수정 필요
               ImageButton(
                 // 설정 페이지로 이동하기 위한 Button
