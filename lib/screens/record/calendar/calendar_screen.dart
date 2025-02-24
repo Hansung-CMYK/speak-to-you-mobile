@@ -2,7 +2,6 @@ import 'package:ego/theme/color.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../../widgets/diarycard/diary_card.dart';
-import '../../../widgets/diarycard/sample_diary_card.dart';
 
 class CalendarScreen extends StatelessWidget {
   @override
@@ -12,7 +11,6 @@ class CalendarScreen extends StatelessWidget {
       child: Column(
         children: [
           DiaryCard(),
-          SampleDiaryCard(),
         ],
       )
     );

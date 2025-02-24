@@ -9,6 +9,8 @@ class DiaryCard extends StatelessWidget {
   final DateTime date = DateTime.now();
   final String emotionPath = 'assets/icon/emotion/happiness.svg';
   final String videoPlayPath = 'assets/icon/video_play.svg';
+  final String egoName = 'Ego 이름';
+  final String story = '요약된 일기 내용을 보여줍니다.이날은 무슨일이 있었고, 어쩌고 저쩌고. 이러쿵 저러쿵. 이야기를 작성하게 됩니다. 마지막은 점점점';
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +23,10 @@ class DiaryCard extends StatelessWidget {
         width: 353.w,
         padding: EdgeInsets.all(12.w),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _gradationBox(),
+            _dateCard(),
           ],
         ),
       ),
@@ -85,6 +89,37 @@ class DiaryCard extends StatelessWidget {
             videoPlayPath,
             width: 24.w,
             height: 24.h,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _dateCard() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: 12.h,
+        horizontal: 8.w,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 4.h,
+        children: [
+          Text(
+            egoName,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          Text(
+            story,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
