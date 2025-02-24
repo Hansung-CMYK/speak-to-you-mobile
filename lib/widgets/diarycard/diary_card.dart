@@ -83,6 +83,8 @@ class DiaryCard extends StatelessWidget {
           ),
           SvgPicture.asset(
             videoPlayPath,
+            width: 24.w,
+            height: 24.h,
           ),
         ],
       ),
