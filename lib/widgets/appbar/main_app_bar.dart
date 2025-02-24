@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../../theme/color.dart';
 import '../button/image_button.dart';
@@ -10,7 +11,8 @@ import '../button/image_button.dart';
 /// '알림'과 '설정' 페이지를 Button을 통해 navigating 한다.
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// (임시) 에고 아이콘 이미지가 저장된 Path이다.
-  final String egoIconPath = 'assets/image/egoIcon.png';
+  final String egoIconPath = 'assets/image/ego_icon.png';
+  final String notificationIconPath = 'assets/icon/notification.svg';
 
   /// [tabController]  선택한 Tab과 Body를 매핑하는 Controller이다.
   final TabController tabController;
@@ -73,15 +75,22 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           // '알림'과 '설정'을 AppBar의 우측에 배치하기 위한
           Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 12.w,
             children: [
-              IconButton(
-                // 알림 페이지로 이동하기 위한 Button
-                icon: Icon(Icons.alarm), // TODO: 디자인 확정되면 변경할 것
-                iconSize: 28.w,
-                highlightColor: Colors.transparent, // 터치 애니메이션 제거
-                onPressed: () => alertMethod(context),
-              ),
-              SizedBox(width: 8.w),
+              Container(
+                width: 24.w,
+                height: 24.h,
+                child: IconButton(
+                  // 알림 페이지로 이동하기 위한 Button
+                  icon: SvgPicture.asset(notificationIconPath, fit: BoxFit.cover,),
+                  highlightColor: Colors.transparent, // 터치 애니메이션 제거
+                  onPressed: () => alertMethod(context),
+                  padding: EdgeInsets.zero,
+                ),
+              ), // TODO: 패딩이 0인데, 사이즈가 맞음... 수정 필요
               ImageButton(
                 // 설정 페이지로 이동하기 위한 Button
                 imagePath: egoIconPath,
