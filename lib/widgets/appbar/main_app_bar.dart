@@ -10,7 +10,7 @@ import '../button/image_button.dart';
 /// '알림'과 '설정' 페이지를 Button을 통해 navigating 한다.
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// (임시) 에고 아이콘 이미지가 저장된 Path이다.
-  final String egoIconPath = 'assets/image/egoIcon.png';
+  final String egoIconPath = 'assets/image/ego_icon.png';
 
   /// [tabController]  선택한 Tab과 Body를 매핑하는 Controller이다.
   final TabController tabController;

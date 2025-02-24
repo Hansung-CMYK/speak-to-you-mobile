@@ -143,7 +143,7 @@ class MainLoginScreen extends StatelessWidget {
           ),
         ),
         RadiusButton(
-          logoPath: 'assets/icon/NaverLogo.svg',
+          logoPath: 'assets/icon/naver_logo.svg',
           text: '네이버로 계속하기',
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.naverColor,
@@ -155,7 +155,7 @@ class MainLoginScreen extends StatelessWidget {
           ),
         ),
         RadiusButton(
-          logoPath: 'assets/icon/GoogleLogo.svg',
+          logoPath: 'assets/icon/google_logo.svg',
           text: 'Google로 계속하기',
           foregroundColor: AppColors.gray900,
           backgroundColor: AppColors.white,
@@ -179,17 +179,17 @@ class MainLoginScreen extends StatelessWidget {
         Row(
           children: [
             SvgPicture.asset(
-              'assets/icon/TextLogo-E.svg',
+              'assets/icon/text_logo_e.svg',
               width: 8.w,
               height: 12.h,
             ),
             SvgPicture.asset(
-              'assets/icon/TextLogo-G.svg',
+              'assets/icon/text_logo_g.svg',
               width: 10.w,
               height: 12.h,
             ),
             SvgPicture.asset(
-              'assets/icon/TextLogo-O.svg',
+              'assets/icon/text_logo_o.svg',
               width: 11.56.w,
               height: 12.h,
             ),
