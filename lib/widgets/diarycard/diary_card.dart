@@ -15,22 +15,29 @@ class DiaryCard extends StatelessWidget {
 
   const DiaryCard({super.key, required this.date, required this.emotion, required this.egoName, required this.story});
 
+  void onTap(BuildContext context) {
+    Navigator.pushNamed(context, 'Diary');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Container(
-        width: 353.w,
-        padding: EdgeInsets.all(12.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _gradationBox(),
-            _dateCard(),
-          ],
+    return GestureDetector(
+      onTap: () => onTap(context),
+      child: Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Container(
+          width: 353.w,
+          padding: EdgeInsets.all(12.w),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _gradationBox(),
+              _dateCard(),
+            ],
+          ),
         ),
       ),
     );

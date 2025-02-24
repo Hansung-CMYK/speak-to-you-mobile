@@ -37,6 +37,7 @@ class MainScreenTest extends StatelessWidget {
             ),
             'Settings': (context) => TmpScreen(),
             'Alert': (context) => TmpScreen(),
+            'Diary': (context) => TmpScreen(),
           }
       ),
     );
