@@ -75,10 +75,10 @@ class DiaryCard extends StatelessWidget {
           begin: Alignment(1, 0),
           end: Alignment(-1, 0),
           colors: [
-            AppColors.vividOrange,
-            AppColors.softCoralPink,
-            AppColors.amethystPurple,
             AppColors.royalBlue,
+            AppColors.amethystPurple,
+            AppColors.softCoralPink,
+            AppColors.vividOrange,
           ],
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), // 영역 모서리 굴곡 추가
