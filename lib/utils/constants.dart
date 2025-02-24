@@ -1,6 +1,6 @@
 const String SERVICE_NAME = "SPEAK TO YOU";
 
-
+/// 사용자의 대화에서 분류될 수 있는 감정들의 종류이다.
 /// [anger] 분노
 /// [disappointment] 실망
 /// [embarrassment] 황당

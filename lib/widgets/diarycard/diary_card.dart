@@ -51,14 +51,14 @@ class DiaryCard extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r), // 모서리 굴곡 설정
         ),
-        child: Container(
-          width: 353.w,
+        child: Container( // 일기 카드 크기 지정
+          width: 353.w, // 너비
           padding: EdgeInsets.all(12.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _gradationBox(context),
-              _dateCard(),
+              _gradationBox(context), // 카드의 그라데이션 영역
+              _dateCard(), // 일기의 내용이 설명된 영역
             ],
           ),
         ),
@@ -66,10 +66,11 @@ class DiaryCard extends StatelessWidget {
     );
   }
 
+  /// 카드의 그라데이션 영역
   Widget _gradationBox(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 8, left: 12, right: 16, bottom: 8),
-      decoration: ShapeDecoration(
+      padding: EdgeInsets.only(top: 8.h, left: 12.w, right: 16.w, bottom: 8.h), // 컨테이너 작성 영역 할당
+      decoration: ShapeDecoration( // 그라데이션 추가(피그마 활용)
         gradient: LinearGradient(
           begin: Alignment(1, 0),
           end: Alignment(-1, 0),
@@ -80,35 +81,33 @@ class DiaryCard extends StatelessWidget {
             AppColors.royalBlue,
           ],
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)), // 영역 모서리 굴곡 추가
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          Expanded( // Recap SvgButton을 우측으로 이동시키기 위함
             child: Row(
-              spacing: 8.w,
+              spacing: 8.w, // 아이콘과 텍스트 간의 간격
               children: [
-                Container(
+                Container( // 에고 감정 아이콘 표시
                   width: 24.w,
                   height: 24.h,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+                  decoration: BoxDecoration( // 아이코 주변 테두리 표시를 위함
+                    shape: BoxShape.circle, // 원형으로 지정
                     border: Border.all(
                       color: AppColors.white, // 테두리 색상
                       width: 2, // 테두리 두께
                     ),
                   ),
-                  child: ClipOval(
-                    child: SvgPicture.asset(
-                      UtilFunction.emotionTypeToPath(emotions[0]),
-                      fit: BoxFit.cover,
+                  child: ClipOval( // 하위 요소를 원형으로 만들어주는 컴포넌트
+                    child: SvgPicture.asset( // 에고 감정 아이콘
+                      UtilFunction.emotionTypeToPath(emotions[0]), // 첫번째 감정(가장 큰 감정으로 가정)이 나타난다.
+                      fit: BoxFit.cover, // 빈 공간 없이 전체를 자른다.
                     ),
                   ),
                 ),
                 Text(
-                  UtilFunction.formatDateTime(date),
+                  UtilFunction.formatDateTime(date), // 현재 날짜를 "yyyy년 MM월 dd일" 형식으로 변환한다.
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 14,
@@ -118,7 +117,7 @@ class DiaryCard extends StatelessWidget {
               ],
             )
           ),
-          SvgButton(
+          SvgButton( // 해당 일기의 RECAP으로 이동시켜주는 버튼이다.
             svgPath: recapIconPath,
             width: 24.w,
             height: 24.h,
@@ -129,6 +128,7 @@ class DiaryCard extends StatelessWidget {
     );
   }
 
+  /// 일기의 내용이 설명되는 영역
   Widget _dateCard() {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -137,19 +137,19 @@ class DiaryCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 4.h,
+        spacing: 4.h, // `에고 이름`과 `일기 요약` 간의 간격
         children: [
-          Text(
+          Text( // 일기를 작성해 준 에고의 이름
             egoName,
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
             ),
           ),
-          Text(
+          Text( // 요약된 일기의 내용
             story,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
+            maxLines: 2, // 최대 텍스트 영역(라인 수)
+            overflow: TextOverflow.ellipsis, // 내용이 초과된다면, `...`로 표시
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w500,
