@@ -1,3 +1,4 @@
+import 'package:ego/utils/constants.dart';
 import 'package:ego/utils/util_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,11 +7,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../theme/color.dart';
 
 class DiaryCard extends StatelessWidget {
-  final DateTime date = DateTime.now();
-  final String emotionPath = 'assets/icon/emotion/happiness.svg';
+  final DateTime date;
+  final Emotion emotion;
   final String videoPlayPath = 'assets/icon/video_play.svg';
-  final String egoName = 'Ego 이름';
-  final String story = '요약된 일기 내용을 보여줍니다.이날은 무슨일이 있었고, 어쩌고 저쩌고. 이러쿵 저러쿵. 이야기를 작성하게 됩니다. 마지막은 점점점';
+  final String egoName;
+  final String story;
+
+  const DiaryCard({super.key, required this.date, required this.emotion, required this.egoName, required this.story});
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class DiaryCard extends StatelessWidget {
                   ),
                   child: ClipOval(
                     child: SvgPicture.asset(
-                      emotionPath,
+                      UtilFunction.emotionTypeToPath(emotion),
                       fit: BoxFit.cover,
                     ),
                   ),
