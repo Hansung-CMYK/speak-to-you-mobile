@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   flutter_keyboard_visibility: ^6.0.0
+  intl: ^0.20.2
   fluttertoast: ^8.2.12
   flutter_svg: ^2.0.17
   intl: ^0.18.1
@@ -76,6 +77,10 @@ flutter:
     - assets/image/sent.gif
     - assets/icon/info.svg
     - assets/icon/success.svg
+    - assets/icon/close.svg
+    - assets/icon/cake.svg
+    - assets/image/egoIcon.png
+    - assets/image/sent.gif
     - assets/icon/notification.svg
     - assets/icon/video_play.svg
     - assets/icon/emotion/anger.svg
