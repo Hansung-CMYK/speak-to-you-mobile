@@ -38,6 +38,7 @@ dependencies:
   flutter_keyboard_visibility: ^6.0.0
   fluttertoast: ^8.2.12
   flutter_svg: ^2.0.17
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
