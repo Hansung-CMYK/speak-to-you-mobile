@@ -39,6 +39,7 @@ dependencies:
   fluttertoast: ^8.2.12
   flutter_svg: ^2.0.17
   intl: ^0.18.1
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
