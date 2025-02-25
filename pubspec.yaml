@@ -39,7 +39,6 @@ dependencies:
   intl: ^0.20.2
   fluttertoast: ^8.2.12
   flutter_svg: ^2.0.17
-  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
@@ -76,7 +75,8 @@ flutter:
     - assets/icon/success.svg
     - assets/icon/close.svg
     - assets/icon/cake.svg
-    - assets/image/egoIcon.png
+    - assets/icon/personality.svg
+    - assets/image/ego_icon.png
     - assets/image/sent.gif
     - assets/icon/notification.svg
     - assets/icon/video_play.svg
