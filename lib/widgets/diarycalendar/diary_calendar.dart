@@ -12,6 +12,7 @@ import '../../utils/constants.dart';
 /// TODO: 요일 밑 색상은 지우기
 /// TODO: 일기 작성 최저 최고 일자 정할 것
 /// TODO: 날짜 선택 기능 회의하기
+/// TODO: 캘린더에 6주까지 있을 때 해결법
 class DiaryCalendar extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DiaryCalendarState();
