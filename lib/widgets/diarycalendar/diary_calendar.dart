@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:ego/utils/util_function.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -62,10 +64,12 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
           // 다음 달로 넘어갔을 때,
           if (focusedDay.year > now.year || (focusedDay.year == now.year && focusedDay.month > now.month)) {
             setState(() {
-              _focusedDay = DateTime.now(); // 다시 현재 달로 고정
+              _focusedDay = now; // 다시 현재 달로 고정
             });
           } else {
-            _focusedDay = focusedDay;
+            setState(() {
+              _focusedDay = focusedDay;
+            });
           }
         },
 
@@ -143,8 +147,9 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
 
   /// 캘린더 핵심부 정보들
   ///
-  /// `todayTextStyle`, `todayDecoration` 과
-  /// `outsideTextStyle`, `disabledTextStyle`을 제외한 모든 매개 변수의 속성 값은 동일하다.
+  /// `todayTextStyle`, `todayDecoration` 은 당일 날짜 칸과 관련된다.
+  /// `outsideTextStyle`, `disabledTextStyle`은 해당 원이 아닌 날짜 칸과 관련된다.
+  /// 이외의 모든 매개 변수의 속성 값은 동일하다.
   CalendarStyle _calendarStyle() {
     return CalendarStyle(
       cellAlignment: Alignment.topCenter, // 날짜 배치 위치
@@ -170,8 +175,9 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       defaultDecoration: _defaultDecoration(),
       weekendDecoration: _defaultDecoration(),
       holidayDecoration: _defaultDecoration(),
-      outsideDecoration: _defaultDecoration(),
-      disabledDecoration: _defaultDecoration(),
+      // 모두 동일한 속성 값(`_outsideDecoration`)을 사용한다.
+      outsideDecoration: _outsideDecoration(),
+      disabledDecoration: _outsideDecoration(),
     );
   }
 
@@ -190,7 +196,7 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
               height: 24.h,
               child: events.isNotEmpty // 해당 날짜에 일기를 작성했는지 여부(Emotion 유무)
                 ? SvgPicture.asset(events[0]) // 존재한다면, Emotion의 아이콘을 가져온다.
-                : date.isBefore(DateTime.now()) // 존재하지 않는다면, 당일과 해당 날짜를 비교하여
+                : date.month == _focusedDay.month // 존재하지 않는다면, 당일과 해당 날짜를 비교하여
                   ? ColoredBox(color: AppColors.gray200) // 당일 날짜 이전이면, 짙은 회색
                   : ColoredBox(color: AppColors.gray100), // 당일 날짜 이후이면, 옅은 회색 (일기 존재할 수 없음)
             ),
@@ -256,6 +262,19 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
         bottom: BorderSide(
           width: 1.h, // 테두리 크기
           color: AppColors.gray200, // 하단에만 border 추가
+        ),
+      ),
+    );
+  }
+
+  /// 해당 달이 아닌 날짜 칸의 디자인을 하는 함수이다.
+  Decoration _outsideDecoration() {
+    return BoxDecoration(
+      color: AppColors.transparent, // 배경색을 투명하게 설정
+      border: Border(
+        bottom: BorderSide(
+          width: 1.h, // 테두리 크기
+          color: AppColors.gray100, // 하단에만 border 추가
         ),
       ),
     );
