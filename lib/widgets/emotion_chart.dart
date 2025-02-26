@@ -52,7 +52,7 @@ class _EmotionChartState extends State<EmotionChart> {
           // 왼쪽 라벨 영역 (긍정, 보통, 부정)
           Container(
             height: 172.h,
-            padding: EdgeInsets.only(top: 16.h, bottom: 40.h, right: 12.w),
+            padding: EdgeInsets.only(top: 16.h, bottom: 34.h, right: 12.w),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -127,12 +127,32 @@ class _EmotionChartState extends State<EmotionChart> {
                                       setState(() {
                                         _selectedIndex = index;
                                       });
+
+                                      // 선택된 버튼이 가운데(즉, 좌우로 3개씩 보이는 상태)가 되도록 오프셋 계산
+                                      double targetScrollOffset =
+                                          (index - 3) * spacing;
+                                      // 좌측 경계를 벗어나지 않도록 보정
+                                      if (targetScrollOffset < 0) {
+                                        targetScrollOffset = 0;
+                                      }
+
+                                      double maxScrollOffset =
+                                          _scrollController
+                                              .position
+                                              .maxScrollExtent;
+                                      // 우측 경계를 벗어나지 않도록 보정
+                                      if (targetScrollOffset >
+                                          maxScrollOffset) {
+                                        targetScrollOffset = maxScrollOffset;
+                                      }
+
                                       _scrollController.animateTo(
-                                        index * spacing,
+                                        targetScrollOffset,
                                         duration: Duration(milliseconds: 300),
                                         curve: Curves.easeInOut,
                                       );
                                     },
+
                                     child: Text(
                                       '${index + 1}',
                                       style: TextStyle(
@@ -173,9 +193,6 @@ class _EmotionChartState extends State<EmotionChart> {
       totalDays,
       (index) => FlSpot(index * spacing + 15.w, math.sin(index * math.pi / 15)),
     );
-    if (spots.last.x < totalWidth) {
-      spots.add(FlSpot(totalWidth, spots.last.y));
-    }
 
     // 메인 차트 선
     final lineChartBarData = LineChartBarData(
@@ -192,7 +209,7 @@ class _EmotionChartState extends State<EmotionChart> {
           int index,
         ) {
           if (index == selectedIndex) {
-            return FlDotCirclePainter(radius: 6, color: AppColors.accent);
+            return FlDotCirclePainter(radius: 6.r, color: AppColors.accent);
           }
           return FlDotCirclePainter(
             radius: 0,
