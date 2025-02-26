@@ -160,12 +160,11 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
   }
 
   /// 캘린더의 디자인을 동적으로 제작하는 함수이다.
-  ///
-  /// 감정 이모티콘(Marker) 배치를 진행한다.
   CalendarBuilders _calendarBuilders() {
     return CalendarBuilders(
-      // 감정 이모티콘을 동적으로 디자인한다. `events`는 감정 아이콘의 경로이다.
-      markerBuilder: (context, date, events) {
+      /// 감정 이모티콘을 동적으로 디자인한다.
+      /// `events`는 감정 아이콘의 경로이다.
+      markerBuilder: (_, date, events) {
         return Padding( // 날짜 텍스트와의 간격을 위함
           padding: EdgeInsets.symmetric(vertical: 8.h),
           child: ClipOval( // 원형 이미지를 위함
@@ -176,68 +175,71 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
                 ? SvgPicture.asset(events[0]) // 존재한다면, Emotion의 아이콘을 가져온다.
                 : date.month == _focusedDay.month // 존재하지 않는다면, 당일과 해당 날짜를 비교하여
                   ? ColoredBox(color: AppColors.gray200) // 당일 날짜 이전이면, 짙은 회색
-                  : ColoredBox(color: AppColors.gray100), // 당일 날짜 이후이면, 옅은 회색 (일기 존재할 수 없음)
+                  : ColoredBox(color: AppColors.gray200.withAlpha(127)), // 당일 날짜 이후이면, 옅은 회색 (일기 존재할 수 없음)
             ),
           ),
         );
       },
-      dowBuilder: (context, date) {
-        if (date.weekday == DateTime.sunday) {
-          return Center(
-            child: Text(
-              '일',
-              style: _daysOfWeekTextStyle()
-                  .copyWith(color: AppColors.errorBase)
-            ),
-          );
-        }
-      },
-      defaultBuilder: (context, date, _) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
-          decoration: _defaultDecoration(),
-          alignment: Alignment.topCenter,
+      /// 캘린더 요일 부분에서 일요일의 색상을 동적으로 변경한다.
+      dowBuilder: (_, date) {
+        return date.weekday == DateTime.sunday // 일요일만 선택
+        ? Center(
           child: Text(
-            date.day.toString(),
-            style: _defaultTextStyle()
+            '일',
+            style: _daysOfWeekTextStyle()
+                .copyWith(color: AppColors.red)
+          ),
+        ) : null; // 다른 요일은 `_daysOfWeekStyle()` 참고
+      },
+      /// 평일 날짜 칸을 동적으로 디자인한다.
+      defaultBuilder: (_, date, _) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w), // 패딩
+          decoration: _defaultDecoration(), // 하단에 밑줄을 그린다.
+          alignment: Alignment.topCenter, // 텍스트 위치
+          child: Text(
+            date.day.toString(), // 해당 날짜
+            style: _defaultTextStyle() // 텍스트 서식
               .copyWith(
-                color: date.weekday == DateTime.sunday
-                  ? AppColors.red
-                  : null
+                color: date.weekday == DateTime.sunday // 일요일인 경우에
+                  ? AppColors.red // 일요일이라면, 빨간색
+                  : null // 아니라면, 기존 색상 사용
               ),
           ),
         );
       },
-      outsideBuilder: (context, date, _) {
+      /// 해당 달이 아닌 날짜 칸을 동적으로 디자인한다.
+      outsideBuilder: (_, date, _) {
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
-          decoration: _outsideDecoration(),
-          alignment: Alignment.topCenter,
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w), // 패딩
+          decoration: _outsideDecoration(), // 하단에 밑줄을 그린다.
+          alignment: Alignment.topCenter, // 텍스트 위치
           child: Text(
-            date.day.toString(),
-            style: _defaultTextStyle()
+            date.day.toString(), // 해당 날짜
+            style: _defaultTextStyle() // 텍스트 서식
                 .copyWith(
                 color: date.weekday == DateTime.sunday
-                    ? AppColors.red.withAlpha(127)
-                    : AppColors.gray700.withAlpha(127)
+                    ? AppColors.red.withAlpha(127) // default 색상에서 투명도 50% 부여
+                    : AppColors.gray700.withAlpha(127) // default 색상들에서 투명도 50% 부여
             ),
           ),
         );
       },
-      holidayBuilder: (context, date, _) {
+      /// 공휴일인 날짜 칸을 동적으로 디자인한다.
+      holidayBuilder: (_, date, _) {
         return Container(
-          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
-          decoration: _defaultDecoration(),
-          alignment: Alignment.topCenter,
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w), // 패딩
+          decoration: _defaultDecoration(), // 하단에 밑줄을 그린다.
+          alignment: Alignment.topCenter, // 텍스트 위치
           child: Text(
-            date.day.toString(),
-            style: _defaultTextStyle()
+            date.day.toString(), // 해당 날짜
+            style: _defaultTextStyle() // 텍스트 서식
               .copyWith(
               color: AppColors.red
             ),
           ),
         );
-    }
+      }
     );
   }
 
@@ -247,6 +249,15 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       color: AppColors.black, // 검정색
       fontSize: 14.sp,
       fontWeight: FontWeight.w400,
+    );
+  }
+
+  /// 캘린더 요일 영역의 서식을 지정하는 함수이다.
+  TextStyle _daysOfWeekTextStyle() {
+    return TextStyle( // 주말 관련
+      color: AppColors.gray400,
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w500,
     );
   }
 
@@ -288,14 +299,6 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
           color: AppColors.gray100, // 하단에만 border 추가
         ),
       ),
-    );
-  }
-
-  TextStyle _daysOfWeekTextStyle() {
-    return TextStyle( // 주말 관련
-      color: AppColors.gray400,
-      fontSize: 14.sp,
-      fontWeight: FontWeight.w500,
     );
   }
 }
