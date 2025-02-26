@@ -14,20 +14,10 @@ class EmotionChart extends StatefulWidget {
 
 class _EmotionChartState extends State<EmotionChart> {
   List<Color> gradientColors = [AppColors.primary, AppColors.accent];
-  final double dayWidth = 50.0;
+  final double dayWidth = 31.w;
+  int _selectedIndex = 0;
 
-  // 단일 ScrollController 생성 (차트와 버튼 영역에 공유)
   final ScrollController _scrollController = ScrollController();
-
-  List<FlSpot> get spots {
-    return List.generate(
-      31,
-      (index) => FlSpot(
-        index.toDouble(),
-        math.sin(index * math.pi / 15), // -1 ~ 1 사이 값
-      ),
-    );
-  }
 
   @override
   void dispose() {
@@ -35,80 +25,135 @@ class _EmotionChartState extends State<EmotionChart> {
     super.dispose();
   }
 
-  // 왼쪽 라벨에 사용할 텍스트 스타일
   final TextStyle leftLabelStyle = TextStyle(
     color: AppColors.gray600,
     fontWeight: FontWeight.w700,
-    fontSize: 12,
+    fontSize: 12.sp,
   );
 
   @override
   Widget build(BuildContext context) {
+    final int totalDays = 31;
+    // 버튼 너비와 버튼 사이 패딩
+    final double scaledDayWidth = dayWidth.w;
+    final double scaledButtonSpacing = 14.w;
+    // 한 버튼의 좌표 간격: 버튼 너비 + 패딩
+    final double spacing = scaledDayWidth + scaledButtonSpacing;
+    // 전체 콘텐츠 너비: 마지막 버튼의 오른쪽 끝까지
+    final double totalWidth = (totalDays - 1) * spacing + scaledDayWidth;
+    // 차트 하단 여백 (날짜 버튼 높이 + 추가 여백)
+    final double chartBottomPadding = 27.h + 16.h;
+
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 차트와 왼쪽 라벨 영역
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // 왼쪽 라벨 영역 (긍정, 보통, 부정)
-              Container(
-                height: 172.h,
-                padding: EdgeInsets.only(top: 16.h, bottom: 24.h, right: 12.w),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('긍정', style: leftLabelStyle),
-                    Text('보통', style: leftLabelStyle),
-                    Text('부정', style: leftLabelStyle),
-                  ],
-                ),
-              ),
-              // 스크롤 가능한 차트 영역
-              SizedBox(
-                width: dayWidth * 7, // 한 번에 7일치만 보여주기 위한 뷰포트
+          // 왼쪽 라벨 영역 (긍정, 보통, 부정)
+          Container(
+            height: 172.h,
+            padding: EdgeInsets.only(top: 16.h, bottom: 40.h, right: 12.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('긍정', style: leftLabelStyle),
+                Text('보통', style: leftLabelStyle),
+                Text('부정', style: leftLabelStyle),
+              ],
+            ),
+          ),
+          // 차트 영역: Expanded로 감싸고 오른쪽에 20 패딩 추가
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: 20.w),
+              child: SizedBox(
                 height: 172.h,
                 child: SingleChildScrollView(
                   controller: _scrollController,
                   scrollDirection: Axis.horizontal,
                   child: SizedBox(
-                    width: dayWidth * 31, // 전체 31일치 데이터
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 24, bottom: 12),
-                      child: LineChart(mainDataWithoutLeftTitles()),
+                    width: totalWidth,
+                    child: Stack(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(
+                            top: 24,
+                            bottom: chartBottomPadding,
+                          ),
+                          child: LineChart(
+                            duration: Duration(milliseconds: 0),
+                            curve: Curves.easeOut,
+                            mainDataWithoutLeftTitles(
+                              totalDays,
+                              spacing,
+                              totalWidth,
+                              _selectedIndex,
+                            ),
+                          ),
+                        ),
+                        // 날짜 버튼들: 차트 영역 하단에 오버레이
+                        Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: Row(
+                            children: List.generate(totalDays, (index) {
+                              return Padding(
+                                padding: EdgeInsets.only(
+                                  right:
+                                      index == totalDays - 1
+                                          ? 0
+                                          : scaledButtonSpacing,
+                                ),
+                                child: SizedBox(
+                                  width: scaledDayWidth,
+                                  height: 27.h,
+                                  child: TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor:
+                                          index == _selectedIndex
+                                              ? AppColors.primary
+                                              : AppColors.gray100,
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 4.w,
+                                        vertical: 3.h,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                          4.r,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedIndex = index;
+                                      });
+                                      _scrollController.animateTo(
+                                        index * spacing,
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                    child: Text(
+                                      '${index + 1}',
+                                      style: TextStyle(
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                        color:
+                                            index == _selectedIndex
+                                                ? AppColors.white
+                                                : AppColors.gray400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 16.h),
-          // 날짜 버튼 영역 (차트와 동일한 ScrollController 사용)
-          SizedBox(
-            height: 50,
-            width: dayWidth * 7, // 뷰포트 크기를 동일하게 맞춤
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: List.generate(31, (index) {
-                  return Container(
-                    width: dayWidth,
-                    margin: EdgeInsets.symmetric(horizontal: 2.w),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // 버튼 클릭 시 해당 날짜의 시작 위치로 스크롤 (예: index * dayWidth)
-                        _scrollController.animateTo(
-                          index * dayWidth,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      child: Text('${index + 1}'),
-                    ),
-                  );
-                }),
               ),
             ),
           ),
@@ -117,32 +162,88 @@ class _EmotionChartState extends State<EmotionChart> {
     );
   }
 
-  // 예제에서는 차트 내부의 하단 타이틀은 사용하지 않으므로,
-  // 별도의 leftTitles와 bottomTitles는 빈 위젯으로 처리합니다.
-  Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    return Container();
-  }
+  LineChartData mainDataWithoutLeftTitles(
+    int totalDays,
+    double spacing,
+    double totalWidth,
+    int selectedIndex,
+  ) {
+    // 데이터 포인트 생성 (x좌표에 15를 더해 중앙 정렬)
+    List<FlSpot> spots = List.generate(
+      totalDays,
+      (index) => FlSpot(index * spacing + 15.w, math.sin(index * math.pi / 15)),
+    );
+    if (spots.last.x < totalWidth) {
+      spots.add(FlSpot(totalWidth, spots.last.y));
+    }
 
-  Widget leftTitleWidgets(double value, TitleMeta meta) {
-    return Container();
-  }
+    // 메인 차트 선
+    final lineChartBarData = LineChartBarData(
+      spots: spots,
+      gradient: LinearGradient(colors: gradientColors),
+      barWidth: 2.r,
+      isStrokeCapRound: true,
+      dotData: FlDotData(
+        show: true,
+        getDotPainter: (
+          FlSpot spot,
+          double percent,
+          LineChartBarData barData,
+          int index,
+        ) {
+          if (index == selectedIndex) {
+            return FlDotCirclePainter(radius: 6, color: AppColors.accent);
+          }
+          return FlDotCirclePainter(
+            radius: 0,
+            color: Colors.transparent,
+            strokeWidth: 0,
+            strokeColor: Colors.transparent,
+          );
+        },
+      ),
+      belowBarData: BarAreaData(
+        show: true,
+        gradient: LinearGradient(
+          colors:
+              gradientColors
+                  .map((color) => color.withValues(alpha: 0.3))
+                  .toList(),
+        ),
+      ),
+    );
 
-  // 차트 데이터 구성 (뷰포트는 0~6, 실제 데이터는 0~30)
-  LineChartData mainDataWithoutLeftTitles() {
+    // 선택된 날짜의 x좌표와 y값 계산
+    double selectedX = selectedIndex * spacing + 15.w;
+    double selectedY = math.sin(selectedIndex * math.pi / 15);
+
+    // 선택된 날짜에 대한 수직선 (차트 하단(y = -1)부터 실제 y값까지)
+    final verticalLine = LineChartBarData(
+      spots: [FlSpot(selectedX, -1), FlSpot(selectedX, selectedY)],
+      isCurved: false,
+      color: AppColors.accent,
+      barWidth: 2.r,
+      dotData: FlDotData(show: false),
+    );
+
     return LineChartData(
       lineTouchData: LineTouchData(
         enabled: true,
         handleBuiltInTouches: true,
         getTouchedSpotIndicator: (barData, spotIndexes) {
           return spotIndexes.map((index) {
-            return TouchedSpotIndicatorData(
-              FlLine(color: AppColors.accent, strokeWidth: 2),
-              FlDotData(
-                getDotPainter:
-                    (spot, percent, barData, index) =>
-                        FlDotCirclePainter(radius: 6, color: AppColors.accent),
-              ),
-            );
+            return _selectedIndex == index
+                ? TouchedSpotIndicatorData(
+                  FlLine(color: AppColors.accent, strokeWidth: 2),
+                  FlDotData(
+                    getDotPainter:
+                        (spot, percent, barData, index) => FlDotCirclePainter(
+                          radius: 6.r,
+                          color: AppColors.accent,
+                        ),
+                  ),
+                )
+                : null;
           }).toList();
         },
         touchTooltipData: LineTouchTooltipData(
@@ -151,6 +252,15 @@ class _EmotionChartState extends State<EmotionChart> {
               (touchedSpots) => List.generate(touchedSpots.length, (_) => null),
         ),
       ),
+      showingTooltipIndicators: [
+        ShowingTooltipIndicators([
+          LineBarSpot(
+            lineChartBarData,
+            0, // 메인 차트 선의 인덱스 (한 선만 있으므로 0)
+            spots[selectedIndex],
+          ),
+        ]),
+      ],
       gridData: FlGridData(
         show: true,
         drawVerticalLine: false,
@@ -158,56 +268,27 @@ class _EmotionChartState extends State<EmotionChart> {
         verticalInterval: 1,
         getDrawingHorizontalLine:
             (value) => FlLine(
-              color: AppColors.gray300.withOpacity(0.5),
-              strokeWidth: 0.5,
+              color: AppColors.gray300.withValues(alpha: 0.5),
+              strokeWidth: 0.5.r,
             ),
       ),
-      titlesData: FlTitlesData(
-        show: false, // 차트 내부 타이틀은 모두 숨김
-      ),
+      titlesData: FlTitlesData(show: false),
       borderData: FlBorderData(
         show: true,
         border: Border.symmetric(
           horizontal: BorderSide(
-            color: AppColors.gray300.withOpacity(0.5),
+            color: AppColors.gray300.withValues(alpha: 0.5),
             style: BorderStyle.solid,
-            width: 0.5,
+            width: 0.5.r,
           ),
         ),
       ),
-      // 뷰포트: 0~6 (7일치)
       minX: 0,
-      maxX: 6,
+      maxX: totalWidth,
       minY: -1,
       maxY: 1,
-      lineBarsData: [
-        LineChartBarData(
-          // 예시 데이터 (실제 spots 데이터와 연결 가능)
-          spots: [
-            FlSpot(0, -0.2),
-            FlSpot(1, -0.3),
-            FlSpot(2, -0.2),
-            FlSpot(3, 0.0),
-            FlSpot(4, -0.1),
-            FlSpot(5, 0.0),
-            FlSpot(6, 1),
-          ],
-          isCurved: true,
-          gradient: LinearGradient(colors: gradientColors),
-          barWidth: 2,
-          isStrokeCapRound: true,
-          dotData: FlDotData(show: false),
-          belowBarData: BarAreaData(
-            show: true,
-            gradient: LinearGradient(
-              colors:
-                  gradientColors
-                      .map((color) => color.withOpacity(0.3))
-                      .toList(),
-            ),
-          ),
-        ),
-      ],
+      // 메인 차트와 수직선을 함께 표시
+      lineBarsData: [lineChartBarData, verticalLine],
     );
   }
 }
