@@ -8,7 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../../theme/color.dart';
 import '../../utils/constants.dart';
 
-/// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다.
+/// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
 /// TODO: 요일 밑 색상은 지우기
 /// TODO: 일기 작성 최저 최고 일자 정할 것
 /// TODO: 날짜 선택 기능 회의하기
@@ -44,12 +44,12 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
         firstDay: DateTime(2000, 1, 1), // 달력에 사용할 수 있는 첫 번째 날
         lastDay: DateTime(2025, 12, 31), // 달력에 사용할 수 있는 마지막 날
         focusedDay: _focusedDay, // 현재 목표일
-        currentDay: DateTime.now(), // ???
 
         headerStyle: _headerStyle(), // 년 월 표시 영역
-        daysOfWeekStyle: _daysOfWeekStyle(), // 요일 표시 영역 길이
+        daysOfWeekStyle: _daysOfWeekStyle(), // 요일 표시 영역
         calendarStyle: _calendarStyle(), // 날짜 표시 영역
-        daysOfWeekHeight: 20.h, // 텍스트가 잘림으로 하드코딩
+        daysOfWeekHeight: 28.h, // 요일 표시 영역 높이
+        // row와 daysOfWeekHeight 간의 패딩을 위해 8.h추가 (상단 4.h는 Header에 들어간 패딩에서 제거)
         rowHeight: 60.h,
 
         calendarBuilders: _calendarBuilders(),
@@ -88,7 +88,8 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
         fontWeight: FontWeight.w700,
       ),
       headerMargin: EdgeInsets.symmetric(horizontal: 88.w), // TODO: 하드 코딩임 개선할 것
-      headerPadding: EdgeInsets.only(bottom: 16.h),
+      // row와 daysOfWeekHeight 간의 패딩을 위해 4.h 제거 (상단 4.h는 Header에 들어간 패딩에서 제거)
+      headerPadding: EdgeInsets.only(bottom: 16.h - 4.h),
       rightChevronPadding: EdgeInsets.zero,
       rightChevronMargin: EdgeInsets.zero,
       leftChevronPadding: EdgeInsets.zero,
@@ -100,12 +101,12 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
     return DaysOfWeekStyle(
       weekdayStyle: TextStyle(
         color: AppColors.gray400,
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w500,
       ),
       weekendStyle: TextStyle(
         color: AppColors.gray400,
-        fontSize: 14,
+        fontSize: 14.sp,
         fontWeight: FontWeight.w500,
       ),
     );
@@ -127,7 +128,7 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       outsideTextStyle: _outsideTextStyle(),
 
       todayDecoration: _todayDecoration(),
-      selectedDecoration: _todayDecoration(),
+      selectedDecoration: _selectedDecoration(),
     );
   }
 
@@ -190,6 +191,16 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
   }
 
   Decoration _todayDecoration() {
+    return ShapeDecoration(
+      color: AppColors.transparent,
+      shape: RoundedRectangleBorder(
+        side: BorderSide(width: 1, color: AppColors.gray200),
+        borderRadius: BorderRadius.circular(37.r),
+      ),
+    );
+  }
+
+  Decoration _selectedDecoration() {
     return ShapeDecoration(
       color: AppColors.transparent,
       shape: RoundedRectangleBorder(
