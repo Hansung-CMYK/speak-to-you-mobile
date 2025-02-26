@@ -14,6 +14,7 @@ import '../../utils/constants.dart';
 ///
 /// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
 /// TODO: 캘린더에 6주까지 있을 때 해결법 (디자인 수정 중)
+/// TODO: 다른 달인데, 감정 아이콘이 있는 경우 (누락)
 class DiaryCalendar extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DiaryCalendarState();
@@ -28,6 +29,7 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
     DateTime(2025, 2, 10): Emotion.happiness, // ex) 2025-02-10, 행복
     DateTime(2025, 2, 15): Emotion.disappointment,
     DateTime(2025, 2, 20): Emotion.sadness,
+    DateTime(2025, 2, 25): Emotion.happiness,
     DateTime(2025, 2, 26): Emotion.embarrassment,
   };
 
@@ -132,16 +134,8 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
   /// 두 매개 변수의 속성 값은 동일하다.
   DaysOfWeekStyle _daysOfWeekStyle() {
     return DaysOfWeekStyle(
-      weekdayStyle: TextStyle( // 평일 관련
-        color: AppColors.gray400,
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-      ),
-      weekendStyle: TextStyle( // 주말 관련
-        color: AppColors.gray400,
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w500,
-      ),
+      weekdayStyle: _daysOfWeekTextStyle(),
+      weekendStyle: _daysOfWeekTextStyle()
     );
   }
 
@@ -158,26 +152,10 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       cellPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
 
       // 당일 날짜 칸은 흰색 TextColor를 이용한다.
-      todayTextStyle: _todayTextStyle(),
-      // 모두 동일한 속성 값(`_defaultTextStyle()`)을 사용한다.
-      selectedTextStyle: _defaultTextStyle(),
-      defaultTextStyle: _defaultTextStyle(),
-      weekendTextStyle: _defaultTextStyle(),
-      holidayTextStyle: _defaultTextStyle(),
-      // 모두 동일한 속성 값(`_outsideTextStyle()`)을 사용한다.
-      outsideTextStyle: _outsideTextStyle(),
-      disabledTextStyle: _outsideTextStyle(),
+      todayTextStyle: _defaultTextStyle().copyWith(color: AppColors.white),
 
       // 당일 날짜 칸은 회색 BoxColor를 이용한다.
       todayDecoration: _todayDecoration(),
-      // 모두 동일한 속성 값(`_defaultDecoration`)을 사용한다.
-      selectedDecoration: _defaultDecoration(),
-      defaultDecoration: _defaultDecoration(),
-      weekendDecoration: _defaultDecoration(),
-      holidayDecoration: _defaultDecoration(),
-      // 모두 동일한 속성 값(`_outsideDecoration`)을 사용한다.
-      outsideDecoration: _outsideDecoration(),
-      disabledDecoration: _outsideDecoration(),
     );
   }
 
@@ -203,37 +181,70 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
           ),
         );
       },
-    );
-  }
-
-  /// 당일의 날짜 글자 속성을 지정하는 함수이다.
-  ///
-  /// 색상을 제외하면, 다른 텍스트들과 동일하다.
-  TextStyle _todayTextStyle() {
-    return TextStyle( // 당일 텍스트 스타일
-      color: AppColors.white, // 흰색
-      fontSize: 14.sp,
-      fontWeight: FontWeight.w400,
+      dowBuilder: (context, date) {
+        if (date.weekday == DateTime.sunday) {
+          return Center(
+            child: Text(
+              '일',
+              style: _daysOfWeekTextStyle()
+                  .copyWith(color: AppColors.errorBase)
+            ),
+          );
+        }
+      },
+      defaultBuilder: (context, date, _) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
+          decoration: _defaultDecoration(),
+          alignment: Alignment.topCenter,
+          child: Text(
+            date.day.toString(),
+            style: _defaultTextStyle()
+              .copyWith(
+                color: date.weekday == DateTime.sunday
+                  ? AppColors.red
+                  : null
+              ),
+          ),
+        );
+      },
+      outsideBuilder: (context, date, _) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
+          decoration: _outsideDecoration(),
+          alignment: Alignment.topCenter,
+          child: Text(
+            date.day.toString(),
+            style: _defaultTextStyle()
+                .copyWith(
+                color: date.weekday == DateTime.sunday
+                    ? AppColors.red.withAlpha(127)
+                    : AppColors.gray700.withAlpha(127)
+            ),
+          ),
+        );
+      },
+      holidayBuilder: (context, date, _) {
+        return Container(
+          padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
+          decoration: _defaultDecoration(),
+          alignment: Alignment.topCenter,
+          child: Text(
+            date.day.toString(),
+            style: _defaultTextStyle()
+              .copyWith(
+              color: AppColors.red
+            ),
+          ),
+        );
+    }
     );
   }
 
   /// 평일의 날짜 글자 속성을 지정하는 함수이다.
-  ///
-  /// 색상을 제외하면, 다른 텍스트들과 동일하다.
   TextStyle _defaultTextStyle() {
     return TextStyle( // 평일 텍스트 스타일
       color: AppColors.black, // 검정색
-      fontSize: 14.sp,
-      fontWeight: FontWeight.w400,
-    );
-  }
-
-  /// 주말의 날짜 글자 속성을 지정하는 함수이다.
-  ///
-  /// 색상을 제외하면, 다른 텍스트들과 동일하다.
-  TextStyle _outsideTextStyle() {
-    return TextStyle( // 이번 달이 아닌 날짜의 텍스트 스타일
-      color: AppColors.gray400, // 회색
       fontSize: 14.sp,
       fontWeight: FontWeight.w400,
     );
@@ -277,6 +288,14 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
           color: AppColors.gray100, // 하단에만 border 추가
         ),
       ),
+    );
+  }
+
+  TextStyle _daysOfWeekTextStyle() {
+    return TextStyle( // 주말 관련
+      color: AppColors.gray400,
+      fontSize: 14.sp,
+      fontWeight: FontWeight.w500,
     );
   }
 }
