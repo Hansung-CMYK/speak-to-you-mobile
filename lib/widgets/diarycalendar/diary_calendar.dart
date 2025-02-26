@@ -9,73 +9,65 @@ import '../../theme/color.dart';
 import '../../utils/constants.dart';
 
 /// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
-/// TODO: 요일 밑 색상은 지우기
-/// TODO: 일기 작성 최저 최고 일자 정할 것
-/// TODO: 날짜 선택 기능 회의하기
-/// TODO: 캘린더에 6주까지 있을 때 해결법
+/// TODO: 캘린더에 6주까지 있을 때 해결법 (디자인 수정 중)
 class DiaryCalendar extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DiaryCalendarState();
 }
 
 class _DiaryCalendarState extends State<DiaryCalendar> {
-  DateTime _focusedDay = DateTime.now(); // 당일 날짜
-  late DateTime _selectedDay; // 선택한 날짜
+  DateTime _focusedDay = DateTime.now(); // 현재 달
 
   // 이벤트 데이터를 저장
   final Map<DateTime, Emotion> _events = {
     DateTime(2025, 2, 10): Emotion.happiness,
     DateTime(2025, 2, 15): Emotion.disappointment,
     DateTime(2025, 2, 20): Emotion.sadness,
+    DateTime(2025, 2, 26): Emotion.embarrassment,
   };
-
-  @override
-  void initState() {
-    super.initState();
-    _selectedDay = _focusedDay;
-  }
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
       child: TableCalendar(
-        locale: 'ko_KR', // 한국어 버전
-        firstDay: DateTime(2000, 1, 1), // 달력에 사용할 수 있는 첫 번째 날
-        lastDay: DateTime(2025, 12, 31), // 달력에 사용할 수 있는 마지막 날
-        focusedDay: _focusedDay, // 현재 목표일
-
-        headerStyle: _headerStyle(), // 년 월 표시 영역
-        daysOfWeekStyle: _daysOfWeekStyle(), // 요일 표시 영역
-        calendarStyle: _calendarStyle(), // 날짜 표시 영역
-        daysOfWeekHeight: 28.h, // 요일 표시 영역 높이
-        // row와 daysOfWeekHeight 간의 패딩을 위해 8.h추가 (상단 4.h는 Header에 들어간 패딩에서 제거)
+        locale: 'ko_KR',
+        firstDay: DateTime(2000, 1, 1),
+        lastDay: DateTime(DateTime.now().year, DateTime.now().month, 31), // 이번 달까지만 가능
+        focusedDay: _focusedDay,
+        headerStyle: _headerStyle(),
+        daysOfWeekStyle: _daysOfWeekStyle(),
+        calendarStyle: _calendarStyle(),
+        daysOfWeekHeight: 28.h,
         rowHeight: 60.h,
 
         calendarBuilders: _calendarBuilders(),
-        eventLoader: (day) {
-          DateTime date = DateTime(day.year, day.month, day.day);
-          if(_events[date] != null) {
-            return [UtilFunction.emotionTypeToPath(_events[date]!)];
-          } else {
-            return [];
-          }
-        }, // 마커 표시 위함
 
-        selectedDayPredicate: (day) { // 현재 선택된 날짜를 지정, 캘린더에서 각 날짜를 렌더링할 때 호출
-          return isSameDay(_selectedDay, day);
-        },
+        eventLoader: (day) => _loadEvents(day),
 
-        onDaySelected: (selectedDay, focusedDay) { // 해당 날짜가 _selectedDay로 업데이트되고 화면이 업데이트되어 선택한 날짜에 대한 변경 사항을 표시
-          if (!isSameDay(_selectedDay, selectedDay)) {
+        onPageChanged: (focusedDay) {
+          // 사용자가 다음 달로 이동하는 것을 방지
+          DateTime now = DateTime.now();
+          if (focusedDay.year > now.year || (focusedDay.year == now.year && focusedDay.month > now.month)) {
             setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
+              _focusedDay = DateTime.now(); // 다시 현재 달로 고정
             });
+          } else {
+            _focusedDay = focusedDay;
           }
         },
+
+        pageAnimationEnabled: false, // 페이지 애니메이션 제거
       ),
     );
+  }
+
+  List<String> _loadEvents(DateTime day) {
+    DateTime date = DateTime(day.year, day.month, day.day);
+    if (_events.containsKey(date)) {
+      return [UtilFunction.emotionTypeToPath(_events[date]!)];
+    }
+    return [];
   }
 
   HeaderStyle _headerStyle() {
@@ -118,58 +110,64 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       cellMargin: EdgeInsets.zero,
       cellPadding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 3.w),
 
-      tableBorder: _tableBorder(),
-
       todayTextStyle: _defaultTextStyle(),
       selectedTextStyle: _defaultTextStyle(),
       defaultTextStyle: _defaultTextStyle(),
       weekendTextStyle: _defaultTextStyle(),
       holidayTextStyle: _defaultTextStyle(),
       outsideTextStyle: _outsideTextStyle(),
+      disabledTextStyle: _outsideTextStyle(),
 
-      todayDecoration: _todayDecoration(),
-      selectedDecoration: _selectedDecoration(),
+      todayDecoration: _baseDecoration(),
+      selectedDecoration: _baseDecoration(),
+      defaultDecoration: _baseDecoration(),
+      weekendDecoration: _baseDecoration(),
+      holidayDecoration: _baseDecoration(),
+      outsideDecoration: _baseDecoration(),
+      disabledDecoration: _baseDecoration(),
     );
   }
 
   CalendarBuilders _calendarBuilders() {
     return CalendarBuilders(
+      todayBuilder: (context, date, events) {
+        return _todayCalendar();
+      },
       markerBuilder: (context, date, events) { // 마커 디자인
-        return events.isNotEmpty
-        ? Padding(
+        return Padding(
           padding: EdgeInsets.symmetric(vertical: 8.h),
           child: ClipOval(
             child: SizedBox(
               width: 24.w,
               height: 24.h,
-              child: SvgPicture.asset(events[0]),
+              child: events.isNotEmpty
+                ? SvgPicture.asset(events[0])
+                : date.isBefore(DateTime.now())
+                  ? ColoredBox(color: AppColors.gray200)
+                  : ColoredBox(color: AppColors.gray100),
             ),
           ),
-        )
-        : Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.h),
-          child: Container(
-            width: 24.w,
-            height: 24.h,
-            decoration: ShapeDecoration(
-              color: AppColors.gray200,
-              shape: OvalBorder(),
-            ),
-          )
         );
       },
     );
   }
 
-  TableBorder _tableBorder() {
-    return TableBorder(
-      horizontalInside : BorderSide(
-        width: 1.h,
-        color: AppColors.gray200,
-      ),
-      bottom: BorderSide(
-        width: 1.h,
-        color: AppColors.gray200,
+  Widget _todayCalendar() {
+    return Container(
+      decoration: _baseDecoration(),
+      child: Container(
+        decoration: ShapeDecoration(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(width: 1, color: AppColors.primary),
+            borderRadius: BorderRadius.circular(37),
+          ),
+        ),
+        alignment: Alignment.topCenter,
+        padding: EdgeInsets.symmetric(vertical: 7.h),
+        child: Text(
+          DateTime.now().day.toString(),
+          style: _defaultTextStyle(),
+        ),
       ),
     );
   }
@@ -190,22 +188,14 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
     );
   }
 
-  Decoration _todayDecoration() {
-    return ShapeDecoration(
-      color: AppColors.transparent,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 1, color: AppColors.gray200),
-        borderRadius: BorderRadius.circular(37.r),
-      ),
-    );
-  }
-
-  Decoration _selectedDecoration() {
-    return ShapeDecoration(
-      color: AppColors.transparent,
-      shape: RoundedRectangleBorder(
-        side: BorderSide(width: 1, color: AppColors.primary),
-        borderRadius: BorderRadius.circular(37.r),
+  Decoration _baseDecoration() {
+    return BoxDecoration(
+      color: AppColors.transparent, // 배경색을 투명하게 설정
+      border: Border(
+        bottom: BorderSide(
+          width: 1.h,
+          color: AppColors.gray200, // 하단에만 border 추가
+        ),
       ),
     );
   }
