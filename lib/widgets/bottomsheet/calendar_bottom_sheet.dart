@@ -19,18 +19,43 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       maxChildSize: 1.0, // 최대 값 설정 (부모 컴포넌트 기준 비율)
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
-          color: AppColors.gray100,
-          padding: EdgeInsets.symmetric(horizontal: 20.w), // TODO: 자체 패딩으로 해결
-          child: ListView.builder(
+          decoration: BoxDecoration(
+            color: AppColors.gray100,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: CustomScrollView(
             controller: scrollController,
-            itemBuilder: (BuildContext context, int index) {
-              return DiaryCard( // TODO: DiaryCard 샘플
-                date: DateTime.now(),
-                emotions: [Emotion.happiness],
-                egoName: 'Ego 이름: $index',
-                story: '요약된 일기 내용을 보여줍니다.이날은 무슨일이 있었고, 어쩌고 저쩌고. 이러쿵 저러쿵. 이야기를 작성하게 됩니다. 마지막은 점점점',
-              );
-            },
+            slivers: [
+              SliverToBoxAdapter( //
+                child: Center(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.gray300,
+                      borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                    ),
+                    margin: EdgeInsets.symmetric(vertical: 10.h),
+                    width: 40.w,
+                    height: 4.h,
+                  ),
+                ),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return DiaryCard( // TODO: DiaryCard 샘플
+                      date: DateTime.now(),
+                      emotions: const [Emotion.happiness],
+                      egoName: 'Ego 이름: $index',
+                      story: '요약된 일기 내용을 보여줍니다.이날은 무슨일이 있었고, 어쩌고 저쩌고. 이러쿵 저러쿵. 이야기를 작성하게 됩니다. 마지막은 점점점',
+                    );
+                  }
+                ),
+              ),
+            ],
           ),
         );
       }
