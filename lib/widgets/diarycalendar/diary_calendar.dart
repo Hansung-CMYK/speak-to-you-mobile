@@ -120,6 +120,16 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       ///
       /// row와 daysOfWeekHeight 간의 패딩을 위해 4.h 제거 (상단 4.h는 Header에 들어간 패딩에서 제거)
       headerPadding: EdgeInsets.only(bottom: 16.h - 4.h),
+
+      rightChevronIcon: Icon(
+        Icons.chevron_right,
+        color: AppColors.gray400,
+      ),
+      leftChevronIcon: Icon(
+        Icons.chevron_left,
+        color: AppColors.gray400,
+      ),
+
       // 각 화살표의 padding과 margin을 제거
       rightChevronPadding: EdgeInsets.zero,
       rightChevronMargin: EdgeInsets.zero,
