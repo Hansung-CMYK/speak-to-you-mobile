@@ -1,12 +1,11 @@
 import 'package:ego/sample/cmyk-46/tmp_screen.dart';
+import 'package:ego/screens/record/record_screen.dart';
+import 'package:ego/theme/theme.dart';
+import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
-import '../../../theme/theme.dart';
-import '../../screens/record/record_screen.dart';
-import '../../widgets/appbar/main_app_bar.dart';
 
 /// AppBar 단위 테스트 코드
 /// SampleAppBarTest를 통해 위젯 비율을 조정하고 관리함
