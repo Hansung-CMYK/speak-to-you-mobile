@@ -15,9 +15,22 @@ class EmotionChart extends StatefulWidget {
 class _EmotionChartState extends State<EmotionChart> {
   List<Color> gradientColors = [AppColors.primary, AppColors.accent];
   final double dayWidth = 31.w;
-  int _selectedIndex = 0;
-
+  // 초기 선택 상태는 없음
+  int? _selectedIndex;
   final ScrollController _scrollController = ScrollController();
+
+  // 1~31일의 데이터를 저장 (null이면 데이터 없음)
+  late final List<double?> dailyData;
+
+  @override
+  void initState() {
+    super.initState();
+    final math.Random rand = math.Random();
+    // 예시로 20% 확률로 데이터를 누락시키고, 나머지는 -1 ~ 1 범위의 난수값 생성
+    dailyData = List.generate(31, (index) {
+      return rand.nextDouble() < 0.2 ? null : rand.nextDouble() * 2 - 1;
+    });
+  }
 
   @override
   void dispose() {
@@ -62,7 +75,7 @@ class _EmotionChartState extends State<EmotionChart> {
               ],
             ),
           ),
-          // 차트 영역: Expanded로 감싸고 오른쪽에 20 패딩 추가
+          // 차트 영역
           Expanded(
             child: Padding(
               padding: EdgeInsets.only(right: 20.w),
@@ -82,21 +95,16 @@ class _EmotionChartState extends State<EmotionChart> {
                           ),
                           child: LineChart(
                             duration: Duration(milliseconds: 0),
-                            curve: Curves.easeOut,
-                            mainDataWithoutLeftTitles(
-                              totalDays,
-                              spacing,
-                              totalWidth,
-                              _selectedIndex,
-                            ),
+                            mainDataWithoutLeftTitles(spacing, totalWidth),
                           ),
                         ),
-                        // 날짜 버튼들: 차트 영역 하단에 오버레이
+                        // 날짜 버튼들 (하단 오버레이)
                         Positioned(
                           bottom: 0,
                           left: 0,
                           child: Row(
                             children: List.generate(totalDays, (index) {
+                              bool isSelected = _selectedIndex == index;
                               return Padding(
                                 padding: EdgeInsets.only(
                                   right:
@@ -110,7 +118,7 @@ class _EmotionChartState extends State<EmotionChart> {
                                   child: TextButton(
                                     style: TextButton.styleFrom(
                                       backgroundColor:
-                                          index == _selectedIndex
+                                          isSelected
                                               ? AppColors.primary
                                               : AppColors.gray100,
                                       padding: EdgeInsets.symmetric(
@@ -127,39 +135,32 @@ class _EmotionChartState extends State<EmotionChart> {
                                       setState(() {
                                         _selectedIndex = index;
                                       });
-
-                                      // 선택된 버튼이 가운데(즉, 좌우로 3개씩 보이는 상태)가 되도록 오프셋 계산
                                       double targetScrollOffset =
                                           (index - 3) * spacing;
-                                      // 좌측 경계를 벗어나지 않도록 보정
                                       if (targetScrollOffset < 0) {
                                         targetScrollOffset = 0;
                                       }
-
                                       double maxScrollOffset =
                                           _scrollController
                                               .position
                                               .maxScrollExtent;
-                                      // 우측 경계를 벗어나지 않도록 보정
                                       if (targetScrollOffset >
                                           maxScrollOffset) {
                                         targetScrollOffset = maxScrollOffset;
                                       }
-
                                       _scrollController.animateTo(
                                         targetScrollOffset,
                                         duration: Duration(milliseconds: 300),
                                         curve: Curves.easeInOut,
                                       );
                                     },
-
                                     child: Text(
                                       '${index + 1}',
                                       style: TextStyle(
                                         fontSize: 14.sp,
                                         fontWeight: FontWeight.w500,
                                         color:
-                                            index == _selectedIndex
+                                            isSelected
                                                 ? AppColors.white
                                                 : AppColors.gray400,
                                       ),
@@ -182,66 +183,51 @@ class _EmotionChartState extends State<EmotionChart> {
     );
   }
 
-  LineChartData mainDataWithoutLeftTitles(
-    int totalDays,
-    double spacing,
-    double totalWidth,
-    int selectedIndex,
-  ) {
-    // 데이터 포인트 생성 (x좌표에 15를 더해 중앙 정렬)
-    List<FlSpot> spots = List.generate(
-      totalDays,
-      (index) => FlSpot(index * spacing + 15.w, math.sin(index * math.pi / 15)),
-    );
+  /// _selectedIndex가 null이거나 선택한 날짜의 데이터가 null이면 dot과 수직선을 표시하지 않습니다.
+  LineChartData mainDataWithoutLeftTitles(double spacing, double totalWidth) {
+    // 유효한 선택 여부 판단
+    bool validSelected =
+        _selectedIndex != null && dailyData[_selectedIndex!] != null;
+    int validSelectedIndex = validSelected ? _selectedIndex! : -1;
 
-    // 메인 차트 선
-    final lineChartBarData = LineChartBarData(
-      spots: spots,
-      gradient: LinearGradient(colors: gradientColors),
-      barWidth: 2.r,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: true,
-        getDotPainter: (
-          FlSpot spot,
-          double percent,
-          LineChartBarData barData,
-          int index,
-        ) {
-          if (index == selectedIndex) {
-            return FlDotCirclePainter(radius: 6.r, color: AppColors.accent);
-          }
-          return FlDotCirclePainter(
-            radius: 0,
-            color: Colors.transparent,
-            strokeWidth: 0,
-            strokeColor: Colors.transparent,
+    // 연속된 데이터 블록으로 나누어 선 생성
+    List<LineChartBarData> lineBars = [];
+    List<FlSpot> currentSegment = [];
+    for (int i = 0; i < dailyData.length; i++) {
+      double? value = dailyData[i];
+      double xPos = i * spacing + 15.w;
+      if (value != null) {
+        currentSegment.add(FlSpot(xPos, value));
+      } else {
+        if (currentSegment.isNotEmpty) {
+          lineBars.add(
+            _buildLineChartBarData(currentSegment, validSelectedIndex),
           );
-        },
-      ),
-      belowBarData: BarAreaData(
-        show: true,
-        gradient: LinearGradient(
-          colors:
-              gradientColors
-                  .map((color) => color.withValues(alpha: 0.3))
-                  .toList(),
-        ),
-      ),
-    );
+          currentSegment = [];
+        }
+      }
+    }
+    if (currentSegment.isNotEmpty) {
+      lineBars.add(_buildLineChartBarData(currentSegment, validSelectedIndex));
+    }
 
-    // 선택된 날짜의 x좌표와 y값 계산
-    double selectedX = selectedIndex * spacing + 15.w;
-    double selectedY = math.sin(selectedIndex * math.pi / 15);
+    // 수직선: 유효한 선택일 때만 표시
+    double selectedX = (_selectedIndex ?? 0) * spacing + 15.w;
+    double? selectedY =
+        (_selectedIndex != null) ? dailyData[_selectedIndex!] : null;
+    LineChartBarData? verticalLine;
+    if (validSelected) {
+      verticalLine = LineChartBarData(
+        isCurved: false,
+        spots: [FlSpot(selectedX, -1), FlSpot(selectedX, selectedY!)],
+        color: AppColors.accent,
+        barWidth: 2.r,
+        dotData: FlDotData(show: false),
+      );
+    }
 
-    // 선택된 날짜에 대한 수직선 (차트 하단(y = -1)부터 실제 y값까지)
-    final verticalLine = LineChartBarData(
-      spots: [FlSpot(selectedX, -1), FlSpot(selectedX, selectedY)],
-      isCurved: false,
-      color: AppColors.accent,
-      barWidth: 2.r,
-      dotData: FlDotData(show: false),
-    );
+    List<LineChartBarData> allBars = List.from(lineBars);
+    if (verticalLine != null) allBars.add(verticalLine);
 
     return LineChartData(
       lineTouchData: LineTouchData(
@@ -249,18 +235,20 @@ class _EmotionChartState extends State<EmotionChart> {
         handleBuiltInTouches: true,
         getTouchedSpotIndicator: (barData, spotIndexes) {
           return spotIndexes.map((index) {
-            return _selectedIndex == index
-                ? TouchedSpotIndicatorData(
-                  FlLine(color: AppColors.accent, strokeWidth: 2),
-                  FlDotData(
-                    getDotPainter:
-                        (spot, percent, barData, index) => FlDotCirclePainter(
-                          radius: 6.r,
-                          color: AppColors.accent,
-                        ),
-                  ),
-                )
-                : null;
+            // 유효한 선택이고 해당 점에 해당할 때만 dot 표시
+            if (validSelected && index == validSelectedIndex) {
+              return TouchedSpotIndicatorData(
+                FlLine(color: AppColors.accent, strokeWidth: 2),
+                FlDotData(
+                  getDotPainter:
+                      (spot, percent, barData, index) => FlDotCirclePainter(
+                        radius: 6.r,
+                        color: AppColors.accent,
+                      ),
+                ),
+              );
+            }
+            return null;
           }).toList();
         },
         touchTooltipData: LineTouchTooltipData(
@@ -269,15 +257,7 @@ class _EmotionChartState extends State<EmotionChart> {
               (touchedSpots) => List.generate(touchedSpots.length, (_) => null),
         ),
       ),
-      showingTooltipIndicators: [
-        ShowingTooltipIndicators([
-          LineBarSpot(
-            lineChartBarData,
-            0, // 메인 차트 선의 인덱스 (한 선만 있으므로 0)
-            spots[selectedIndex],
-          ),
-        ]),
-      ],
+      showingTooltipIndicators: [],
       gridData: FlGridData(
         show: true,
         drawVerticalLine: false,
@@ -304,8 +284,53 @@ class _EmotionChartState extends State<EmotionChart> {
       maxX: totalWidth,
       minY: -1,
       maxY: 1,
-      // 메인 차트와 수직선을 함께 표시
-      lineBarsData: [lineChartBarData, verticalLine],
+      lineBarsData: allBars,
+    );
+  }
+
+  // 선을 생성하는 헬퍼 함수. validSelectedIndex가 -1이면 dot은 표시하지 않습니다.
+  LineChartBarData _buildLineChartBarData(
+    List<FlSpot> spots,
+    int validSelectedIndex,
+  ) {
+    return LineChartBarData(
+      isCurved: true,
+      spots: spots,
+      gradient: LinearGradient(colors: gradientColors),
+      barWidth: 2.r,
+      isStrokeCapRound: true,
+      dotData: FlDotData(
+        show: true,
+        getDotPainter: (
+          FlSpot spot,
+          double percent,
+          LineChartBarData barData,
+          int index,
+        ) {
+          // dot 표시 조건: 유효한 선택이고 해당 x좌표가 일치할 때
+          if (validSelectedIndex != -1 &&
+              (spot.x - (validSelectedIndex * (dayWidth.w + 14.w) + 15.w))
+                      .abs() <
+                  1e-3) {
+            return FlDotCirclePainter(radius: 6.r, color: AppColors.accent);
+          }
+          return FlDotCirclePainter(
+            radius: 0,
+            color: Colors.transparent,
+            strokeWidth: 0,
+            strokeColor: Colors.transparent,
+          );
+        },
+      ),
+      belowBarData: BarAreaData(
+        show: true,
+        gradient: LinearGradient(
+          colors:
+              gradientColors
+                  .map((color) => color.withValues(alpha: 0.3))
+                  .toList(),
+        ),
+      ),
     );
   }
 }
