@@ -1,9 +1,6 @@
-import 'dart:math';
-
 import 'package:ego/theme/color.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:ego/utils/util_function.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -111,7 +108,7 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
         fontWeight: FontWeight.w700,
       ),
       // 화살표를 중심으로 모으기 위한 margin 설정.
-      headerMargin: EdgeInsets.symmetric(horizontal: 88.w), // TODO: 하드 코딩임 `TableCalendar`가 업데이트 된다면 개선할 것
+      headerMargin: EdgeInsets.symmetric(horizontal: 80.w), // TODO: 하드 코딩임 `TableCalendar`가 업데이트 된다면 개선할 것
       /// (2025-02-27) 현재 라이브러리에는 요일(daysOfWeek)에 자체 Padding이 존재하지 않는다.
       /// 현재 임시 방편으로 header의 Bottom에 Padding을 주는 방식으로 보완하였다.
       ///
@@ -132,9 +129,9 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
 
       // 각 화살표의 padding과 margin을 제거
       rightChevronPadding: EdgeInsets.zero,
-      rightChevronMargin: EdgeInsets.zero,
+      rightChevronMargin: EdgeInsets.only(left: 12.w),
       leftChevronPadding: EdgeInsets.zero,
-      leftChevronMargin: EdgeInsets.zero,
+      leftChevronMargin: EdgeInsets.only(right: 12.w),
     );
   }
 
