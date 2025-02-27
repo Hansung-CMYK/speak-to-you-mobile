@@ -48,7 +48,7 @@ class _EmotionChartState extends State<EmotionChart> {
   Widget build(BuildContext context) {
     final int totalDays = 31;
     // 버튼 너비와 버튼 사이 패딩
-    final double scaledDayWidth = dayWidth.w;
+    final double scaledDayWidth = dayWidth;
     final double scaledButtonSpacing = 14.w;
     // 한 버튼의 좌표 간격: 버튼 너비 + 패딩
     final double spacing = scaledDayWidth + scaledButtonSpacing;
