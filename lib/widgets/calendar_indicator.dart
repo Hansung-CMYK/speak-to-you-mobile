@@ -22,18 +22,30 @@ class _CalendarIndicatorState extends State<CalendarIndicator> {
   }
 
   void _changeMonth(bool isNext) {
+    final currentYear = DateTime.now().year;
+    final minYear = currentYear - 10;
+    final maxYear = currentYear + 10;
+
     setState(() {
       if (isNext) {
         if (_selectedMonth == 12) {
-          _selectedMonth = 1;
-          _selectedYear++;
+          if (_selectedYear < maxYear) {
+            _selectedMonth = 1;
+            _selectedYear++;
+          } else {
+            // 최대 범위에 도달했을 때 처리 (예: 아무 동작 안함 또는 사용자에게 알림)
+          }
         } else {
           _selectedMonth++;
         }
       } else {
         if (_selectedMonth == 1) {
-          _selectedMonth = 12;
-          _selectedYear--;
+          if (_selectedYear > minYear) {
+            _selectedMonth = 12;
+            _selectedYear--;
+          } else {
+            // 최소 범위에 도달했을 때 처리
+          }
         } else {
           _selectedMonth--;
         }
