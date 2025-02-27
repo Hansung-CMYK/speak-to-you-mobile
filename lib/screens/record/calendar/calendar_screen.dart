@@ -7,22 +7,18 @@ import '../../../widgets/diarycalendar/diary_calendar.dart';
 class CalendarScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          DiaryCalendar(),
-        ],
-      )
-    );
-  }
-}
-
-class CalendarScreen2 extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Column(
+    // return Container(
+    //   child: Column(
+    //     children: [
+    //       DiaryCalendar(),
+    //       CalendarBottomSheet(),
+    //     ],
+    //   )
+    // );
+    return Stack(
       children: [
-        CalendarBottomSheet()
+        DiaryCalendar(),
+        CalendarBottomSheet(),
       ],
     );
   }
