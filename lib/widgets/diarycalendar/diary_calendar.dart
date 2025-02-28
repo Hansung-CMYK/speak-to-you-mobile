@@ -106,6 +106,7 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
         color: AppColors.black,
         fontSize: 18.sp,
         fontWeight: FontWeight.w700,
+        overflow: TextOverflow.clip,
       ),
       // 화살표를 중심으로 모으기 위한 margin 설정.
       headerMargin: EdgeInsets.symmetric(horizontal: 80.w), // TODO: 하드 코딩임 `TableCalendar`가 업데이트 된다면 개선할 것
