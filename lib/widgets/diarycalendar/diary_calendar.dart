@@ -129,9 +129,9 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
 
       // 각 화살표의 padding과 margin을 제거
       rightChevronPadding: EdgeInsets.zero,
-      rightChevronMargin: EdgeInsets.only(left: 12.w),
+      rightChevronMargin: EdgeInsets.zero,
       leftChevronPadding: EdgeInsets.zero,
-      leftChevronMargin: EdgeInsets.only(right: 12.w),
+      leftChevronMargin: EdgeInsets.zero,
     );
   }
 
