@@ -9,8 +9,7 @@ import 'package:table_calendar/table_calendar.dart';
 /// 일기보기(캘린더)에서 이용하는 캘린더 위젯이다.
 ///
 /// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
-/// TODO: 캘린더에 6주까지 있을 때 해결법 (디자인 수정 중)
-/// TODO: 다른 달인데, 감정 아이콘이 있는 경우 (누락)
+/// TODO: 다른 달인데, 감정 아이콘이 있는 경우 (색상이 옅어져야 함.)
 class DiaryCalendar extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _DiaryCalendarState();
@@ -27,6 +26,7 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
     DateTime(2025, 2, 20): Emotion.sadness,
     DateTime(2025, 2, 25): Emotion.happiness,
     DateTime(2025, 2, 26): Emotion.embarrassment,
+    DateTime(2025, 3, 1): Emotion.happiness,
   };
 
   @override
@@ -106,9 +106,11 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
         color: AppColors.black,
         fontSize: 18.sp,
         fontWeight: FontWeight.w700,
+        overflow: TextOverflow.clip,
       ),
       // 화살표를 중심으로 모으기 위한 margin 설정.
-      headerMargin: EdgeInsets.symmetric(horizontal: 80.w), // TODO: 하드 코딩임 `TableCalendar`가 업데이트 된다면 개선할 것
+      // TODO: 개발 역량 부족으로 텍스트 문제를 유발시키는 Margin을 제거합니다.
+      // headerMargin: EdgeInsets.symmetric(horizontal: 80.w), // TODO: 하드 코딩임 `TableCalendar`가 업데이트 된다면 개선할 것
       /// (2025-02-27) 현재 라이브러리에는 요일(daysOfWeek)에 자체 Padding이 존재하지 않는다.
       /// 현재 임시 방편으로 header의 Bottom에 Padding을 주는 방식으로 보완하였다.
       ///
@@ -119,19 +121,25 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       headerPadding: EdgeInsets.only(bottom: 16.h - 4.h),
 
       rightChevronIcon: Icon(
+        size: 20.w,
         Icons.chevron_right,
         color: AppColors.gray400,
       ),
       leftChevronIcon: Icon(
+        size: 20.w,
         Icons.chevron_left,
         color: AppColors.gray400,
       ),
 
       // 각 화살표의 padding과 margin을 제거
+      // rightChevronPadding: EdgeInsets.symmetric(horizontal: 12.w),
+      // rightChevronMargin: EdgeInsets.symmetric(horizontal: 8.w),
+      // leftChevronPadding: EdgeInsets.symmetric(horizontal: 12.w),
+      // leftChevronMargin: EdgeInsets.symmetric(horizontal: 8.w),
       rightChevronPadding: EdgeInsets.zero,
-      rightChevronMargin: EdgeInsets.only(left: 12.w),
+      rightChevronMargin: EdgeInsets.zero,
       leftChevronPadding: EdgeInsets.zero,
-      leftChevronMargin: EdgeInsets.only(right: 12.w),
+      leftChevronMargin: EdgeInsets.zero,
     );
   }
 
