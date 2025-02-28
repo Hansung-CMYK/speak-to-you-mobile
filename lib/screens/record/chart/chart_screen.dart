@@ -6,14 +6,14 @@ import 'package:ego/widgets/emotion_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class TmpChartScreen extends StatefulWidget {
-  const TmpChartScreen({super.key});
+class ChartScreen extends StatefulWidget {
+  const ChartScreen({super.key});
 
   @override
-  State<TmpChartScreen> createState() => _TmpChartScreenState();
+  State<ChartScreen> createState() => _ChartScreenState();
 }
 
-class _TmpChartScreenState extends State<TmpChartScreen> {
+class _ChartScreenState extends State<ChartScreen> {
   // FilterSelection: index와 버튼에 표시된 숫자 정보를 함께 저장 (null 또는 index == -1이면 미선택)
   FilterSelection? selectedFilter;
 
