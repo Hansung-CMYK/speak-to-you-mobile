@@ -55,17 +55,19 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
   /// 회색 바를 컴포넌트 중앙에 배치시킨다.
   SliverToBoxAdapter _sliverToBoxAdapter() {
     return SliverToBoxAdapter( // ScrollView 안에서 일반적인 위젯을 사용하게 해주는 위젯
-      child: Container( // 컨테이너(위젯)을 추가하여, handler 모양을 추가한다.
-        alignment: Alignment.center, // 중앙 정렬
-        decoration: BoxDecoration(
-          color: AppColors.gray300,
-          // 모서리 굴곡 추가(타원형을 만들기 위함)
-          borderRadius: BorderRadius.all(Radius.circular(10.r)),
+      child: Center( // 위젯 중앙 정렬
+        child: Container( // 컨테이너(위젯)을 추가하여, handler 모양을 추가한다.
+          alignment: Alignment.center, // 중앙 정렬
+          decoration: BoxDecoration(
+            color: AppColors.gray300,
+            // 모서리 굴곡 추가(타원형을 만들기 위함)
+            borderRadius: BorderRadius.all(Radius.circular(10.r)),
+          ),
+          margin: EdgeInsets.symmetric(vertical: 10.h), // 위젯 높이 지정
+          width: 40.w, // 컨테이너(handler) 너비 지정
+          height: 4.h, // 컨테이너(handler) 높이 지정
         ),
-        margin: EdgeInsets.symmetric(vertical: 10.h), // 위젯 높이 지정
-        width: 40.w, // 컨테이너(handler) 너비 지정
-        height: 4.h, // 컨테이너(handler) 높이 지정
-      ),
+      )
     );
   }
 
