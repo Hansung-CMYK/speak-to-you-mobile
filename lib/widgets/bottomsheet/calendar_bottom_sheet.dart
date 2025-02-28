@@ -20,8 +20,8 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet( /// 스크롤 되는 BottomSheet이다.
       /// 피그마 디자인을 기반으로 비율을 측정하였다.
-      initialChildSize: 0.35, // 초기 값 설정 (부모 컴포넌트 기준 비율)
-      minChildSize: 0.35, // 최소 값 설정 (부모 컴포넌트 기준 비율)
+      initialChildSize: 0.33, // 초기 값 설정 (부모 컴포넌트 기준 비율)
+      minChildSize: 0.33, // 최소 값 설정 (부모 컴포넌트 기준 비율)
       maxChildSize: 1.0, // 최대 값 설정 (부모 컴포넌트 기준 비율)
       /// BottomSheet에 나타날 컴포넌트
       builder: (BuildContext context, ScrollController scrollController) {
@@ -32,6 +32,16 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
               topRight: Radius.circular(12.r), // 상단 우측 모서리 굴곡
               topLeft: Radius.circular(12.r), // 상단 좌측 모서리 굴곡
             ),
+            /// BottomSheet에 그림자 지정
+            boxShadow: [
+              BoxShadow(
+                // 255 * 8% = 20.4 (피그마에서 black의 투명도 8%로 설정)
+                color: AppColors.black.withAlpha(21),
+                blurRadius: 10.r,
+                spreadRadius: 4.r,
+                offset: Offset(0, 4.h),
+              )
+            ],
           ),
           // 일기 카드의 너비를 지정하기 위한 패딩이다.
           padding: EdgeInsets.symmetric(horizontal: 20.w),
