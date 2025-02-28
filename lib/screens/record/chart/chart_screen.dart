@@ -5,6 +5,7 @@ import 'package:ego/widgets/emotion_chart.dart';
 import 'package:ego/widgets/emotion_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class ChartScreen extends StatefulWidget {
   const ChartScreen({super.key});
@@ -14,7 +15,6 @@ class ChartScreen extends StatefulWidget {
 }
 
 class _ChartScreenState extends State<ChartScreen> {
-  // FilterSelection: index와 버튼에 표시된 숫자 정보를 함께 저장 (null 또는 index == -1이면 미선택)
   FilterSelection? selectedFilter;
 
   @override
@@ -43,20 +43,11 @@ class _ChartScreenState extends State<ChartScreen> {
                       });
                     },
                   ),
-                  SizedBox(height: 12.h),
-                  // 필터 버튼 미선택 또는 해제된 경우 안내 메시지 표시
                   if (selectedFilter == null || selectedFilter!.index == -1)
                     Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 40.h),
-                      child: Text(
-                        '필터 버튼을 선택해주세요!',
-                        style: TextStyle(
-                          fontSize: 18.sp,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.gray300,
-                        ),
-                      ),
+                      alignment: Alignment.centerLeft,
+                      padding: EdgeInsets.only(left: 18.w, top: 12.h),
+                      child: SvgPicture.asset('assets/image/emotion_popup.svg'),
                     )
                   else
                     DiarySection(
