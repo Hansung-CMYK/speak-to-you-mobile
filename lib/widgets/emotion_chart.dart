@@ -49,7 +49,7 @@ class _EmotionChartState extends State<EmotionChart> {
     final int totalDays = 31;
     // 버튼 너비와 버튼 사이 패딩
     final double scaledDayWidth = dayWidth;
-    final double scaledButtonSpacing = 14.w;
+    final double scaledButtonSpacing = 16.w;
     // 한 버튼의 좌표 간격: 버튼 너비 + 패딩
     final double spacing = scaledDayWidth + scaledButtonSpacing;
     // 전체 콘텐츠 너비: 마지막 버튼의 오른쪽 끝까지
@@ -78,7 +78,7 @@ class _EmotionChartState extends State<EmotionChart> {
           // 차트 영역
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(right: 20.w),
+              padding: EdgeInsets.only(),
               child: SizedBox(
                 height: 172.h,
                 child: SingleChildScrollView(
@@ -95,7 +95,11 @@ class _EmotionChartState extends State<EmotionChart> {
                           ),
                           child: LineChart(
                             duration: Duration(milliseconds: 0),
-                            mainDataWithoutLeftTitles(spacing, totalWidth),
+                            mainDataWithoutLeftTitles(
+                              spacing,
+                              totalWidth,
+                              scaledButtonSpacing,
+                            ),
                           ),
                         ),
                         // 날짜 버튼들 (하단 오버레이)
@@ -184,7 +188,11 @@ class _EmotionChartState extends State<EmotionChart> {
   }
 
   /// _selectedIndex가 null이거나 선택한 날짜의 데이터가 null이면 dot과 수직선을 표시하지 않습니다.
-  LineChartData mainDataWithoutLeftTitles(double spacing, double totalWidth) {
+  LineChartData mainDataWithoutLeftTitles(
+    double spacing,
+    double totalWidth,
+    double scaledButtonSpacing,
+  ) {
     // 유효한 선택 여부 판단
     bool validSelected =
         _selectedIndex != null && dailyData[_selectedIndex!] != null;
@@ -201,14 +209,24 @@ class _EmotionChartState extends State<EmotionChart> {
       } else {
         if (currentSegment.isNotEmpty) {
           lineBars.add(
-            _buildLineChartBarData(currentSegment, validSelectedIndex),
+            _buildLineChartBarData(
+              currentSegment,
+              validSelectedIndex,
+              scaledButtonSpacing,
+            ),
           );
           currentSegment = [];
         }
       }
     }
     if (currentSegment.isNotEmpty) {
-      lineBars.add(_buildLineChartBarData(currentSegment, validSelectedIndex));
+      lineBars.add(
+        _buildLineChartBarData(
+          currentSegment,
+          validSelectedIndex,
+          scaledButtonSpacing,
+        ),
+      );
     }
 
     // 수직선: 유효한 선택일 때만 표시
@@ -292,6 +310,7 @@ class _EmotionChartState extends State<EmotionChart> {
   LineChartBarData _buildLineChartBarData(
     List<FlSpot> spots,
     int validSelectedIndex,
+    double scaledButtonSpacing,
   ) {
     return LineChartBarData(
       isCurved: true,
@@ -309,7 +328,10 @@ class _EmotionChartState extends State<EmotionChart> {
         ) {
           // dot 표시 조건: 유효한 선택이고 해당 x좌표가 일치할 때
           if (validSelectedIndex != -1 &&
-              (spot.x - (validSelectedIndex * (dayWidth.w + 14.w) + 15.w))
+              (spot.x -
+                          (validSelectedIndex *
+                                  (dayWidth + scaledButtonSpacing) +
+                              15.w))
                       .abs() <
                   1e-3) {
             return FlDotCirclePainter(radius: 6.r, color: AppColors.accent);
