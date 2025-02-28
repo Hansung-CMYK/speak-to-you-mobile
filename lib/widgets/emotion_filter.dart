@@ -1,644 +1,150 @@
+import 'dart:math';
+
 import 'package:ego/theme/color.dart';
+import 'package:ego/widgets/button/svg_button.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+// 필터 선택 정보를 담는 클래스
+class FilterSelection {
+  final int index;
+  final int count;
+  FilterSelection({required this.index, required this.count});
+}
 
 class EmotionFilter extends StatefulWidget {
-  const EmotionFilter({super.key});
+  final ValueChanged<FilterSelection> onFilterSelected;
+  const EmotionFilter({super.key, required this.onFilterSelected});
 
   @override
   State<EmotionFilter> createState() => _EmotionFilterState();
 }
 
 class _EmotionFilterState extends State<EmotionFilter> {
+  int selectedIndex = -1;
+  late final List<int> fixedDataCounts; // 각 버튼에 고정될 숫자 목록
+
+  @override
+  void initState() {
+    super.initState();
+    // 5개의 버튼에 대해 0~14 사이의 랜덤 숫자 생성
+    fixedDataCounts = List.generate(5, (_) => Random().nextInt(15));
+  }
+
+  Widget emotionButton(String activePath, String text, int index) {
+    bool isSelected = selectedIndex == index;
+    String assetPath =
+        isSelected
+            ? activePath
+            : activePath.replaceFirst('.svg', '_inactive.svg');
+
+    // 미리 생성한 fixedDataCounts의 값을 사용
+    int dataCount = fixedDataCounts[index];
+
+    return SizedBox(
+      width: 54.w,
+      height: 72.h,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Stack(
+            clipBehavior: Clip.none,
+            children: [
+              SvgButton(
+                svgPath: assetPath,
+                onTab: () {
+                  setState(() {
+                    // 이미 선택되어 있으면 해제(-1), 아니면 해당 인덱스로 설정
+                    selectedIndex = isSelected ? -1 : index;
+                  });
+                  // 선택된 인덱스와 해당 버튼의 숫자(선택 해제 시 0)를 부모에게 전달
+                  widget.onFilterSelected(
+                    FilterSelection(
+                      index: selectedIndex,
+                      count:
+                          selectedIndex == -1
+                              ? 0
+                              : fixedDataCounts[selectedIndex],
+                    ),
+                  );
+                },
+              ),
+              // 데이터 개수가 0이 아닐 때만 라벨 출력
+              if (dataCount > 0)
+                Positioned(
+                  right: -2.5,
+                  top: -6,
+                  child: Container(
+                    width: 22.w,
+                    height: 13.h,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: AppColors.gray100),
+                      color: const Color(0xFFFF4D4F),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    child: Center(
+                      child: Text(
+                        dataCount.toString(),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 10.sp,
+                          height: 1.1,
+                          color: AppColors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          SizedBox(height: 8.h),
+          Text(
+            text,
+            style: TextStyle(
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              color: AppColors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 353,
-      height: 122,
-      child: Stack(
-        children: [
-          Positioned(
-            left: 0,
-            top: 0,
-            child: Container(
-              width: 353,
-              height: 122,
-              decoration: ShapeDecoration(
-                color: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+      width: 353.w,
+      height: 122.h,
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(17.5.w, 20.h, 17.5.w, 0.h),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                emotionButton('assets/icon/emotion/anger.svg', '분노', 0),
+                SizedBox(width: 12.w),
+                emotionButton('assets/icon/emotion/sadness.svg', '슬픔', 1),
+                SizedBox(width: 12.w),
+                emotionButton('assets/icon/emotion/happiness.svg', '기쁨', 2),
+                SizedBox(width: 12.w),
+                emotionButton(
+                  'assets/icon/emotion/disappointment.svg',
+                  '실망',
+                  3,
                 ),
-              ),
+                SizedBox(width: 12.w),
+                emotionButton('assets/icon/emotion/embarrassment.svg', '황당', 4),
+              ],
             ),
-          ),
-          Positioned(
-            left: 17.50,
-            top: 20,
-            child: Container(
-              width: 318,
-              height: 72,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 54,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 43,
-                          height: 46,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0.50,
-                                top: 6,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 8.52,
-                                        top: 11.94,
-                                        child: Container(
-                                          width: 22.95,
-                                          height: 15.85,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 22.95,
-                                                  height: 7.20,
-                                                  child: Stack(),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 21,
-                                top: 0,
-                                child: Container(
-                                  width: 22,
-                                  height: 13,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFFF4D4F),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: Color(0xFFF7F8F9),
-                                      ),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Expanded(
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Text(
-                                                '2',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors.white,
-                                                  fontSize: 10,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.60,
-                                                  letterSpacing: -0.50,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: 48,
-                          child: SizedBox(
-                            width: 48,
-                            child: Text(
-                              '분노',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w500,
-                                height: 1.50,
-                                letterSpacing: -0.60,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    width: 54,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 43,
-                          height: 46,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0.50,
-                                top: 6,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 1.91,
-                                        top: 9.68,
-                                        child: Container(
-                                          width: 36.17,
-                                          height: 26.65,
-                                          child: Stack(),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 21,
-                                top: 0,
-                                child: Container(
-                                  width: 22,
-                                  height: 13,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFFF4D4F),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: Color(0xFFF7F8F9),
-                                      ),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Expanded(
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Text(
-                                                '1',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors.white,
-                                                  fontSize: 10,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.60,
-                                                  letterSpacing: -0.50,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: 48,
-                          child: SizedBox(
-                            width: 48,
-                            child: Text(
-                              '슬픔',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w500,
-                                height: 1.50,
-                                letterSpacing: -0.60,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    width: 54,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 43,
-                          height: 44,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0.50,
-                                top: 4,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: ShapeDecoration(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    shadows: [
-                                      BoxShadow(
-                                        color: Color(0x3F000000),
-                                        blurRadius: 0,
-                                        offset: Offset(0, 0),
-                                        spreadRadius: 0,
-                                      ),
-                                    ],
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 5.52,
-                                        top: 13.38,
-                                        child: Container(
-                                          height: 14.14,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0.58,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 27.24,
-                                                  height: 3.05,
-                                                  child: Stack(),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 21,
-                                top: 0,
-                                child: Container(
-                                  width: 22,
-                                  height: 13,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFFF4D4F),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: Color(0xFFF7F8F9),
-                                      ),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Expanded(
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Text(
-                                                '99',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors.white,
-                                                  fontSize: 10,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.60,
-                                                  letterSpacing: -0.50,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(40),
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                width: 48,
-                                child: SizedBox(
-                                  width: 48,
-                                  child: Text(
-                                    '기쁨',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: AppColors.black,
-                                      fontSize: 12,
-                                      fontFamily: 'Roboto',
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.50,
-                                      letterSpacing: -0.60,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    width: 54,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(
-                            top: 6,
-                            left: 0.50,
-                            right: 3.50,
-                          ),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                width: 40,
-                                height: 40,
-                                clipBehavior: Clip.antiAlias,
-                                decoration: BoxDecoration(),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: 31.58,
-                                      height: 19.03,
-                                      child: Stack(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: 48,
-                          child: SizedBox(
-                            width: 48,
-                            child: Text(
-                              '실망',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w500,
-                                height: 1.50,
-                                letterSpacing: -0.60,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Container(
-                    width: 54,
-                    decoration: ShapeDecoration(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: 44,
-                          height: 46,
-                          clipBehavior: Clip.antiAlias,
-                          decoration: BoxDecoration(),
-                          child: Stack(
-                            children: [
-                              Positioned(
-                                left: 0.50,
-                                top: 6,
-                                child: Container(
-                                  width: 40,
-                                  height: 40,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: BoxDecoration(),
-                                  child: Stack(
-                                    children: [
-                                      Positioned(
-                                        left: 6.07,
-                                        top: 8.17,
-                                        child: Container(
-                                          height: 20.35,
-                                          child: Stack(
-                                            children: [
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 29.19,
-                                                  height: 14.20,
-                                                  child: Stack(),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 22,
-                                top: 0,
-                                child: Container(
-                                  width: 22,
-                                  height: 13,
-                                  decoration: ShapeDecoration(
-                                    color: Color(0xFFFF4D4F),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 1,
-                                        color: Color(0xFFF7F8F9),
-                                      ),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Expanded(
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Text(
-                                                '1',
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  color: AppColors.white,
-                                                  fontSize: 10,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w700,
-                                                  height: 1.60,
-                                                  letterSpacing: -0.50,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        SizedBox(
-                          width: 48,
-                          child: SizedBox(
-                            width: 48,
-                            child: Text(
-                              '황당',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: AppColors.black,
-                                fontSize: 12,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w500,
-                                height: 1.50,
-                                letterSpacing: -0.60,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            left: 157,
-            top: 106,
-            child: Container(
+            SizedBox(height: 14.h),
+            SizedBox(
               width: 40,
               height: 4,
               child: Stack(
@@ -650,7 +156,7 @@ class _EmotionFilterState extends State<EmotionFilter> {
                       width: 40,
                       height: 4,
                       decoration: ShapeDecoration(
-                        color: Color(0xFFE8EBED),
+                        color: const Color(0xFFE8EBED),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -664,7 +170,7 @@ class _EmotionFilterState extends State<EmotionFilter> {
                       width: 24,
                       height: 4,
                       decoration: ShapeDecoration(
-                        color: Color(0xFF454C53),
+                        color: const Color(0xFF454C53),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
@@ -674,8 +180,8 @@ class _EmotionFilterState extends State<EmotionFilter> {
                 ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -82,6 +82,11 @@ flutter:
     - assets/icon/emotion/embarrassment.svg
     - assets/icon/emotion/happiness.svg
     - assets/icon/emotion/sadness.svg
+    - assets/icon/emotion/anger_inactive.svg
+    - assets/icon/emotion/disappointment_inactive.svg
+    - assets/icon/emotion/embarrassment_inactive.svg
+    - assets/icon/emotion/happiness_inactive.svg
+    - assets/icon/emotion/sadness_inactive.svg
     - assets/icon/complete.svg
     - assets/icon/splash_characters.svg
 

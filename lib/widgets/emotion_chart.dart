@@ -57,133 +57,127 @@ class _EmotionChartState extends State<EmotionChart> {
     // 차트 하단 여백 (날짜 버튼 높이 + 추가 여백)
     final double chartBottomPadding = 27.h + 16.h;
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20.w),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 왼쪽 라벨 영역 (긍정, 보통, 부정)
-          Container(
-            height: 172.h,
-            padding: EdgeInsets.only(top: 16.h, bottom: 34.h, right: 12.w),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('긍정', style: leftLabelStyle),
-                Text('보통', style: leftLabelStyle),
-                Text('부정', style: leftLabelStyle),
-              ],
-            ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 왼쪽 라벨 영역 (긍정, 보통, 부정)
+        Container(
+          height: 172.h,
+          padding: EdgeInsets.only(top: 16.h, bottom: 34.h, right: 12.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('긍정', style: leftLabelStyle),
+              Text('보통', style: leftLabelStyle),
+              Text('부정', style: leftLabelStyle),
+            ],
           ),
-          // 차트 영역
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(),
-              child: SizedBox(
-                height: 172.h,
-                child: SingleChildScrollView(
-                  controller: _scrollController,
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: totalWidth,
-                    child: Stack(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                            top: 24,
-                            bottom: chartBottomPadding,
-                          ),
-                          child: LineChart(
-                            duration: Duration(milliseconds: 0),
-                            mainDataWithoutLeftTitles(
-                              spacing,
-                              totalWidth,
-                              scaledButtonSpacing,
-                            ),
+        ),
+        // 차트 영역
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.only(),
+            child: SizedBox(
+              height: 172.h,
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                scrollDirection: Axis.horizontal,
+                child: SizedBox(
+                  width: totalWidth,
+                  child: Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          top: 24,
+                          bottom: chartBottomPadding,
+                        ),
+                        child: LineChart(
+                          duration: Duration(milliseconds: 0),
+                          mainDataWithoutLeftTitles(
+                            spacing,
+                            totalWidth,
+                            scaledButtonSpacing,
                           ),
                         ),
-                        // 날짜 버튼들 (하단 오버레이)
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          child: Row(
-                            children: List.generate(totalDays, (index) {
-                              bool isSelected = _selectedIndex == index;
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                  right:
-                                      index == totalDays - 1
-                                          ? 0
-                                          : scaledButtonSpacing,
-                                ),
-                                child: SizedBox(
-                                  width: scaledDayWidth,
-                                  height: 27.h,
-                                  child: TextButton(
-                                    style: TextButton.styleFrom(
-                                      backgroundColor:
-                                          isSelected
-                                              ? AppColors.primary
-                                              : AppColors.gray100,
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 4.w,
-                                        vertical: 3.h,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          4.r,
-                                        ),
-                                      ),
+                      ),
+                      // 날짜 버튼들 (하단 오버레이)
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: Row(
+                          children: List.generate(totalDays, (index) {
+                            bool isSelected = _selectedIndex == index;
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                right:
+                                    index == totalDays - 1
+                                        ? 0
+                                        : scaledButtonSpacing,
+                              ),
+                              child: SizedBox(
+                                width: scaledDayWidth,
+                                height: 27.h,
+                                child: TextButton(
+                                  style: TextButton.styleFrom(
+                                    backgroundColor:
+                                        isSelected
+                                            ? AppColors.primary
+                                            : AppColors.gray100,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 4.w,
+                                      vertical: 3.h,
                                     ),
-                                    onPressed: () {
-                                      setState(() {
-                                        _selectedIndex = index;
-                                      });
-                                      double targetScrollOffset =
-                                          (index - 3) * spacing;
-                                      if (targetScrollOffset < 0) {
-                                        targetScrollOffset = 0;
-                                      }
-                                      double maxScrollOffset =
-                                          _scrollController
-                                              .position
-                                              .maxScrollExtent;
-                                      if (targetScrollOffset >
-                                          maxScrollOffset) {
-                                        targetScrollOffset = maxScrollOffset;
-                                      }
-                                      _scrollController.animateTo(
-                                        targetScrollOffset,
-                                        duration: Duration(milliseconds: 300),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    },
-                                    child: Text(
-                                      '${index + 1}',
-                                      style: TextStyle(
-                                        fontSize: 14.sp,
-                                        fontWeight: FontWeight.w500,
-                                        color:
-                                            isSelected
-                                                ? AppColors.white
-                                                : AppColors.gray400,
-                                      ),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4.r),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _selectedIndex = index;
+                                    });
+                                    double targetScrollOffset =
+                                        (index - 3) * spacing;
+                                    if (targetScrollOffset < 0) {
+                                      targetScrollOffset = 0;
+                                    }
+                                    double maxScrollOffset =
+                                        _scrollController
+                                            .position
+                                            .maxScrollExtent;
+                                    if (targetScrollOffset > maxScrollOffset) {
+                                      targetScrollOffset = maxScrollOffset;
+                                    }
+                                    _scrollController.animateTo(
+                                      targetScrollOffset,
+                                      duration: Duration(milliseconds: 300),
+                                      curve: Curves.easeInOut,
+                                    );
+                                  },
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color:
+                                          isSelected
+                                              ? AppColors.white
+                                              : AppColors.gray400,
                                     ),
                                   ),
                                 ),
-                              );
-                            }),
-                          ),
+                              ),
+                            );
+                          }),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -251,23 +245,9 @@ class _EmotionChartState extends State<EmotionChart> {
       lineTouchData: LineTouchData(
         enabled: true,
         handleBuiltInTouches: true,
+        // 터치 이벤트에 의해 dot이 표시되지 않도록 모든 touched spot에 대해 null을 리턴
         getTouchedSpotIndicator: (barData, spotIndexes) {
-          return spotIndexes.map((index) {
-            // 유효한 선택이고 해당 점에 해당할 때만 dot 표시
-            if (validSelected && index == validSelectedIndex) {
-              return TouchedSpotIndicatorData(
-                FlLine(color: AppColors.accent, strokeWidth: 2),
-                FlDotData(
-                  getDotPainter:
-                      (spot, percent, barData, index) => FlDotCirclePainter(
-                        radius: 6.r,
-                        color: AppColors.accent,
-                      ),
-                ),
-              );
-            }
-            return null;
-          }).toList();
+          return spotIndexes.map((_) => null).toList();
         },
         touchTooltipData: LineTouchTooltipData(
           getTooltipColor: (touchedSpot) => Colors.transparent,
@@ -326,7 +306,7 @@ class _EmotionChartState extends State<EmotionChart> {
           LineChartBarData barData,
           int index,
         ) {
-          // dot 표시 조건: 유효한 선택이고 해당 x좌표가 일치할 때
+          // 버튼 클릭으로 선택한 데이터의 x좌표와 일치할 때만 dot을 표시
           if (validSelectedIndex != -1 &&
               (spot.x -
                           (validSelectedIndex *
