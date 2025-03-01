@@ -7,7 +7,6 @@ import 'package:ego/theme/color.dart';
 
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
 Future<void> showTodayEgoIntroSheet(BuildContext context) async {
-
   //TODO 여기서 EGO 정보를 api로 전달 받음
   // 임시 모델
   EgoInfoModel egoInfoModel = new EgoInfoModel(
@@ -29,8 +28,8 @@ Future<void> showTodayEgoIntroSheet(BuildContext context) async {
     isScrollControlled: true,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(24),
-        topRight: Radius.circular(24),
+        topLeft: Radius.circular(24.r),
+        topRight: Radius.circular(24.r),
       ),
     ),
     builder: (context) {
@@ -41,7 +40,6 @@ Future<void> showTodayEgoIntroSheet(BuildContext context) async {
           padding: EdgeInsets.only(
             top: 24.h,
             right: 20.w,
-            bottom: 0,
             left: 20.w,
           ),
           child: Column(
@@ -64,7 +62,11 @@ Widget _header(BuildContext context) {
       SizedBox(width: 48.w),
       Text(
         '오늘의 EGO',
-        style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w700),
+        style: TextStyle(
+          fontSize: 16.sp,
+          fontWeight: FontWeight.w700,
+          color: AppColors.gray900,
+        ),
       ),
       IconButton(
         icon: SvgPicture.asset(
@@ -99,7 +101,7 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
   return Row(
     children: [
       Container(
-        margin: EdgeInsets.symmetric(vertical: 24.h, horizontal: 0),
+        margin: EdgeInsets.symmetric(vertical: 24.h),
         width: 80.w,
         height: 80.h,
         decoration: BoxDecoration(shape: BoxShape.circle),
@@ -142,6 +144,7 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
                       height: 1.5.h,
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w500,
+                      color: AppColors.gray900,
                     ),
                   ),
                 ),
@@ -174,7 +177,8 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
     margin: EdgeInsets.only(bottom: 10.h),
     padding: EdgeInsets.symmetric(vertical: 21.h, horizontal: 20.w),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(16),
+      color: AppColors.white,
+      borderRadius: BorderRadius.circular(16.r),
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.start,
@@ -200,16 +204,23 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
             ],
           ),
         ),
-        Divider(color: AppColors.gray200, thickness: 1),
+        Divider(color: AppColors.gray200, thickness: 1.h),
         Padding(
           padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
           child: SizedBox(
             height: 86.h,
             child: Scrollbar(
               thickness: 3,
-              radius: Radius.circular(10),
+              radius: Radius.circular(10.r),
               child: SingleChildScrollView(
-                child: Text(egoInfoModel.egoSelfIntro),
+                child: Text(
+                  egoInfoModel.egoSelfIntro,
+                  style: TextStyle(
+                    fontSize: 16.sp,
+                    color: AppColors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ),
@@ -229,7 +240,7 @@ Widget _checkButton(BuildContext context) {
     child: TextButton(
       onPressed: () => Navigator.pop(context),
       style: TextButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
         backgroundColor: AppColors.birthDayTagColor,
       ),
