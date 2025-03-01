@@ -73,15 +73,15 @@ class _EmotionFilterState extends State<EmotionFilter> {
               // 데이터 개수가 0이 아닐 때만 라벨 출력
               if (dataCount > 0)
                 Positioned(
-                  right: -2.5,
-                  top: -6,
+                  right: -2.5.w,
+                  top: -6.h,
                   child: Container(
                     width: 22.w,
                     height: 13.h,
                     decoration: BoxDecoration(
-                      border: Border.all(width: 1, color: AppColors.gray100),
+                      border: Border.all(width: 1.r, color: AppColors.gray100),
                       color: const Color(0xFFFF4D4F),
-                      borderRadius: BorderRadius.circular(100),
+                      borderRadius: BorderRadius.circular(100.r),
                     ),
                     child: Center(
                       child: Text(
@@ -89,7 +89,7 @@ class _EmotionFilterState extends State<EmotionFilter> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 10.sp,
-                          height: 1.1,
+                          height: 1.1.h,
                           color: AppColors.white,
                           fontWeight: FontWeight.bold,
                         ),
@@ -120,7 +120,7 @@ class _EmotionFilterState extends State<EmotionFilter> {
       height: 122.h,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
       ),
       child: Padding(
         padding: EdgeInsets.fromLTRB(17.5.w, 20.h, 17.5.w, 0.h),
@@ -145,20 +145,20 @@ class _EmotionFilterState extends State<EmotionFilter> {
             ),
             SizedBox(height: 14.h),
             SizedBox(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               child: Stack(
                 children: [
                   Positioned(
                     left: 0,
                     top: 0,
                     child: Container(
-                      width: 40,
-                      height: 4,
+                      width: 40.w,
+                      height: 4.h,
                       decoration: ShapeDecoration(
-                        color: const Color(0xFFE8EBED),
+                        color: AppColors.gray200,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                     ),
@@ -167,12 +167,12 @@ class _EmotionFilterState extends State<EmotionFilter> {
                     left: 0,
                     top: 0,
                     child: Container(
-                      width: 24,
-                      height: 4,
+                      width: 24.w,
+                      height: 4.h,
                       decoration: ShapeDecoration(
                         color: const Color(0xFF454C53),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(12.r),
                         ),
                       ),
                     ),
