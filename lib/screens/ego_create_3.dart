@@ -49,29 +49,26 @@ class EgoScreen3 extends StatelessWidget {
               Positioned(
                 left: 20.w,
                 top: 184.h,
-                child: SizedBox(
-                  height: 69.h,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '나의 EGO 이름을 지어주세요!',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w800,
-                          height: 1.50,
-                        ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '나의 EGO 이름을 지어주세요!',
+                      style: TextStyle(
+                        color: AppTheme.lightTheme.colorScheme.onSurface,
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.w800,
+                        height: 1.5.h,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
               Positioned(
                 left: 20.w,
-                top: 238.h,
+                top: 248.h,
                 child: SizedBox(
                   width: 353.w, // 명확한 너비 지정
                   child: TextField(
@@ -140,7 +137,6 @@ class EgoScreen3 extends StatelessWidget {
                       style: TextStyle(
                         color: AppColors.errorBase,
                         fontSize: 14,
-                        fontFamily: 'Roboto-Regular',
                         fontWeight: FontWeight.w500,
                         height: 1.45.h,
                       ),
@@ -199,7 +195,7 @@ class EgoScreen3 extends StatelessWidget {
                           '다음',
                           style: TextStyle(
                             fontSize: 18.sp,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),

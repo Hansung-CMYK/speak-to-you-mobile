@@ -60,6 +60,7 @@ class EgoScreen4 extends StatelessWidget {
                         Text(
                           '지금의 MBTI가 어떻게 되나요?',
                           style: TextStyle(
+                            color: AppTheme.lightTheme.colorScheme.onSurface,
                             fontSize: 24.sp,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w800,
@@ -852,25 +853,19 @@ class EgoScreen4 extends StatelessWidget {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Expanded(
-                                child: SizedBox(
-                                  child: Expanded(
-                                    child: SizedBox(
-                                      child: Text(
-                                        '다음',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.sp,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.25.h,
-                                        ),
-                                      ),
-                                    ),
+                              TextButton(
+                                onPressed: () {},
+                                child: Text(
+                                  '다음',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                    fontWeight: FontWeight.w700,
+                                    height: 1.25.h,
                                   ),
                                 ),
                               ),

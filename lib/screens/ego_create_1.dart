@@ -37,18 +37,16 @@ class EgoScreen1 extends StatelessWidget {
             top: 164.h,
             left: 20.w,
             right: 20.w,
-            bottom: 210.67.h,
+            bottom: 211.h,
           ),
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Spacer(),
                 Text(
                   '나만의 EGO 프로필을\n작성해 볼까요?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: 'Roboto-Regular',
                     fontSize: 24.sp,
                     fontWeight: FontWeight.w800,
                   ),
@@ -56,10 +54,9 @@ class EgoScreen1 extends StatelessWidget {
                 const SizedBox(height: 28.67),
                 Image.asset(
                   'assets/image/ego_1.png', // 이미지 경로
-                  width: 218.w, // 원하는 크기로 조정
-                  height: 332.h,
-                ),
-                Spacer(),
+                  width: 219.w, // 원하는 크기로 조정
+                  height: 333.h,
+                )
               ],
             ),
           ),

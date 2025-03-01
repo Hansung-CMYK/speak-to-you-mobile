@@ -1,4 +1,5 @@
 import 'package:ego/theme/theme.dart';
+import 'package:ego/widgets/button/image_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,8 +12,7 @@ class EgoProfileTest2 extends StatelessWidget {
     return ScreenUtilInit(
       designSize: Size(393, 852),
       builder:
-          (context, child) =>
-          MaterialApp(
+          (context, child) => MaterialApp(
             title: '에고 생성 - 프로필 설정',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
@@ -57,6 +57,7 @@ class EgoScreen2 extends StatelessWidget {
                       Text(
                         '프로필 이미지를 선택해주세요!',
                         style: TextStyle(
+                          color: AppTheme.lightTheme.colorScheme.onSurface,
                           fontSize: 24.sp,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w800,
@@ -93,8 +94,9 @@ class EgoScreen2 extends StatelessWidget {
                       Positioned(
                         left: 144.w,
                         top: 144.h,
-                        child: Image.asset(
-                          'assets/image/camera.png', // 이미지 경로
+                        child: ImageButton(
+                          onTab: () => {},
+                          imagePath: 'assets/image/camera.png', // 이미지 경로
                           width: 48.w, // 원하는 크기로 조정
                           height: 48.h,
                         ),
@@ -123,12 +125,16 @@ class EgoScreen2 extends StatelessWidget {
                       Container(
                         width: 353.w,
                         height: 56.h,
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: 20.w),
                         clipBehavior: Clip.antiAlias,
                         decoration: ShapeDecoration(
-                          color: AppTheme.lightTheme.colorScheme.onPrimaryContainer,
+                          color:
+                              AppTheme
+                                  .lightTheme
+                                  .colorScheme
+                                  .onPrimaryContainer,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(8.r),
                           ),
                         ),
                         child: Row(
@@ -140,15 +146,18 @@ class EgoScreen2 extends StatelessWidget {
                               child: SizedBox(
                                 child: Expanded(
                                   child: SizedBox(
-                                    child: Text(
-                                      '다음',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18.sp,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w600,
-                                        height: 1.25.h,
+                                    child: TextButton(
+                                      onPressed: () {},
+                                      child: Text(
+                                        '다음',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.sp,
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.25.h,
+                                        ),
                                       ),
                                     ),
                                   ),
