@@ -32,9 +32,7 @@ class _CalendarIndicatorState extends State<CalendarIndicator> {
           if (_selectedYear < maxYear) {
             _selectedMonth = 1;
             _selectedYear++;
-          } else {
-            // 최대 범위에 도달했을 때 처리 (예: 아무 동작 안함 또는 사용자에게 알림)
-          }
+          } else {}
         } else {
           _selectedMonth++;
         }
