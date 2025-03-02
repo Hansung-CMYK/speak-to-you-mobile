@@ -33,6 +33,8 @@ class EgoScreen5 extends StatelessWidget {
     // TODO 상태 관리
     final buttonBottomOffset = false ? 12.h : 40.h;
     return MaterialApp(
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
       home: Scaffold(
         appBar: StackAppBar(),
         body: Container(
@@ -42,7 +44,7 @@ class EgoScreen5 extends StatelessWidget {
             children: [
               Positioned(
                 left: 20.w,
-                top: 13.h,
+                top: 0.h,
                 child: Image.asset(
                   'assets/image/ego_2.png', // 이미지 경로
                   width: 48.w, // 원하는 크기로 조정
@@ -148,7 +150,7 @@ class EgoScreen5 extends StatelessWidget {
           left: 0.w,
           top: 653.h,
           child: Container(
-            color: Colors.white,
+            color: AppColors.white,
             child: SafeArea(
               child: AnimatedPadding(
                 duration: const Duration(milliseconds: 300),

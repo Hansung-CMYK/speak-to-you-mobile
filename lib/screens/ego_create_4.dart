@@ -108,7 +108,7 @@ class EgoScreen4 extends StatelessWidget {
                               'INTJ',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.white,
                                 fontSize: 18.sp,
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.w500,
@@ -862,7 +862,7 @@ class EgoScreen4 extends StatelessWidget {
                                   '다음',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                    color: Colors.white,
+                                    color: AppColors.white,
                                     fontSize: 18.sp,
                                     fontWeight: FontWeight.w700,
                                     height: 1.25.h,

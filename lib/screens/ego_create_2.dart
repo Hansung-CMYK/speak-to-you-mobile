@@ -1,3 +1,4 @@
+import 'package:ego/theme/color.dart';
 import 'package:ego/theme/theme.dart';
 import 'package:ego/widgets/button/image_button.dart';
 import 'package:flutter/material.dart';
@@ -144,21 +145,17 @@ class EgoScreen2 extends StatelessWidget {
                           children: [
                             Expanded(
                               child: SizedBox(
-                                child: Expanded(
-                                  child: SizedBox(
-                                    child: TextButton(
-                                      onPressed: () {},
-                                      child: Text(
-                                        '다음',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 18.sp,
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w700,
-                                          height: 1.25.h,
-                                        ),
-                                      ),
+                                child: TextButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    '다음',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: AppColors.white,
+                                      fontSize: 18.sp,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.25.h,
                                     ),
                                   ),
                                 ),

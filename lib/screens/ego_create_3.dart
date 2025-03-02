@@ -71,48 +71,31 @@ class EgoScreen3 extends StatelessWidget {
                 top: 248.h,
                 child: SizedBox(
                   width: 353.w, // 명확한 너비 지정
-                  child: TextField(
+                  child: TextFormField(
                     maxLength: 10,
                     style: TextStyle(
-                      color: AppColors.gray300, // 텍스트 색상
-                      fontSize: 20.sp, // 폰트 크기, ScreenUtil을 사용하여 화면 크기 조정
-                      fontFamily: 'Roboto', // 폰트
+                      color: AppColors.gray900, // 텍스트 색상
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w500, // 폰트 두께
+                      decorationThickness: 0
                     ),
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.symmetric(
                         vertical: 18.h,
                         horizontal: 20.w,
                       ),
-                      // 패딩 조정
-                      filled: true,
-                      // 배경 색상 추가 여부
-                      fillColor: AppColors.gray100,
-                      // 배경 색상
-                      hintText: '최대 10자',
-                      // 힌트 텍스트
+                      filled: true, // 배경 색상 추가 여부
+                      fillColor: AppColors.gray100, // 배경 색상
+                      hintText: '최대 10자', // 힌트 텍스트
                       hintStyle: TextStyle(
                         color: AppTheme.lightTheme.colorScheme.onSurfaceVariant,
-                        // 힌트 텍스트 색상
-                        fontSize: 20.sp,
-                        // 힌트 텍스트 폰트 크기
-                        fontFamily: 'Roboto', // 폰트
+                        fontSize: 20.sp
                       ),
-                      labelStyle: TextStyle(
-                        color: AppColors.gray800, // 작성한 텍스트 색상
-                      ),
+                      border: InputBorder.none, // 기본 밑줄 제거 (밑줄 없음)
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: AppColors.black),
-                        // 테두리 색상 (선택시)
-                        borderRadius: BorderRadius.circular(8.r), // 모서리 둥글기
+                        borderRadius: BorderRadius.circular(8.r),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: AppColors.gray200),
-                        // 기본 테두리 색상
-                        borderRadius: BorderRadius.circular(8.r), // 모서리 둥글기
-                      ),
-                      border: InputBorder.none,
-                      // 기본 테두리 제거
                       suffixIcon: IconButton(
                         icon: Icon(
                           Icons.cancel,
@@ -122,12 +105,19 @@ class EgoScreen3 extends StatelessWidget {
                         onPressed: () {}, // 텍스트 필드의 내용을 지우는 버튼 (기능은 추가 필요)
                       ),
                     ),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return '내용을 입력하세요';
+                      }
+                      return null;
+                    },
                   ),
-                ),
+                )
+                ,
               ),
               Positioned(
                 left: 20.w,
-                top: 312.h,
+                top: 322.h,
                 child: SizedBox(
                   width: 353.w,
                   child: SizedBox(
@@ -160,7 +150,7 @@ class EgoScreen3 extends StatelessWidget {
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
                       color:
-                          true // TODO 상태 관리
+                          false // TODO 상태 관리
                               ? AppColors.deepPrimary
                               : AppColors.gray300,
                       borderRadius: BorderRadius.circular(8),
