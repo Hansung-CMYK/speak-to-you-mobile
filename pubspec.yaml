@@ -107,6 +107,7 @@ flutter:
     - assets/icon/text_logo_e.svg
     - assets/icon/text_logo_g.svg
     - assets/icon/text_logo_o.svg
+    - assets/icon/trash_icon.svg
     - assets/icon/video_play.svg
     - assets/image/ego_icon.png
     - assets/image/first_diary_sample_image.png

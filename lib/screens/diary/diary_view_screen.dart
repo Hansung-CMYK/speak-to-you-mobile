@@ -1,5 +1,6 @@
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/diary/diary_container.dart';
+import 'package:ego/screens/diary/diary_edit_screen.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,9 +52,9 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
       date: '2025/02/28',
       title: '친구랑 축구',
       content:
-          '오늘 친구랑 축구를 하러 갔다. 날씨도 맑고 기분도 좋았다. 열심히 뛰고, 서로 패스하며 팀워크를 발휘했는데, 결국 멋진 골도 넣었다. 피곤했지만 즐겁고 시원한 하루였다. 같이 운동하니까 더 가까워진 느낌!',
+      '오늘 친구랑 축구를 하러 갔다. 날씨도 맑고 기분도 좋았다. 열심히 뛰고, 서로 패스하며 팀워크를 발휘했는데, 결국 멋진 골도 넣었다. 피곤했지만 즐겁고 시원한 하루였다. 같이 운동하니까 더 가까워진 느낌!',
       image: 'assets/image/second_diary_sample_image.png',
-    ),
+    )
   ];
 
   // 임시 EGO 정보
@@ -107,10 +108,15 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                       ),
                     ),
                     IconButton(
-                      onPressed:
-                          () => {
-                            //TODO 전체 수정
-                          },
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => DiaryEditScreen(diaries: diaries),
+                          ),
+                        );
+                      },
                       icon: SvgPicture.asset(
                         'assets/icon/edit_icon.svg',
                         width: 20.w,
@@ -155,7 +161,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                         toastMsg: '일기가 저장되었습니다.',
                         iconPath: 'assets/icon/complete.svg',
                         backgroundColor: AppColors.accent,
-                        fontColor: AppColors.white
+                        fontColor: AppColors.white,
                       );
                       customBottomToast.init(fToast);
                       customBottomToast.showBottomToast();
