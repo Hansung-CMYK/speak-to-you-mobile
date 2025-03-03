@@ -81,6 +81,7 @@ flutter:
     - assets/icon/success.svg
     - assets/icon/close.svg
     - assets/icon/cake.svg
+    - assets/icon/complete.svg
     - assets/icon/personality.svg
     - assets/image/ego_icon.png
     - assets/image/sent.gif

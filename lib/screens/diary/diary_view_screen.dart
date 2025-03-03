@@ -8,6 +8,8 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:ego/widgets/customtoast/custom_toast.dart';
 
 import 'helped_ego_info_container.dart';
 
@@ -65,17 +67,19 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
         '크하하! 나는 최고로 귀엽고, 강하고, 멋진 피의 마녀, Power다! 인간 따위보다 우월한 악마다! 내 피를 다루는 능력으로 어떤 적이든 박살 내 줄 수 있지! 덴지 녀석이랑 계약해서 일하고 있긴 하지만, 솔직히 내가 없으면 아무것도 못 해! 머리도 좋고, 싸움도 잘하고, 심지어 미모까지 완벽하니까! 피 냄새 나는 전쟁터가 딱 나한테 어울리지! 하지만 배고프면 기운이 없으니까, 고기랑 피를 실컷 먹게 해준다면 너도 내 충성심을 얻을 수 있을지도 모르지! 크하하하!',
   );
 
+  late FToast fToast;
+
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast.init(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: StackAppBar(
-        title: '일기보기',
-      ),
+      appBar: StackAppBar(title: '일기보기'),
       body: Padding(
         padding: EdgeInsets.only(right: 2.w),
         child: RawScrollbar(
@@ -145,8 +149,16 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                   width: double.infinity,
                   margin: EdgeInsets.only(bottom: 40.h),
                   child: TextButton(
-                    onPressed: () => {
+                    onPressed: () {
                       // TODO 일기 저장 API
+                      final customBottomToast = CustomToast(
+                        toastMsg: '일기가 저장되었습니다.',
+                        iconPath: 'assets/icon/complete.svg',
+                        backgroundColor: AppColors.accent,
+                        fontColor: AppColors.white
+                      );
+                      customBottomToast.init(fToast);
+                      customBottomToast.showBottomToast();
                     },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
