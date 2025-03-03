@@ -1,13 +1,13 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:ego/widgets/button/svg_button.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:ego/theme/color.dart';
 
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'diary_view_screen.dart';
 
 class DiaryEditScreen extends StatefulWidget {

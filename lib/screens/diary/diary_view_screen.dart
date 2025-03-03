@@ -1,17 +1,17 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/diary/diary_container.dart';
 import 'package:ego/screens/diary/diary_edit_screen.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
-
 import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 
+import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'helped_ego_info_container.dart';
 
 // 임시 객체
@@ -79,6 +79,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: StackAppBar(title: '일기보기'),
       body: Padding(
@@ -125,6 +126,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                     ),
                   ],
                 ),
+
                 //감정 Container
                 TodayEmotionContainer(emotions),
 
@@ -164,7 +166,10 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                         fontColor: AppColors.white,
                       );
                       customBottomToast.init(fToast);
-                      customBottomToast.showBottomToast();
+
+                      double position = 120; // 버튼 크기 + Button의 Bottom Margin + 조정값
+
+                      customBottomToast.showBottomPositionedToast(bottom: position);
                     },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(

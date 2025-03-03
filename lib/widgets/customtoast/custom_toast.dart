@@ -103,4 +103,22 @@ class CustomToast {
       },
     );
   }
+
+  // 화면 밑에서 부터 Bottom위치를 조정할 수 있는 Toast
+  void showBottomPositionedToast({
+    double bottom = 0.0,
+  }) {
+    fToast.showToast(
+      child: customedToast,
+      toastDuration: Duration(seconds: durationSec),
+      positionedToastBuilder: (context, child, gravity) {
+        return Positioned(
+          left: 0,
+          right: 0,
+          bottom: bottom,
+          child: Center(child: child),
+        );
+      },
+    );
+  }
 }
