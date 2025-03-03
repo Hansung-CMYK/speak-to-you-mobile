@@ -6,21 +6,9 @@ import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
 
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
-Future<void> showTodayEgoIntroSheet(BuildContext context) async {
-  //TODO 여기서 EGO 정보를 api로 전달 받음
-  // 임시 모델
-  EgoInfoModel egoInfoModel = new EgoInfoModel(
-    id: '123',
-    egoIcon: 'assets/image/ego_icon.png',
-    egoName: 'Power Chan',
-    egoBirth: '2024/02/25',
-    egoPersonality: '단순함, 바보, 착함',
-    egoSelfIntro:
-        '안녕하세요! 저는 파워, 악마 사냥꾼이자 피의 악마입니다. 언제나 힘이 넘치고, 내 친구인 덴지를 위해서라면 뭐든 할 수 있어요. 때로는 성격이 거칠고, 충동적으로 행동하지만, 그런 저도 친구를 소중히 여기는 마음이 있답니다. 전투에서는 결코 물러서지 않으며, 적을 무찌르는 데에 진심이예요! 피를 통해 강해지는 저와 함께 모험을 떠나보세요!',
-  );
-
-  // 로딩 다이얼로그를 닫음
-  Navigator.of(context).pop();
+/// context : 띄워질 부모의 context [BuildContext]
+/// egoInfoModel : 띄울 EGO의 정보 [EgoInfoModel]
+void showTodayEgoIntroSheet(BuildContext context, EgoInfoModel egoInfoModel) {
 
   showModalBottomSheet(
     context: context,
@@ -123,7 +111,7 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
                 // 생일 Tag부분
                 _tagWidget(
                   "assets/icon/cake.svg",
-                  AppColors.birthDayTagColor,
+                  AppColors.strongOrange,
                   AppColors.white,
                   4,
                   "생일",
@@ -243,7 +231,7 @@ Widget _checkButton(BuildContext context) {
       style: TextButton.styleFrom(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-        backgroundColor: AppColors.birthDayTagColor,
+        backgroundColor: AppColors.strongOrange,
       ),
       child: Text(
         "확인",

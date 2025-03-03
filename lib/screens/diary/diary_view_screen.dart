@@ -1,3 +1,4 @@
+import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/diary/diary_container.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:flutter_svg/svg.dart';
 
 import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
+
+import 'helped_ego_info_container.dart';
 
 // 임시 객체
 class Diary {
@@ -28,11 +31,11 @@ class DiaryViewScreen extends StatefulWidget {
 }
 
 class _DiaryViewScreenState extends State<DiaryViewScreen> {
-  // TODO 일기 + 감정 API 요청 필요
+  // TODO 일기 + 감정 + EGO 정보 API 요청 필요
   // 임시 감정
   final List<String> emotions = ['기쁨', '재미'];
 
-  // 임시 일기
+  // 임시 주제 일기
   final List<Diary> diaries = [
     Diary(
       date: '2025/02/28',
@@ -49,6 +52,17 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
       image: 'assets/image/second_diary_sample_image.png',
     ),
   ];
+
+  // 임시 EGO 정보
+  final EgoInfoModel egoInfoModel = EgoInfoModel(
+    id: '1',
+    egoIcon: 'assets/image/ego_icon.png',
+    egoName: 'Power',
+    egoBirth: '2002/02/03',
+    egoPersonality: '단순함, 바보, 멍청',
+    egoSelfIntro:
+        '크하하! 나는 최고로 귀엽고, 강하고, 멋진 피의 마녀, Power다! 인간 따위보다 우월한 악마다! 내 피를 다루는 능력으로 어떤 적이든 박살 내 줄 수 있지! 덴지 녀석이랑 계약해서 일하고 있긴 하지만, 솔직히 내가 없으면 아무것도 못 해! 머리도 좋고, 싸움도 잘하고, 심지어 미모까지 완벽하니까! 피 냄새 나는 전쟁터가 딱 나한테 어울리지! 하지만 배고프면 기운이 없으니까, 고기랑 피를 실컷 먹게 해준다면 너도 내 충성심을 얻을 수 있을지도 모르지! 크하하하!',
+  );
 
   @override
   void initState() {
@@ -118,12 +132,59 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                     ),
                   ],
                 ),
+                //감정 Container
                 TodayEmotionContainer(emotions),
+
+                // 날짜
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 8.h, top: 12.h),
+                    child: Text(
+                      diaries[0].date,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        color: AppColors.gray600,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+
                 // 일기 정보 제공
                 ...diaries.map((diary) => DiaryContainer(diary: diary)),
-                Divider(thickness: 1, color: AppColors.gray300,),
 
+                // 일기 작성해준 EGO 정보
+                HelpedEgoInfoContainer(context, egoInfoModel),
 
+                // 일기 저장 버튼
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(bottom: 40.h),
+                  child: TextButton(
+                    onPressed: () => {
+                      // TODO 일기 저장 API
+                    },
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 20.w,
+                        vertical: 15.h,
+                      ),
+                      backgroundColor: AppColors.strongOrange,
+                    ),
+                    child: Text(
+                      "일기저장",
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

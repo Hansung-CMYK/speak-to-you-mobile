@@ -27,20 +27,24 @@ class _DiaryContainerState extends State<DiaryContainer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // 일기 이미지 부분
-          Container(
-            margin: EdgeInsets.only(bottom: 10.h),
-            child: Container(
-              width: 353.w,
-              height: 353.h,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(diary.image),
-                  fit: BoxFit.cover,
+          LayoutBuilder(builder: (context, constraints){
+            double size = constraints.maxWidth;
+
+            return Container(
+              margin: EdgeInsets.only(bottom: 10.h),
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(diary.image),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
-                borderRadius: BorderRadius.circular(8.r),
               ),
-            ),
-          ),
+            );
+          }),
 
           // 이미지 재생성 횟수, 버튼
           Row(
@@ -82,27 +86,6 @@ class _DiaryContainerState extends State<DiaryContainer> {
                 ),
               ),
             ],
-          ),
-
-          // 날짜
-          Container(
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(width: 1.w, color: AppColors.gray300),
-              ),
-            ),
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 8.h),
-              child: Text(
-                diary.date,
-                style: TextStyle(
-                  fontSize: 16.sp,
-                  color: AppColors.gray600,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
           ),
 
           // 일기 주제 및 공유 버튼
@@ -147,6 +130,12 @@ class _DiaryContainerState extends State<DiaryContainer> {
           // 내용
           Container(
             margin: EdgeInsets.only(bottom: 20.h),
+            padding: EdgeInsets.only(bottom: 40.h),
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(width: 1, color: AppColors.gray300),
+              ),
+            ),
             child: Text(
               diary.content,
               style: TextStyle(
