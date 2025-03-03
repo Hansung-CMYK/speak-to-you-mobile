@@ -50,4 +50,5 @@ class AppColors {
   static const Color royalBlue = Color(0xFF5865F2);
 
   static const Color red = Colors.red;
+  static const Color birthDayTagColor = Color(0xFFFF7410);
 }
