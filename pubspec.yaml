@@ -67,8 +67,6 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/image/ego_icon.png
-    - assets/image/sent.gif
     - assets/icon/back_arrow.svg
     - assets/icon/edit_icon.svg
     - assets/image/emotion_popup.svg
@@ -97,8 +95,21 @@ flutter:
     - assets/icon/emotion/embarrassment_inactive.svg
     - assets/icon/emotion/happiness_inactive.svg
     - assets/icon/emotion/sadness_inactive.svg
-    - assets/icon/complete.svg
+    - assets/icon/image_regen.svg
+    - assets/icon/info.svg
+    - assets/icon/naver_logo.svg
+    - assets/icon/notification.svg
     - assets/icon/splash_characters.svg
+    - assets/icon/share_icon.svg
+    - assets/icon/success.svg
+    - assets/icon/text_logo_e.svg
+    - assets/icon/text_logo_g.svg
+    - assets/icon/text_logo_o.svg
+    - assets/icon/video_play.svg
+    - assets/image/ego_icon.png
+    - assets/image/first_diary_sample_image.png
+    - assets/image/second_diary_sample_image.png
+    - assets/image/sent.gif
     - assets/image/ego_1.png
     - assets/image/ego_2.png
     - assets/image/ego_3.png
