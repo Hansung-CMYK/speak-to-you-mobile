@@ -37,11 +37,7 @@ Future<void> showTodayEgoIntroSheet(BuildContext context) async {
         height: 600.h,
         width: double.infinity,
         child: Padding(
-          padding: EdgeInsets.only(
-            top: 24.h,
-            right: 20.w,
-            left: 20.w,
-          ),
+          padding: EdgeInsets.only(top: 24.h, right: 20.w, left: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [_header(context), _body(egoInfoModel, context)],
@@ -174,8 +170,7 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
   return Container(
     width: 353.w,
     height: 230.h,
-    margin: EdgeInsets.only(bottom: 10.h),
-    padding: EdgeInsets.symmetric(vertical: 21.h, horizontal: 20.w),
+    padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
     decoration: BoxDecoration(
       color: AppColors.white,
       borderRadius: BorderRadius.circular(16.r),
@@ -204,22 +199,28 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
             ],
           ),
         ),
-        Divider(color: AppColors.gray200, thickness: 1.h),
-        Padding(
-          padding: EdgeInsets.only(top: 16.h, bottom: 16.h),
-          child: SizedBox(
-            height: 86.h,
-            child: Scrollbar(
-              thickness: 3,
-              radius: Radius.circular(10.r),
-              child: SingleChildScrollView(
-                child: Text(
-                  egoInfoModel.egoSelfIntro,
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    color: AppColors.black,
-                    fontWeight: FontWeight.w500,
-                  ),
+
+        Container(
+          padding: EdgeInsets.symmetric(vertical: 16.h),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(
+                color: AppColors.gray300,
+                width: 1.h,
+              ),
+            ),
+          ),
+          height: 108.h,
+          child: Scrollbar(
+            thickness: 3,
+            radius: Radius.circular(10.r),
+            child: SingleChildScrollView(
+              child: Text(
+                egoInfoModel.egoSelfIntro,
+                style: TextStyle(
+                  fontSize: 16.sp,
+                  color: AppColors.black,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
@@ -236,7 +237,7 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
 Widget _checkButton(BuildContext context) {
   return Container(
     width: double.infinity,
-    margin: EdgeInsets.only(top: 60.h, bottom: 40.h),
+    margin: EdgeInsets.only(top: 60.h),
     child: TextButton(
       onPressed: () => Navigator.pop(context),
       style: TextButton.styleFrom(
