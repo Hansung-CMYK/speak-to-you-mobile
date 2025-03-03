@@ -1,5 +1,6 @@
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/diary/diary_container.dart';
+import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,26 +73,8 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '일기보기',
-          style: TextStyle(
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.gray900,
-          ),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: SvgPicture.asset(
-            'assets/icon/back_arrow.svg',
-            width: 24.w,
-            height: 24.h,
-          ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+      appBar: StackAppBar(
+        title: '일기보기',
       ),
       body: Padding(
         padding: EdgeInsets.only(right: 2.w),

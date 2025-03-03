@@ -1,12 +1,12 @@
-import 'package:ego/models/ego_info_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/widgets/button/svg_button.dart';
 import 'package:ego/theme/color.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 Widget HelpedEgoInfoContainer(BuildContext context, EgoInfoModel egoInfoModel) {
   return Container(
@@ -60,33 +60,24 @@ Widget HelpedEgoInfoContainer(BuildContext context, EgoInfoModel egoInfoModel) {
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              Row(
-                children: [
-                  Text(
-                    '프로필 보기',
-                    style: TextStyle(
-                      color: AppColors.gray400,
-                      fontWeight: FontWeight.w500,
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                  Container(
-                    width: 30.w,
-                    height: 30.h,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      onPressed: () => {
-                        showTodayEgoIntroSheet(context, egoInfoModel)
-                      },
-                      icon: SvgPicture.asset(
-                        'assets/icon/right_arrow.svg',
-                        fit: BoxFit.contain,
-                        width: 20.w,
-                        height: 20.h,
+              GestureDetector(
+                onTap: () {
+                  // 클릭 시 동작
+                  showTodayEgoIntroSheet(context, egoInfoModel);
+                },
+                child: Row(
+                  children: [
+                    Text(
+                      '프로필 보기',
+                      style: TextStyle(
+                        color: AppColors.gray400,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14.sp,
                       ),
                     ),
-                  ),
-                ],
+                    SvgPicture.asset('assets/icon/right_arrow.svg'),
+                  ],
+                ),
               ),
             ],
           ),
