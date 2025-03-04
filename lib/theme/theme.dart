@@ -5,7 +5,6 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       primaryColor: AppColors.primary,
-
       colorScheme: ColorScheme(
         brightness: Brightness.light,
         primary: AppColors.primary,
@@ -20,6 +19,8 @@ class AppTheme {
 
         error: AppColors.errorBase,
         onError: AppColors.white,
+
+        onPrimaryContainer: AppColors.deepPrimary,
       ),
 
       scaffoldBackgroundColor: AppColors.white,
@@ -59,6 +60,7 @@ class AppTheme {
         onSurface: AppColors.gray100,
         error: AppColors.errorBase,
         onError: AppColors.white,
+        onPrimaryContainer: AppColors.deepPrimary,
       ),
       scaffoldBackgroundColor: AppColors.gray900,
       appBarTheme: const AppBarTheme(
