@@ -12,6 +12,7 @@ import 'package:ego/widgets/customtoast/custom_toast.dart';
 
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../../widgets/button/svg_button.dart';
 import 'helped_ego_info_container.dart';
 
 // 임시 객체
@@ -52,9 +53,9 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
       date: '2025/02/28',
       title: '친구랑 축구',
       content:
-      '오늘 친구랑 축구를 하러 갔다. 날씨도 맑고 기분도 좋았다. 열심히 뛰고, 서로 패스하며 팀워크를 발휘했는데, 결국 멋진 골도 넣었다. 피곤했지만 즐겁고 시원한 하루였다. 같이 운동하니까 더 가까워진 느낌!',
+          '오늘 친구랑 축구를 하러 갔다. 날씨도 맑고 기분도 좋았다. 열심히 뛰고, 서로 패스하며 팀워크를 발휘했는데, 결국 멋진 골도 넣었다. 피곤했지만 즐겁고 시원한 하루였다. 같이 운동하니까 더 가까워진 느낌!',
       image: 'assets/image/second_diary_sample_image.png',
-    )
+    ),
   ];
 
   // 임시 EGO 정보
@@ -79,7 +80,6 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: StackAppBar(title: '일기보기'),
       body: Padding(
@@ -97,19 +97,20 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
-                      onPressed:
-                          () => {
-                            //TODO 전체 공유
-                          },
-                      icon: SvgPicture.asset(
-                        'assets/icon/share_icon.svg',
-                        width: 20.w,
-                        height: 20.h,
-                      ),
+                    SvgButton(
+                      svgPath: 'assets/icon/share_icon.svg',
+                      width: 20.w,
+                      height: 20.h,
+                      radius: 16.r,
+                      onTab: () => {},
                     ),
-                    IconButton(
-                      onPressed: () {
+                    SizedBox(width: 12.w),
+                    SvgButton(
+                      svgPath: 'assets/icon/edit_icon.svg',
+                      width: 20.w,
+                      height: 20.h,
+                      radius: 16.r,
+                      onTab: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -118,11 +119,6 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                           ),
                         );
                       },
-                      icon: SvgPicture.asset(
-                        'assets/icon/edit_icon.svg',
-                        width: 20.w,
-                        height: 20.h,
-                      ),
                     ),
                   ],
                 ),
@@ -167,9 +163,12 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                       );
                       customBottomToast.init(fToast);
 
-                      double position = 120; // 버튼 크기 + Button의 Bottom Margin + 조정값
+                      double position =
+                          120; // 버튼 크기 + Button의 Bottom Margin + 조정값
 
-                      customBottomToast.showBottomPositionedToast(bottom: position);
+                      customBottomToast.showBottomPositionedToast(
+                        bottom: position,
+                      );
                     },
                     style: TextButton.styleFrom(
                       shape: RoundedRectangleBorder(
