@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/diary/diary_container.dart';
@@ -9,11 +8,11 @@ import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
-
-import 'package:flutter_svg/svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../../widgets/button/svg_button.dart';
+import 'package:ego/widgets/button/svg_button.dart';
 import 'helped_ego_info_container.dart';
+
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // 임시 객체
 class Diary {

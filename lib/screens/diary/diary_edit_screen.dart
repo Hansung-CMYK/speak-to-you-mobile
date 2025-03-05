@@ -129,8 +129,11 @@ Widget _DiaryEditContainer(
         Container(
           margin: EdgeInsets.only(bottom: 12.h),
           height: 96.h,
-          child: Scrollbar(
+          child: RawScrollbar(
             thumbVisibility: true,
+            thickness: 4.w,
+            radius: Radius.circular(8.r),
+            thumbColor: AppColors.gray700,
             child: SingleChildScrollView(
               child: TextField(
                 controller: TextEditingController(text: content),
