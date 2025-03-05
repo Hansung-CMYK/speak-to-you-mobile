@@ -162,8 +162,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                       );
                       customBottomToast.init(fToast);
 
-                      double position =
-                          120; // 버튼 크기 + Button의 Bottom Margin + 조정값
+                      final position = 107.0.h;
 
                       customBottomToast.showBottomPositionedToast(
                         bottom: position,
