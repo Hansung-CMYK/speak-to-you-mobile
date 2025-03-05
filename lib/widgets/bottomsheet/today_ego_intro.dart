@@ -199,8 +199,10 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
             ),
           ),
           height: 108.h,
-          child: Scrollbar(
+          child: RawScrollbar(
+            thumbVisibility: true,
             thickness: 3,
+            thumbColor: AppColors.gray700,
             radius: Radius.circular(10.r),
             child: SingleChildScrollView(
               child: Text(

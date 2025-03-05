@@ -75,6 +75,7 @@ Widget HelpedEgoInfoContainer(BuildContext context, EgoInfoModel egoInfoModel) {
                         fontSize: 14.sp,
                       ),
                     ),
+                    SizedBox(width: 8.w,),
                     SvgPicture.asset('assets/icon/right_arrow.svg'),
                   ],
                 ),
