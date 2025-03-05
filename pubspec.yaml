@@ -41,6 +41,7 @@ dependencies:
   flutter_svg: ^2.0.17
   table_calendar: ^3.0.9
   fl_chart: ^0.70.2
+  flutter_html: ^3.0.0-beta.2
 
 dev_dependencies:
   flutter_test:
