@@ -38,6 +38,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       ), // 좌측 18px Padding을 준다.
       child: AppBar(
         automaticallyImplyLeading: false,
+        surfaceTintColor: AppColors.white,
         titleSpacing: 0.w,
         title: DefaultTabController(
           // TabBar를 AppBar의 좌측에 배치하기 위함
