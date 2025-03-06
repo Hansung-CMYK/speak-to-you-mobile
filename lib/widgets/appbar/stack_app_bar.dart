@@ -1,9 +1,7 @@
-import 'package:ego/widgets/button/svg_button.dart';
+import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../../theme/color.dart';
 
 /// [StackAppBar]는 StackNavigation을 이용한 스크린에서 사용되는 AppBar이다.
 ///
