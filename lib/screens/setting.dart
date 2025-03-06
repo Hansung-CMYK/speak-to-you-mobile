@@ -55,10 +55,13 @@ class Setting extends StatelessWidget {
           content(
             'EGO 초기화',
             () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(builder: (_) => InquiryPage()),
-              // );
+              showConfirmDialog(
+                context: context,
+                title: 'EGO를 초기화 하시겠어요?',
+                dialogType: DialogType.danger,
+                cancelText: '취소',
+                confirmText: '초기화',
+              );
             },
             trailingWidget: Container(
               width: 48.w,
@@ -90,6 +93,8 @@ class Setting extends StatelessWidget {
               context: context,
               title: '로그아웃 하시겠어요?',
               dialogType: DialogType.info,
+              cancelText: '취소',
+              confirmText: '로그아웃',
             );
           }),
           content(
@@ -98,7 +103,9 @@ class Setting extends StatelessWidget {
               showConfirmDialog(
                 context: context,
                 title: '탈퇴 하시겠어요?',
-                dialogType: DialogType.info,
+                dialogType: DialogType.danger,
+                cancelText: '취소',
+                confirmText: '탈퇴하기',
               );
             },
             textColor: AppColors.brighterRed,
