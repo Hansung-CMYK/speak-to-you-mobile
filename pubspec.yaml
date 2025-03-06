@@ -86,6 +86,7 @@ flutter:
     - assets/icon/personality.svg
     - assets/image/ego_icon.png
     - assets/image/sent.gif
+    - assets/icon/navi_back_arrow.svg
     - assets/icon/notification.svg
     - assets/icon/video_play.svg
     - assets/icon/emotion/anger.svg
