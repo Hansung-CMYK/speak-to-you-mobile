@@ -28,7 +28,7 @@ class AlarmScreen extends StatelessWidget {
         // 분계선 속성을 작성한다.
         separatorBuilder: (BuildContext context, int index) => Divider(
           height: 1.h, // 경계선의 두께
-          color: AppColors.gray100, // 피그마에선 greyScale200이다.
+          color: AppColors.gray200,
         ),
         itemCount: SAMPLE_DATA.length, // 샘플 데이터의 개수를 표시한다.
       ),
