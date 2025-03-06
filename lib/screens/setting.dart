@@ -3,6 +3,7 @@ import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Setting extends StatelessWidget {
   @override
@@ -60,13 +61,13 @@ class Setting extends StatelessWidget {
               // );
             },
             trailingWidget: Container(
-              width: 48,
-              height: 26,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              width: 48.w,
+              height: 26.h,
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
               decoration: ShapeDecoration(
-                color: Color(0xFFE8EBED),
+                color: AppColors.gray200,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(8.r),
                 ),
               ),
               child: Center(
@@ -74,12 +75,9 @@ class Setting extends StatelessWidget {
                   '초기화',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Color(0xFF72787F),
-                    fontSize: 12,
-                    fontFamily: 'Roboto',
+                    color: AppColors.gray600,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w500,
-                    height: 1.50,
-                    letterSpacing: -0.60,
                   ),
                 ),
               ),
@@ -103,7 +101,7 @@ class Setting extends StatelessWidget {
                 dialogType: DialogType.info,
               );
             },
-            textColor: Colors.red,
+            textColor: AppColors.brighterRed,
             bold: true,
           ),
           SizedBox(height: 40.h),
@@ -164,10 +162,12 @@ class Setting extends StatelessWidget {
               ),
             ),
             trailingWidget ??
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16.sp,
-                  color: AppColors.gray600,
+                Center(
+                  child: SvgPicture.asset(
+                    'assets/icon/right_arrow.svg',
+                    width: 16.r,
+                    height: 16.r,
+                  ),
                 ),
           ],
         ),
