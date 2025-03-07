@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 void main() {
   runApp(SampleTodayEgoReview());
 }
@@ -20,11 +19,12 @@ class SampleTodayEgoReview extends StatelessWidget {
       designSize: Size(393, 852),
       builder:
           (context, child) => MaterialApp(
-        title: 'Ego Review',
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        home: MyHomePage(),
-      ),
+            debugShowCheckedModeBanner: false,
+            title: 'Ego Review',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            home: MyHomePage(),
+          ),
     );
   }
 }
@@ -37,11 +37,19 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            final EgoInfoModel tmpEgoModel = EgoInfoModel(id: '1', egoIcon: 'assets/image/ego_icon.png', egoName: 'Power', egoBirth: '', egoPersonality: '', egoSelfIntro: '');
+            final EgoInfoModel tmpEgoModel = EgoInfoModel(
+              id: '1',
+              egoIcon: 'assets/image/ego_icon.png',
+              egoName: 'Power',
+              egoBirth: '',
+              egoPersonality: '',
+              egoSelfIntro: '',
+            );
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => EgoReviewScreen(egoInfoModel: tmpEgoModel),
+                builder:
+                    (context) => EgoReviewScreen(egoInfoModel: tmpEgoModel),
               ),
             );
           },

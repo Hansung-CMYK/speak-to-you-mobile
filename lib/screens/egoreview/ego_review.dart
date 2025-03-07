@@ -1,5 +1,4 @@
 import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/screens/egoreview/rating_bar.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
@@ -9,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'emoji_rate_bar.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class EgoReviewScreen extends StatefulWidget {
   final EgoInfoModel egoInfoModel; // 평가할 EGO
@@ -21,6 +21,7 @@ class EgoReviewScreen extends StatefulWidget {
 
 class _EgoReviewScreenState extends State<EgoReviewScreen> {
   late final EgoInfoModel egoInfoModel;
+  int totalRate = 0;
   int solvingProblemRate = -1; // 대화의 흐름(문제해결능력) 점수 저장
   int empathyRate = -1; // 대화의 온도(공감능력) 점수 저장
 
@@ -59,12 +60,12 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
           ),
         ),
         leading: IconButton(
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 3.w),
           constraints: BoxConstraints(),
           icon: SvgPicture.asset(
             'assets/icon/navi_back_arrow.svg',
-            width: 24.w,
-            height: 24.h,
+            width: 18.w,
+            height: 16.h,
           ),
           onPressed: () {
             Navigator.pop(context);
@@ -83,8 +84,59 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child: Column(
               children: [
-                // TODO 미완
-                StarRating(),
+                // EGO 총평 부분
+                Container(
+                  padding: EdgeInsets.only(top: 28.h, bottom: 16.h),
+                  child: Column(
+                    children: [
+                      Text(
+                        '오늘 EGO는 어떠셨나요?',
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.gray900,
+                        ),
+                      ),
+                      SizedBox(height: 12.h),
+                      RatingBar(
+                        initialRating: 0,
+                        direction: Axis.horizontal,
+                        allowHalfRating: false,
+                        itemCount: 5,
+                        ratingWidget: RatingWidget(
+                          full: SvgPicture.asset(
+                            'assets/icon/total_rate_clicked.svg',
+                          ),
+                          half: SvgPicture.asset(
+                            'assets/icon/total_rate_clicked.svg',
+                          ),
+                          empty: SvgPicture.asset('assets/icon/total_rate.svg'),
+                        ),
+                        itemPadding: EdgeInsets.symmetric(horizontal: 6.w),
+                        onRatingUpdate: (rating) {
+                          setState(() {
+                            totalRate = rating.toInt();
+                          });
+                        },
+                      ),
+
+                      Container(
+                        height: 21.h,
+                        child: Text(
+                          totalRate == 0 ? '선택하세요' : '${totalRate}점',
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w500,
+                            color:
+                                totalRate == 0
+                                    ? AppColors.gray400
+                                    : AppColors.errorDark,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
                 // 대화의 흐름(문제해결능력) 평가 부분
                 EmojiRateBar(
@@ -109,7 +161,7 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
             () => {
               // TODO 평가 정보 송신 및 화면 전환
             },
-            solvingProblemRate != -1 && empathyRate != -1,
+            totalRate != 0 && solvingProblemRate != -1 && empathyRate != -1,
           ),
         ],
       ),
@@ -157,6 +209,8 @@ Widget EgoInfoProfile({required String egoName, required String egoIconPath}) {
           ],
         ),
       ),
+
+      // 건너뛰기 버튼
       Positioned(
         right: 20.w,
         child: Container(
@@ -204,10 +258,11 @@ Widget reviewCompleteBtn(
                   content: '평가는 앞으로 매칭될 EGO에 반영됩니다.',
                   dialogType: DialogType.success,
                   confirmText: '확인',
-                  cancelText: '취소'
+                  cancelText: '취소',
                 );
 
-                if (isConfirm != null && isConfirm) { // 확인을 누른 경우
+                if (isConfirm != null && isConfirm) {
+                  // 확인을 누른 경우
                   onConfirm();
                 }
               }
