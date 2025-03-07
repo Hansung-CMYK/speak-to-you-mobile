@@ -22,10 +22,16 @@ class _EmojiRateBarState extends State<EmojiRateBar> {
   late final title;
   int selectedIndex = -1; // 선택된 아이콘 (1~3), 기본값은 -1 (선택 안됨)
 
-  final List<String> iconPaths = [
+  final List<String> unselectedIconPaths = [
     'assets/icon/bad_rate.svg',
     'assets/icon/good_rate.svg',
     'assets/icon/best_rate.svg',
+  ];
+
+  final List<String> selectedIconPaths = [
+    'assets/icon/bad_rate_clicked.svg',
+    'assets/icon/good_rate_clicked.svg',
+    'assets/icon/best_rate_clicked.svg',
   ];
 
   final List<String> rateName = ['불편해요', '편해요', '만족해요'];
@@ -45,7 +51,6 @@ class _EmojiRateBarState extends State<EmojiRateBar> {
       padding: EdgeInsets.symmetric(vertical: 16.h),
       child: Column(
         children: [
-
           // 평가 제목
           Text(
             title,
@@ -86,7 +91,7 @@ class _EmojiRateBarState extends State<EmojiRateBar> {
                       child: Column(
                         children: [
                           SvgPicture.asset(
-                            iconPaths[index],
+                            isSelected ? selectedIconPaths[index] : unselectedIconPaths[index],
                             width: 60.w,
                             height: 60.h,
                           ),
@@ -95,12 +100,14 @@ class _EmojiRateBarState extends State<EmojiRateBar> {
                             rateName[index],
                             style: TextStyle(
                               fontSize: 14.sp,
-                              fontWeight: isSelected
-                                  ? FontWeight.w500
-                                  : FontWeight.normal,
-                              color: isSelected
-                                  ? AppColors.errorDark
-                                  : AppColors.transparent,
+                              fontWeight:
+                                  isSelected
+                                      ? FontWeight.w500
+                                      : FontWeight.normal,
+                              color:
+                                  isSelected
+                                      ? AppColors.errorDark
+                                      : AppColors.transparent,
                             ),
                           ),
                         ],
@@ -114,7 +121,6 @@ class _EmojiRateBarState extends State<EmojiRateBar> {
         ],
       ),
     );
-
   }
 }
 

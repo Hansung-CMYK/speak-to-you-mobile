@@ -1,6 +1,8 @@
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/egoreview/rating_bar.dart';
 import 'package:ego/theme/color.dart';
+import 'package:ego/types/dialog_type.dart';
+import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -70,7 +72,6 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
         ),
       ),
       body: Column(
-
         children: [
           // EGO 정보를 보여주는 부분 + 건너뛰기 버튼
           EgoInfoProfile(
@@ -96,11 +97,19 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
                   title: '대화의 온도는 어떠신가요?',
                   onRatingSelected: _handleEmpathyRating,
                 ),
-
-                // 평가완료 버튼
-
               ],
             ),
+          ),
+
+          Spacer(),
+
+          // 평가완료 버튼
+          reviewCompleteBtn(
+            context,
+            () => {
+              // TODO 평가 정보 송신 및 화면 전환
+            },
+            solvingProblemRate != -1 && empathyRate != -1,
           ),
         ],
       ),
@@ -169,5 +178,53 @@ Widget EgoInfoProfile({required String egoName, required String egoIconPath}) {
         ),
       ),
     ],
+  );
+}
+
+/// 평가 완료 버튼
+///
+/// context : Dialog를 띄우기 위함 [BuildContext]
+/// onConfirm : 확인 버튼을 눌렀을 때의 동작[VoidCallback]
+/// isEnable : 버튼 활성화 여부 [bool]
+Widget reviewCompleteBtn(
+  BuildContext context,
+  VoidCallback onConfirm,
+  bool isEnable,
+) {
+  return Container(
+    padding: EdgeInsets.only(right: 20.w, bottom: 40.h, left: 20.w),
+    width: double.infinity,
+    child: TextButton(
+      onPressed:
+          isEnable
+              ? () async {
+                bool? isConfirm = await showConfirmDialog(
+                  context: context,
+                  title: 'EGO 평가를 완료했어요!',
+                  content: '평가는 앞으로 매칭될 EGO에 반영됩니다.',
+                  dialogType: DialogType.success,
+                  confirmText: '확인',
+                  cancelText: '취소'
+                );
+
+                if (isConfirm != null && isConfirm) { // 확인을 누른 경우
+                  onConfirm();
+                }
+              }
+              : null,
+      style: TextButton.styleFrom(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+        backgroundColor: isEnable ? AppColors.deepPrimary : Colors.grey,
+      ),
+      child: Text(
+        "평가완료",
+        style: TextStyle(
+          color: AppColors.white,
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    ),
   );
 }

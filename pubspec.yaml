@@ -121,8 +121,11 @@ flutter:
     - assets/image/camera.png
     - assets/font/Roboto-Regular.ttf
     - assets/icon/bad_rate.svg
+    - assets/icon/bad_rate_clicked.svg
     - assets/icon/good_rate.svg
+    - assets/icon/good_rate_clicked.svg
     - assets/icon/best_rate.svg
+    - assets/icon/best_rate_clicked.svg
     - assets/icon/arrow_back.svg
 
     - assets/icon/right_arrow.svg
