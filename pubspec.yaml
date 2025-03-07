@@ -120,6 +120,9 @@ flutter:
     - assets/image/ego_3.png
     - assets/image/camera.png
     - assets/font/Roboto-Regular.ttf
+    - assets/icon/bad_rate.svg
+    - assets/icon/good_rate.svg
+    - assets/icon/best_rate.svg
     - assets/icon/arrow_back.svg
 
     - assets/icon/right_arrow.svg

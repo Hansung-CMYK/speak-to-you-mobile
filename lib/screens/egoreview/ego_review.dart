@@ -1,9 +1,12 @@
 import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/screens/egoreview/rating_bar.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'emoji_rate_bar.dart';
 
 class EgoReviewScreen extends StatefulWidget {
   final EgoInfoModel egoInfoModel; // 평가할 EGO
@@ -16,11 +19,27 @@ class EgoReviewScreen extends StatefulWidget {
 
 class _EgoReviewScreenState extends State<EgoReviewScreen> {
   late final EgoInfoModel egoInfoModel;
+  int solvingProblemRate = -1; // 대화의 흐름(문제해결능력) 점수 저장
+  int empathyRate = -1; // 대화의 온도(공감능력) 점수 저장
 
   @override
   void initState() {
     super.initState();
     this.egoInfoModel = widget.egoInfoModel;
+  }
+
+  // 클릭된 아이콘(점수)를 가져오기 위한 함수 (1~3점)
+  void _handleProblemRating(int rating) {
+    setState(() {
+      solvingProblemRate = rating;
+    });
+  }
+
+  // 클릭된 아이콘(점수)를 가져오기 위한 함수 (1~3점)
+  void _handleEmpathyRating(int rating) {
+    setState(() {
+      empathyRate = rating;
+    });
   }
 
   @override
@@ -51,10 +70,37 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
         ),
       ),
       body: Column(
+
         children: [
+          // EGO 정보를 보여주는 부분 + 건너뛰기 버튼
           EgoInfoProfile(
             egoName: egoInfoModel.egoName,
             egoIconPath: egoInfoModel.egoIcon,
+          ),
+
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: Column(
+              children: [
+                // TODO 미완
+                StarRating(),
+
+                // 대화의 흐름(문제해결능력) 평가 부분
+                EmojiRateBar(
+                  title: '대화의 흐름은 어떠신가요?',
+                  onRatingSelected: _handleProblemRating,
+                ),
+
+                // 대화의 온도(공감능력) 평가 부분
+                EmojiRateBar(
+                  title: '대화의 온도는 어떠신가요?',
+                  onRatingSelected: _handleEmpathyRating,
+                ),
+
+                // 평가완료 버튼
+
+              ],
+            ),
           ),
         ],
       ),
