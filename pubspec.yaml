@@ -42,6 +42,7 @@ dependencies:
   table_calendar: ^3.0.9
   fl_chart: ^0.70.2
   flutter_html: ^3.0.0-beta.2
+  blur: ^4.0.0
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.3.1
 

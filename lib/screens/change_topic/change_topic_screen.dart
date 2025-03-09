@@ -1,5 +1,8 @@
+import 'dart:ui';
+
+import 'package:blur/blur.dart';
 import 'package:ego/models/chat/chat_topic_model.dart';
-import 'package:ego/sample/cmyk-16/showChatHistoryPopup.dart';
+import 'package:ego/screens/change_topic/showChatHistoryPopup.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
@@ -49,7 +52,6 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          
           // 페이지 제목 부분
           Padding(
             padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
@@ -178,17 +180,38 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
                               title: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // mainTopic부분
-                                  Text(
-                                    chatItem.mainTopic,
-                                    style: TextStyle(
-                                      color:
-                                          canWriteDiary
-                                              ? AppColors.gray100
-                                              : AppColors.black,
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                  // Row로 mainTopic과 reason을 한 줄로 배치
+                                  Row(
+                                    children: [
+                                      // reason부분
+                                      if (chatItem.reason != null &&
+                                          !chatItem.canWriteDiary)
+                                        Blur(
+                                          blur: 1.5,
+                                          blurColor: AppColors.white,
+                                          child: Text(
+                                            "${chatItem.reason!} ",
+                                            style: TextStyle(
+                                              color: AppColors.gray900,
+                                              fontSize: 16.sp,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+
+                                      // mainTopic부분
+                                      Text(
+                                        chatItem.mainTopic,
+                                        style: TextStyle(
+                                          color:
+                                              canWriteDiary
+                                                  ? AppColors.gray100
+                                                  : AppColors.black,
+                                          fontSize: 16.sp,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
 
                                   // subTopic부분
@@ -234,34 +257,38 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
           ),
 
           // 일기 작성 확정 버튼
-          if(widget.isFinalEdit)
-          Container(
-            padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 20.w),
-            width: double.infinity,
-            child: TextButton(
-              onPressed:
-                  () => {
-                    widget.chatHistory.asMap().forEach((index, item) {
-                      print('$index 번째: ${item.mainTopic}');
-                    }),
-                  },
-              style: TextButton.styleFrom(
-                backgroundColor: AppColors.deepPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.r),
+          if (widget.isFinalEdit)
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 15.h, horizontal: 20.w),
+              width: double.infinity,
+              child: TextButton(
+                onPressed:
+                    () => {
+                  // TODO 일기 작성 요청보내고 수정 화면으로 넘어가기
+                      widget.chatHistory.asMap().forEach((index, item) {
+                        print('$index 번째: ${item.mainTopic}');
+                      }),
+                    },
+                style: TextButton.styleFrom(
+                  backgroundColor: AppColors.deepPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 15.h,
+                  ),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-              ),
-              child: Text(
-                "저장하고 일기 만들기",
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w700,
+                child: Text(
+                  "저장하고 일기 만들기",
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
