@@ -94,6 +94,12 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
                     widget.chatHistory.insert(newIndex, item);
                   });
                 },
+                proxyDecorator: (child, index, animation) {
+                  return Opacity(
+                    opacity: 0.8,
+                    child: child,
+                  );
+                },
                 children: [
                   for (
                     int index = 0;
@@ -102,7 +108,6 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
                   )
                     Dismissible(
                       key: ValueKey(widget.chatHistory[index]),
-                      // 고유한 키 설정
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) {
                         var deletedItem = widget.chatHistory[index];
@@ -137,107 +142,100 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
                           ],
                         ),
                       ),
-                      child: Builder(
-                        builder: (context) {
-                          final chatItem = widget.chatHistory[index];
-                          final canWriteDiary = chatItem.canWriteDiary;
+                      child: Material(
+                        child: Builder(
+                          builder: (context) {
+                            final chatItem = widget.chatHistory[index];
+                            final canWriteDiary = chatItem.canWriteDiary;
 
-                          return Container(
-                            key: ValueKey(chatItem), // Container에도 key 설정
-                            decoration: BoxDecoration(
-                              color:
-                                  canWriteDiary
-                                      ? AppColors.deepPrimary
-                                      : AppColors.white,
-                              border: Border(
-                                top: BorderSide(
-                                  color:
-                                      canWriteDiary
-                                          ? AppColors.white
-                                          : AppColors.gray200,
-                                  width: 0.5.h,
-                                ),
-                                bottom: BorderSide(
-                                  color:
-                                      canWriteDiary
-                                          ? AppColors.white
-                                          : AppColors.gray200,
-                                  width: 0.5.h,
+                            return Container(
+                              key: ValueKey(chatItem),
+                              decoration: BoxDecoration(
+                                color:
+                                    canWriteDiary
+                                        ? AppColors.deepPrimary
+                                        : AppColors.white,
+                                border: Border(
+                                  top: BorderSide(
+                                    color:
+                                        canWriteDiary
+                                            ? AppColors.white
+                                            : AppColors.gray200,
+                                    width: 0.5.h,
+                                  ),
+                                  bottom: BorderSide(
+                                    color:
+                                        canWriteDiary
+                                            ? AppColors.white
+                                            : AppColors.gray200,
+                                    width: 0.5.h,
+                                  ),
                                 ),
                               ),
-                            ),
-
-                            // item 부분
-                            child: ListTile(
-                              leading:
-                                  canWriteDiary
-                                      ? SvgPicture.asset(
-                                        'assets/icon/draggable_white_icon.svg',
-                                      )
-                                      : SvgPicture.asset(
-                                        'assets/icon/draggable_icon.svg',
-                                      ),
-                              title: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Row로 mainTopic과 reason을 한 줄로 배치
-                                  Row(
-                                    children: [
-                                      // reason부분
-                                      if (chatItem.reason != null &&
-                                          !chatItem.canWriteDiary)
-                                        Blur(
-                                          blur: 1.5,
-                                          blurColor: AppColors.white,
-                                          child: Text(
-                                            "${chatItem.reason!} ",
-                                            style: TextStyle(
-                                              color: AppColors.gray900,
-                                              fontSize: 16.sp,
-                                              fontWeight: FontWeight.w500,
+                              child: ListTile(
+                                leading:
+                                    canWriteDiary
+                                        ? SvgPicture.asset(
+                                          'assets/icon/draggable_white_icon.svg',
+                                        )
+                                        : SvgPicture.asset(
+                                          'assets/icon/draggable_icon.svg',
+                                        ),
+                                title: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        if (chatItem.reason != null &&
+                                            !chatItem.canWriteDiary)
+                                          Blur(
+                                            blur: 1.5,
+                                            blurColor: AppColors.white,
+                                            child: Text(
+                                              "${chatItem.reason!} ",
+                                              style: TextStyle(
+                                                color: AppColors.gray900,
+                                                fontSize: 16.sp,
+                                                fontWeight: FontWeight.w500,
+                                              ),
                                             ),
                                           ),
+                                        Text(
+                                          chatItem.mainTopic,
+                                          style: TextStyle(
+                                            color:
+                                                canWriteDiary
+                                                    ? AppColors.gray100
+                                                    : AppColors.black,
+                                            fontSize: 16.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-
-                                      // mainTopic부분
-                                      Text(
-                                        chatItem.mainTopic,
-                                        style: TextStyle(
-                                          color:
-                                              canWriteDiary
-                                                  ? AppColors.gray100
-                                                  : AppColors.black,
-                                          fontSize: 16.sp,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  // subTopic부분
-                                  Text(
-                                    chatItem.subTopic,
-                                    style: TextStyle(
-                                      color:
-                                          canWriteDiary
-                                              ? AppColors.gray100
-                                              : AppColors.black,
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w500,
+                                      ],
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ],
+                                    Text(
+                                      chatItem.subTopic,
+                                      style: TextStyle(
+                                        color:
+                                            canWriteDiary
+                                                ? AppColors.gray100
+                                                : AppColors.black,
+                                        fontSize: 14.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ],
+                                ),
+                                onTap:
+                                    () =>
+                                        _showPopup(context, chatItem.mainTopic),
                               ),
-                              onTap:
-                                  () => _showPopup(context, chatItem.mainTopic),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
-
-                      // 삭제 동작
                       confirmDismiss: (direction) async {
                         bool? confirmed = await showConfirmDialog(
                           context: context,
@@ -264,7 +262,7 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
               child: TextButton(
                 onPressed:
                     () => {
-                  // TODO 일기 작성 요청보내고 수정 화면으로 넘어가기
+                      // TODO 일기 작성 요청보내고 수정 화면으로 넘어가기
                       widget.chatHistory.asMap().forEach((index, item) {
                         print('$index 번째: ${item.mainTopic}');
                       }),
