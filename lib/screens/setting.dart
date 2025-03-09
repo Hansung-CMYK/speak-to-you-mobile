@@ -4,6 +4,7 @@ import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Setting extends StatelessWidget {
   @override
@@ -38,9 +39,13 @@ class Setting extends StatelessWidget {
             //   MaterialPageRoute(builder: (_) => NoticePage()),
             // );
           }),
-          content('문의하기', () {
-            // 문의하기 팝업 또는 페이지 이동
+          content('문의하기', () async {
+            final url = Uri(scheme: 'mailto', path: '2@gmail.com');
+            if (await canLaunchUrl(url)) {
+              await launchUrl(url);
+            }
           }),
+
           content('이용약관', () {
             // Navigator.push(
             //   context,
