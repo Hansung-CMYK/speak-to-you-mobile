@@ -9,17 +9,19 @@ import 'package:ego/models/chat/chat_content_model.dart';
 /// reason : 일기를 작성할 수 없는 이유[String]
 class ChatTopicModel {
   final String id;
-  final String topic;
+  final String mainTopic;
+  final String subTopic;
   final List<ChatContentModel> chats;
   final bool canWriteDiary;
   final String? reason;
 
   ChatTopicModel({
     required this.id,
-    required this.topic,
+    required this.mainTopic,
+    required this.subTopic,
     required this.chats,
     required this.canWriteDiary,
-    required this.reason,
+    this.reason
   });
 
   // JSON 변환 함수
@@ -30,7 +32,8 @@ class ChatTopicModel {
 
     return ChatTopicModel(
       id: json['id'],
-      topic: json['topic'],
+      mainTopic: json['topic'],
+      subTopic: json['subTopic'],
       chats: chats,
       canWriteDiary: json['canWriteDiary'],
       reason: json['reason']
@@ -43,7 +46,8 @@ class ChatTopicModel {
 
     return {
       'id': id,
-      'topic': topic,
+      'topic': mainTopic,
+      'subTopic': subTopic,
       'chats': chatsJson,
       'canWriteDiary': canWriteDiary,
       'reason': reason

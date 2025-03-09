@@ -130,6 +130,9 @@ flutter:
     - assets/icon/total_rate.svg
     - assets/icon/total_rate_clicked.svg
     - assets/icon/arrow_back.svg
+    - assets/icon/trash.svg
+    - assets/icon/draggable_icon.svg
+    - assets/icon/draggable_white_icon.svg
 
     - assets/icon/right_arrow.svg
     - assets/icon/danger.svg

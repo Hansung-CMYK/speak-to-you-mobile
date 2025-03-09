@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 /// 채팅의 내용 모델
 ///
 /// [id] : Chatting id [String]
@@ -39,4 +41,14 @@ class ChatContentModel {
       'isUser': isUser,
     };
   }
+
+  /// 대화 내용 시간을 AM HH:MM 형태로 바꿉니다.
+  ///
+  /// dateStr : 전달받는 시간 형식입니다. (yyyy/MM/dd/HH:mm:ss의 형식을 가집니다.) [String]
+  String getAMPMTime() {
+    DateTime dateTime = DateFormat('yyyy/MM/dd/HH:mm:ss').parse(this.time);
+
+    return DateFormat('aHH:mm').format(dateTime);
+  }
 }
+
