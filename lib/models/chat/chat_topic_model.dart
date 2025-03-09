@@ -6,36 +6,47 @@ import 'package:ego/models/chat/chat_content_model.dart';
 /// topic : 주제 제목 [String]
 /// chats : 나눈 대화 내용 [List]
 /// canWriteDiary : 일기 작성 여부 [bool]
-/// TODO reason : 사유에 따라 모자이크(?)
+/// reason : 일기를 작성할 수 없는 이유[String]
 class ChatTopicModel {
   final String id;
   final String topic;
   final List<ChatContentModel> chats;
   final bool canWriteDiary;
+  final String? reason;
 
-  ChatTopicModel({required this.id, required this.topic, required this.chats, required this.canWriteDiary});
+  ChatTopicModel({
+    required this.id,
+    required this.topic,
+    required this.chats,
+    required this.canWriteDiary,
+    required this.reason,
+  });
 
   // JSON 변환 함수
   factory ChatTopicModel.fromJson(Map<String, dynamic> json) {
     var chatList = json['chats'] as List;
-    List<ChatContentModel> chats = chatList.map((chat) => ChatContentModel.fromJson(chat)).toList();
+    List<ChatContentModel> chats =
+        chatList.map((chat) => ChatContentModel.fromJson(chat)).toList();
 
     return ChatTopicModel(
       id: json['id'],
       topic: json['topic'],
       chats: chats,
-      canWriteDiary: json['canWriteDiary']
+      canWriteDiary: json['canWriteDiary'],
+      reason: json['reason']
     );
   }
 
   Map<String, dynamic> toJson() {
-    List<Map<String, dynamic>> chatsJson = chats.map((chat) => chat.toJson()).toList();
+    List<Map<String, dynamic>> chatsJson =
+        chats.map((chat) => chat.toJson()).toList();
 
     return {
       'id': id,
       'topic': topic,
       'chats': chatsJson,
-      'canWriteDiary': canWriteDiary
+      'canWriteDiary': canWriteDiary,
+      'reason': reason
     };
   }
 }
