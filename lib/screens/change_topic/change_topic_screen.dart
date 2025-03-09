@@ -20,7 +20,6 @@ class ChangeTopicScreen extends StatefulWidget {
 
 class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
   void _showPopup(BuildContext context, String topic) {
-
     // 주제에 해당하는 채팅 기록을 가져옴
     final chatMessages =
         widget.chatHistory
@@ -43,8 +42,11 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
           for (int index = 0; index < widget.chatHistory.length; index++)
             Dismissible(
               key: ValueKey(widget.chatHistory[index].topic),
-              direction: DismissDirection.endToStart, // 우에서 좌로 밀기
+              direction: DismissDirection.endToStart,
               onDismissed: (direction) {
+                // 삭제할 아이템을 저장
+                var deletedItem = widget.chatHistory[index];
+
                 setState(() {
                   // 삭제된 아이템 처리
                   widget.chatHistory.removeAt(index);
@@ -52,29 +54,37 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
 
                 // 삭제 완료 후 알림
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('${widget.chatHistory[index].topic} 삭제됨')),
+                  SnackBar(content: Text('${deletedItem.topic} 삭제됨')),
                 );
               },
+
               background: Container(
                 color: Colors.red, // 슬라이드 시 배경 색상
                 alignment: Alignment.centerRight, // 삭제 아이콘을 오른쪽 끝에 배치
                 padding: EdgeInsets.only(right: 20), // 오른쪽 여백 설정
                 child: Icon(Icons.delete, color: Colors.white), // 삭제 아이콘
               ),
+
+              // topic Item
               child: ListTile(
                 key: ValueKey(widget.chatHistory[index].topic),
                 leading: Icon(Icons.drag_handle),
                 title: Text(widget.chatHistory[index].topic),
-                onTap: () => _showPopup(
-                  context,
-                  widget.chatHistory[index].topic,
-                ), // 클릭 시 팝업 띄우기
+                onTap:
+                    () => _showPopup(context, widget.chatHistory[index].topic),
               ),
               confirmDismiss: (direction) async {
                 // 슬라이드 끝까지 밀었을 때 확인 콜백
-                bool? confirmed = await showConfirmDialog(context: context, title: '', dialogType: DialogType.info);
+                bool? confirmed = await showConfirmDialog(
+                  context: context,
+                  title: '주제를 삭제할까요?',
+                  content: '선택한 대화 주제가 기록에서 사라집니다.',
+                  dialogType: DialogType.info,
+                  confirmText: '확인',
+                  cancelText: '취소',
+                );
 
-                return confirmed;
+                return confirmed ?? false;
               },
             ),
         ],
@@ -88,11 +98,9 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
       ),
     );
   }
-
-
 }
 
-/// 📌 클릭한 주제의 내용을 표시하는 풀스크린 팝업 위젯 반환
+/// 클릭한 주제의 내용을 표시하는 풀스크린 팝업 위젯 반환
 Widget showFullScreenPopup(
   BuildContext context,
   String topic,
@@ -102,8 +110,8 @@ Widget showFullScreenPopup(
   chatMessages.sort((a, b) => a.time.compareTo(b.time));
 
   return Dialog(
-    insetPadding: EdgeInsets.zero, // 화면 전체 채우기
-    backgroundColor: Colors.transparent, // 전체 배경 투명
+    insetPadding: EdgeInsets.zero,
+    backgroundColor: Colors.transparent,
     child: Container(
       width: double.infinity,
       height: double.infinity,
@@ -115,11 +123,13 @@ Widget showFullScreenPopup(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // 선택한 주제 표시
                 Text(
-                  topic, // 선택한 주제 표시
+                  topic,
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20),
+
                 // 채팅방 내용
                 Expanded(
                   child: RawScrollbar(
@@ -130,91 +140,102 @@ Widget showFullScreenPopup(
                     padding: EdgeInsets.only(right: 2.w),
                     child: ListView(
                       padding: EdgeInsets.symmetric(horizontal: 20),
-                      children: chatMessages.map((message) {
-                        bool isUserMessage = message.isUser;
-                        return Row(
-                          mainAxisAlignment:
-                          isUserMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment:
-                              isUserMessage ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                      children:
+                          chatMessages.map((message) {
+                            bool isUserMessage = message.isUser;
+                            return Row(
+                              mainAxisAlignment:
+                                  isUserMessage
+                                      ? MainAxisAlignment.end
+                                      : MainAxisAlignment.start,
                               children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                Column(
+                                  crossAxisAlignment:
+                                      isUserMessage
+                                          ? CrossAxisAlignment.end
+                                          : CrossAxisAlignment.start,
                                   children: [
-                                    if (!isUserMessage) ...[
-                                      // 남이 보낸 메시지: 채팅 내용, 시간
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.only(bottom: 5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.blueAccent,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: ConstrainedBox(
-                                          constraints: BoxConstraints(maxWidth: 250.w),
-                                          child: Text(
-                                            message.content,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        if (!isUserMessage) ...[
+                                          // 남이 보낸 메시지: 채팅 내용, 시간
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            margin: EdgeInsets.only(bottom: 5),
+                                            decoration: BoxDecoration(
+                                              color: Colors.blueAccent,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        formatToAMPM(message.time),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                    ] else ...[
-                                      // 내가 보낸 메시지: 시간, 채팅 내용
-                                      Text(
-                                        formatToAMPM(message.time),
-                                        style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                        ),
-                                      ),
-                                      SizedBox(width: 8),
-                                      Container(
-                                        padding: EdgeInsets.all(10),
-                                        margin: EdgeInsets.only(bottom: 5),
-                                        decoration: BoxDecoration(
-                                          color: Colors.green,
-                                          borderRadius: BorderRadius.circular(10),
-                                        ),
-                                        child: ConstrainedBox(
-                                          constraints: BoxConstraints(maxWidth: 250.w),
-                                          child: Text(
-                                            message.content,
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
+                                            child: ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                maxWidth: 250.w,
+                                              ),
+                                              child: Text(
+                                                message.content,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                softWrap: true,
+                                                overflow: TextOverflow.visible,
+                                              ),
                                             ),
-                                            softWrap: true,
-                                            overflow: TextOverflow.visible,
                                           ),
-                                        ),
-                                      ),
-                                    ],
+                                          SizedBox(width: 8),
+                                          Text(
+                                            formatToAMPM(message.time),
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ] else ...[
+                                          // 내가 보낸 메시지: 시간, 채팅 내용
+                                          Text(
+                                            formatToAMPM(message.time),
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Container(
+                                            padding: EdgeInsets.all(10),
+                                            margin: EdgeInsets.only(bottom: 5),
+                                            decoration: BoxDecoration(
+                                              color: Colors.green,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                maxWidth: 250.w,
+                                              ),
+                                              child: Text(
+                                                message.content,
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                                softWrap: true,
+                                                overflow: TextOverflow.visible,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ],
-                            ),
-                          ],
-                        );
-                      }).toList(),
+                            );
+                          }).toList(),
                     ),
                   ),
-                )
-
+                ),
               ],
             ),
           ),
@@ -253,3 +274,7 @@ String formatToAMPM(String dateStr) {
 
   return DateFormat('aHH:mm').format(dateTime);
 }
+
+///TODO 확인 버튼 (순서 바뀌는 지 확인) - 2
+///주제 작성 할 수 있는 것과 없는 것 디자인 - 1
+/// 대화 내역보기 디자인 수정 - 1
