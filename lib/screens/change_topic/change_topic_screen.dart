@@ -54,7 +54,7 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
         children: [
           // 페이지 제목 부분
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 20.w),
+            padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 20.w),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -67,7 +67,7 @@ class _ChangeTopicScreenState extends State<ChangeTopicScreen> {
                   ),
                 ),
                 Text(
-                  '이야기중인 대화주제를 변경 할수있어요.',
+                  '이야기 중인 대화 주제를 변경할 수 있어요.',
                   style: TextStyle(
                     color: AppColors.gray600,
                     fontSize: 14.sp,

@@ -83,6 +83,9 @@ Widget showChatHistoryPopup(
                                             // 남이 보낸 메시지: 채팅 내용, 시간
                                             Container(
                                               padding: EdgeInsets.all(10.r),
+                                              margin: EdgeInsets.only(
+                                                bottom: 5.h,
+                                              ),
                                               decoration: BoxDecoration(
                                                 color: Colors.blueAccent,
                                                 borderRadius:
