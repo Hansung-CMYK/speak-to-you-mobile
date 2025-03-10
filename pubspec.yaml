@@ -45,6 +45,7 @@ dependencies:
   blur: ^4.0.0
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.3.1
+  share_plus: ^10.1.4
 
 dev_dependencies:
   flutter_test:

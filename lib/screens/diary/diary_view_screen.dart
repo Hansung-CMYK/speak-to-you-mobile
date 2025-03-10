@@ -1,3 +1,4 @@
+import 'package:ego/screens/diary/share_all_diary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +10,8 @@ import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/button/svg_button.dart';
-import 'helped_ego_info_container.dart';
 
+import 'helped_ego_info_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -101,7 +102,18 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                       width: 20.w,
                       height: 20.h,
                       radius: 16.r,
-                      onTab: () => {},
+                      onTab: () {
+                        // TODO 일기 공유시 템플렛 필요
+                        final customToast = CustomToast(
+                          toastMsg: '전체 일기가 공유되었습니다.',
+                          iconPath: 'assets/icon/complete.svg',
+                          backgroundColor: AppColors.accent,
+                          fontColor: AppColors.white,
+                        );
+                        customToast.init(fToast);
+
+                        shareAllDiary('전체 공유', customToast);
+                      },
                     ),
                     SizedBox(width: 12.w),
                     SvgButton(

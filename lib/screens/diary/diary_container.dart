@@ -1,9 +1,13 @@
 import 'package:ego/screens/diary/diary_view_screen.dart';
+import 'package:ego/screens/diary/share_one_diary.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
+import '../../widgets/customtoast/custom_toast.dart';
 
 class DiaryContainer extends StatefulWidget {
   final Diary diary;
@@ -17,6 +21,15 @@ class DiaryContainer extends StatefulWidget {
 class _DiaryContainerState extends State<DiaryContainer> {
   int cnt = 4; // 이미지 재생성 횟수
 
+  late FToast fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+    fToast.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     Diary diary = widget.diary;
@@ -27,24 +40,26 @@ class _DiaryContainerState extends State<DiaryContainer> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // 일기 이미지 부분
-          LayoutBuilder(builder: (context, constraints){
-            double size = constraints.maxWidth;
+          LayoutBuilder(
+            builder: (context, constraints) {
+              double size = constraints.maxWidth;
 
-            return Container(
-              margin: EdgeInsets.only(bottom: 10.h),
-              child: Container(
-                width: size,
-                height: size,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(diary.image),
-                    fit: BoxFit.cover,
+              return Container(
+                margin: EdgeInsets.only(bottom: 10.h),
+                child: Container(
+                  width: size,
+                  height: size,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(diary.image),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.circular(8.r),
                   ),
-                  borderRadius: BorderRadius.circular(8.r),
                 ),
-              ),
-            );
-          }),
+              );
+            },
+          ),
 
           // 이미지 재생성 횟수, 버튼
           Row(
@@ -117,10 +132,18 @@ class _DiaryContainerState extends State<DiaryContainer> {
                       width: 14.w,
                       height: 14.h,
                     ),
-                    onPressed:
-                        () => {
-                          // TODO 해당 주제만 공유
-                        },
+                    onPressed: () {
+                      // TODO 해당 주제만 공유
+                      final customToast = CustomToast(
+                        toastMsg: '하나의 일기가 공유되었습니다.',
+                        iconPath: 'assets/icon/complete.svg',
+                        backgroundColor: AppColors.accent,
+                        fontColor: AppColors.white,
+                      );
+                      customToast.init(fToast);
+
+                      shareOneDiary('하나의 일기 공유', customToast);
+                    },
                   ),
                 ),
               ],
