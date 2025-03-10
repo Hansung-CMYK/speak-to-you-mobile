@@ -137,13 +137,13 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                       Container(
                         width: 1.w,
                         height: 16.h,
-                        color: Colors.white.withOpacity(0.6),
+                        color: Colors.white.withValues(alpha: 0.6),
                       ),
                       SizedBox(width: 8.w),
                       Text(
                         '미정',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.6),
+                          color: Colors.white.withValues(alpha: 0.6),
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                           height: 1.5.h,
