@@ -11,8 +11,9 @@ import '../../widgets/customtoast/custom_toast.dart';
 
 class DiaryContainer extends StatefulWidget {
   final Diary diary;
+  final int containerId;
 
-  DiaryContainer({Key? key, required this.diary}) : super(key: key);
+  DiaryContainer({Key? key, required this.diary, required this.containerId}) : super(key: key);
 
   @override
   _DiaryContainerState createState() => _DiaryContainerState();
@@ -33,8 +34,10 @@ class _DiaryContainerState extends State<DiaryContainer> {
   @override
   Widget build(BuildContext context) {
     Diary diary = widget.diary;
+    int containerId = widget.containerId;
 
     return Container(
+      key: Key('DiaryContainer_${containerId}'),
       padding: EdgeInsets.symmetric(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,6 +71,7 @@ class _DiaryContainerState extends State<DiaryContainer> {
               // 횟수
               Container(
                 child: Text(
+                  key: Key('RegenCnt_${containerId}'),
                   '${cnt}P',
                   style: TextStyle(
                     color: AppColors.gray400,
@@ -85,6 +89,7 @@ class _DiaryContainerState extends State<DiaryContainer> {
                 width: 16.w,
                 height: 16.h,
                 child: IconButton(
+                  key: Key('RegenImgBtn_${containerId}'),
                   padding: EdgeInsets.zero,
                   onPressed: () {
                     if (cnt > 0) {

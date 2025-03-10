@@ -154,7 +154,18 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                 ),
 
                 // 일기 정보 제공
-                ...diaries.map((diary) => DiaryContainer(diary: diary)),
+                ...diaries
+                    .asMap()
+                    .map((index, diary) {
+                      return MapEntry(
+                        index,
+                        DiaryContainer(
+                          diary: diary,
+                          containerId: index,
+                        ),
+                      );
+                    })
+                    .values,
 
                 // 일기 작성해준 EGO 정보
                 HelpedEgoInfoContainer(context, egoInfoModel),
