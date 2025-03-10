@@ -1,4 +1,3 @@
-import 'package:ego/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -27,11 +26,13 @@ class CustomMessageInput extends StatelessWidget {
       bottom: isVisible ? keyboardHeight : -100.h,
       left: 0,
       right: 0,
-      child: isVisible ? ScreenUtilInit(
-        designSize: Size(393, 852),
-        builder:
-            (context, child) => _buildInputField(context),
-      ) : const SizedBox.shrink(),
+      child:
+          isVisible
+              ? ScreenUtilInit(
+                designSize: Size(393, 852),
+                builder: (context, child) => _buildInputField(context),
+              )
+              : const SizedBox.shrink(),
     );
   }
 
@@ -50,7 +51,12 @@ class CustomMessageInput extends StatelessWidget {
           Container(
             width: double.infinity,
             height: 50.h,
-            padding: EdgeInsets.only(top: 4.h, left: 16.w, right: 4.w, bottom: 4.h),
+            padding: EdgeInsets.only(
+              top: 4.h,
+              left: 16.w,
+              right: 4.w,
+              bottom: 4.h,
+            ),
             decoration: ShapeDecoration(
               color: AppColors.white,
               shape: RoundedRectangleBorder(
