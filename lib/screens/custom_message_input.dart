@@ -39,7 +39,6 @@ class CustomMessageInput extends StatelessWidget {
   Widget _buildInputField(BuildContext context) {
     return Container(
       width: 353.w,
-      height: 80.h,
       padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
       decoration: const BoxDecoration(color: AppColors.white),
       child: Column(
@@ -49,8 +48,6 @@ class CustomMessageInput extends StatelessWidget {
         spacing: 10.sp,
         children: [
           Container(
-            width: double.infinity,
-            height: 50.h,
             padding: EdgeInsets.only(
               top: 4.h,
               left: 16.w,
@@ -61,22 +58,29 @@ class CustomMessageInput extends StatelessWidget {
               color: AppColors.white,
               shape: RoundedRectangleBorder(
                 side: BorderSide(width: 1.w, color: AppColors.gray200),
-                borderRadius: BorderRadius.circular(100.r),
+                borderRadius: BorderRadius.circular(20.r),
               ),
+            ),
+            constraints: BoxConstraints(
+              minHeight: 30.h, // 최소 높이 설정
+              maxHeight: 100.h, // 최대 높이 설정
             ),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
+                    keyboardType: TextInputType.multiline,
                     controller: controller,
                     focusNode: focusNode,
-                    maxLines: 3,
+                    maxLines: null,
+                    // 자동 줄바꿈 허용
                     minLines: 1,
+                    // 최소 한 줄 유지
                     decoration: InputDecoration(
                       hintText: '메세지를 입력하세요...',
                       border: InputBorder.none,
                       hintStyle: TextStyle(
-                        color: AppColors.gray900,
+                        color: AppColors.gray700,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w500,
                         letterSpacing: -0.8,

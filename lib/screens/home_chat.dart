@@ -93,7 +93,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
         onTap: () => FocusScope.of(context).unfocus(),
         child: Container(
           clipBehavior: Clip.antiAlias,
-          decoration: BoxDecoration(color: Colors.white),
+          decoration: BoxDecoration(color: AppColors.white),
           child: Stack(
             children: [
               Positioned(
@@ -111,14 +111,14 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                       begin: Alignment(1.00, 0.00),
                       end: Alignment(-1, 0),
                       colors: [
-                        AppColors.vividOrange,
-                        AppColors.softCoralPink,
-                        AppColors.amethystPurple,
                         AppColors.royalBlue,
+                        AppColors.amethystPurple,
+                        AppColors.softCoralPink,
+                        AppColors.vividOrange,
                       ],
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                   ),
                   child: Row(
@@ -126,7 +126,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                       Text(
                         '대화 주제',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
                           height: 1.5.h,
@@ -137,13 +137,13 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                       Container(
                         width: 1.w,
                         height: 16.h,
-                        color: Colors.white.withValues(alpha: 0.6),
+                        color: AppColors.white.withValues(alpha: 0.6),
                       ),
                       SizedBox(width: 8.w),
                       Text(
                         '미정',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.6),
+                          color: AppColors.white.withValues(alpha: 0.6),
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                           height: 1.5.h,
@@ -170,14 +170,9 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                 child: Container(
                   width: 353.w,
                   height: 63.h,
-                  padding: EdgeInsets.only(
-                    top: 8.h,
-                    left: 8.w,
-                    right: 8.w,
-                    bottom: 8.h,
-                  ),
+                  padding: EdgeInsets.all(8.w),
                   decoration: ShapeDecoration(
-                    color: Colors.white,
+                    color: AppColors.white,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(width: 1.w, color: AppColors.gray200),
                       borderRadius: BorderRadius.circular(8.r),
@@ -190,7 +185,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                     children: [
                       Expanded(
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 8.h),
+                          padding: EdgeInsets.symmetric(horizontal: 8.w),
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -201,7 +196,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                                 child: Text(
                                   '오늘의 EGO',
                                   style: TextStyle(
-                                    color: Color(0xFF72787F),
+                                    color: AppColors.gray600,
                                     fontSize: 14.sp,
                                     fontWeight: FontWeight.w500,
                                     height: 1.5.h,
@@ -243,7 +238,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                 child: Container(
                   width: 91.w,
                   height: 32.h,
-                  padding: EdgeInsets.all(4),
+                  padding: EdgeInsets.all(4.r),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -256,7 +251,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                           style: TextStyle(
                             color: AppColors.gray600,
                             fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
+                            fontWeight: FontWeight.w500,
                             height: 1.5.h,
                           ),
                         ),
@@ -333,7 +328,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                       Text(
                         '너는?',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                           height: 1.5.h,
@@ -372,7 +367,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
                       Text(
                         '생각보다 괜찮은 하루였어! 아침에 조금 일찍\n나왔더니 지하철도 널널하고 버스에서도 앉아서\n출근했더니 덜 피곤한 하루였어',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.white,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,
                           height: 1.5.h,

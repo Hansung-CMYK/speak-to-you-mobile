@@ -36,7 +36,7 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
     with SingleTickerProviderStateMixin {
   /// 선택한 Tab과 Body를 매핑하는 Controller이다.
   late TabController _tabController;
-
+  final ScrollController _scrollController = ScrollController();
   /// _tabCntroller 초기화
   @override
   void initState() {
@@ -47,6 +47,7 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
   /// _tabCntroller 제거
   @override
   void dispose() {
+    _scrollController.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -58,6 +59,9 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
       body: Container(
         color: AppColors.gray200,
         child: SingleChildScrollView(
+          controller: _scrollController,
+          scrollDirection: Axis.vertical,
+
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
             child: Column(
@@ -203,7 +207,7 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
                     '블라블라 오늘도 블라블티나',
                     AppColors.royalBlue,
                     Alignment.centerRight,
-                    textColor: Colors.white,
+                    textColor: AppColors.white,
                     '오전 9:20',
                     width: 199.w,
                     bubbleType: BubbleType.topRightRounded
@@ -222,7 +226,7 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
     Color bgColor,
     Alignment alignment,
     String time, {
-    Color textColor = Colors.black,
+    Color textColor = AppColors.black,
     double height = 40.0,
     double width = 229.0,
     BubbleType bubbleType = BubbleType.fullRounded,
