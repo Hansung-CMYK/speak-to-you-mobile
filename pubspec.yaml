@@ -79,6 +79,7 @@ flutter:
     - assets/icon/text_logo_o.svg
     - assets/icon/naver_logo.svg
     - assets/icon/google_logo.svg
+    - assets/image/sent.gif
     - assets/icon/info.svg
     - assets/icon/share_icon.svg
     - assets/icon/success.svg
@@ -134,7 +135,10 @@ flutter:
     - assets/icon/trash.svg
     - assets/icon/draggable_icon.svg
     - assets/icon/draggable_white_icon.svg
-
+    - assets/icon/small_right.svg
+    - assets/icon/comment_smile.svg
+    - assets/icon/ego_icon_big.svg
+    - assets/icon/paper_plane.svg
     - assets/icon/right_arrow.svg
     - assets/icon/danger.svg
   # An image asset can refer to one or more resolution-specific "variants", see
