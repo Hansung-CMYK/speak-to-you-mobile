@@ -98,7 +98,6 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
             children: [
               Positioned(
                 left: 20.w,
-                top: 26.h,
                 child: Container(
                   width: 353.w,
                   height: 38.h,
@@ -166,7 +165,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 21.w,
-                top: 72.h,
+                top: 46.h,
                 child: Container(
                   width: 353.w,
                   height: 63.h,
@@ -234,7 +233,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 280.w,
-                top: 143.h,
+                top: 117.h,
                 child: Container(
                   width: 91.w,
                   height: 32.h,
@@ -262,7 +261,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 20.w,
-                top: 256.h,
+                top: 230.h,
                 child: Container(
                   width: 191.w,
                   height: 40.h,
@@ -301,7 +300,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 311.w,
-                top: 304.h,
+                top: 278.h,
                 child: Container(
                   width: 62.w,
                   height: 40.h,
@@ -340,7 +339,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 33.w,
-                top: 348.h,
+                top: 322.h,
                 child: Container(
                   width: 341.w,
                   height: 92.h,
@@ -379,7 +378,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 21.w,
-                top: 448.h,
+                top: 422.h,
                 child: Container(
                   width: 191.w,
                   height: 40.h,
@@ -421,7 +420,7 @@ class HomeChatScreenState extends ConsumerState<HomeChatScreen>
               ),
               Positioned(
                 left: 20.w,
-                top: 500.h,
+                top: 474.h,
                 child: SizedBox(
                   width: 353.w,
                   height: 220.h,

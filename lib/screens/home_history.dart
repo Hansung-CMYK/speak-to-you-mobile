@@ -58,162 +58,46 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
       appBar: StackAppBar(title: '대화기록'),
       body: Container(
         color: AppColors.gray200,
-        child: SingleChildScrollView(
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-
-          child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                  '오늘은 어떤일이 있었어?',
-                  AppColors.gray100,
-                  Alignment.centerLeft,
-                  '오전 9:20',
-                  width: 178.w,
-                  bubbleType: BubbleType.bottomLeftRounded
+        child: Padding(
+          padding: EdgeInsets.only(right: 9.w),
+          child: RawScrollbar(
+            thumbVisibility: true,
+            thickness: 3,
+            thumbColor: AppColors.gray700,
+            radius: Radius.circular(10.r),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              scrollDirection: Axis.vertical,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+                child: ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  // SingleChildScrollView와 충돌 방지
+                  shrinkWrap: true,
+                  // 부모 위젯 크기에 맞춤
+                  itemCount: chatData.length,
+                  // 데이터 리스트 개수
+                  itemBuilder: (context, index) {
+                    final chat = chatData[index];
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 12.h),
+                      child: _buildChatBubble(
+                        chat.message,
+                        chat.color,
+                        chat.alignment,
+                        chat.height,
+                        chat.width,
+                        chat.time,
+                        textColor:
+                            chat.textColor != null
+                                ? chat.textColor!
+                                : AppColors.black,
+                        bubbleType: chat.bubbleType,
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                  '블라블라 오늘도 블라블트라',
-                  AppColors.royalBlue,
-                  Alignment.centerRight,
-                  textColor: Colors.white,
-                  '오전 9:20',
-                  width: 199.w,
-                  bubbleType: BubbleType.bottomRightRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '오늘은 어떤일이 있었어?',
-                    AppColors.gray100,
-                    Alignment.centerLeft,
-                    '오전 9:20',
-                    width: 178.w,
-                    bubbleType: BubbleType.bottomLeftRounded
-                ),
-                SizedBox(height: 4.h),
-                _buildChatBubble(
-                    '오늘은 어떤일이 있었어?',
-                    AppColors.gray100,
-                    Alignment.centerLeft,
-                    '오전 9:20',
-                    width: 178.w,
-                    bubbleType: BubbleType.topLeftBottomLeftRounded
-                ),
-                SizedBox(height: 4.h),
-                _buildChatBubble(
-                    '오늘은 어떤일이 있었어?',
-                    AppColors.gray100,
-                    Alignment.centerLeft,
-                    '오전 9:20',
-                    width: 178.w,
-                    bubbleType: BubbleType.topLeftRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '아 배고파 오늘 뭐 먹지',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: Colors.white,
-                    '오전 9:20',
-                    width: 163.w,
-                    bubbleType: BubbleType.bottomRightRounded
-                ),
-                SizedBox(height: 4.h),
-                _buildChatBubble(
-                    '너는?',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: Colors.white,
-                    '오전 9:20',
-                    width: 60.w,
-                    bubbleType: BubbleType.topRightBottomRightRounded
-                ),
-                SizedBox(height: 4.h),
-                _buildChatBubble(
-                    '블라블라 오늘도 블라블티나',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: Colors.white,
-                    '오전 9:20',
-                    width: 199.w,
-                    bubbleType: BubbleType.topRightRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '말풍선 안에 텍스트 최대 가로 길이\n229px 입니다.',
-                    AppColors.gray100,
-                    Alignment.centerLeft,
-                    '오전 9:20',
-                    width: 253.w,
-                    height: 64.h,
-                    bubbleType: BubbleType.bottomLeftRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '너는?',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: Colors.white,
-                    '오전 9:20',
-                    width: 60.w,
-                    bubbleType: BubbleType.bottomRightRounded
-                ),
-                SizedBox(height: 4.h),
-                _buildChatBubble(
-                    '말풍선 안에 텍스트 최대 가로 길이\n229px 입니다.',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: Colors.white,
-                    '오전 9:20',
-                    width: 253.w,
-                    height: 64.h,
-                    bubbleType: BubbleType.topRightRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '오늘은 어떤일이 있었어?',
-                    AppColors.gray100,
-                    Alignment.centerLeft,
-                    '오전 9:20',
-                    width: 178.w,
-                    bubbleType: BubbleType.topLeftRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '아래쪽이 최신순인가?',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: Colors.white,
-                    '오전 9:20',
-                    width: 161.w,
-                    bubbleType: BubbleType.bottomRightRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '위쪽이 최신순인가?',
-                    AppColors.gray100,
-                    Alignment.centerLeft,
-                    '오전 9:20',
-                    width: 147.w,
-                    bubbleType: BubbleType.topLeftRounded
-                ),
-                SizedBox(height: 12.h),
-                _buildChatBubble(
-                    '블라블라 오늘도 블라블티나',
-                    AppColors.royalBlue,
-                    Alignment.centerRight,
-                    textColor: AppColors.white,
-                    '오전 9:20',
-                    width: 199.w,
-                    bubbleType: BubbleType.topRightRounded
-                ),
-                SizedBox(height: 12.h),
-              ],
+              ),
             ),
           ),
         ),
@@ -225,10 +109,10 @@ class HomeHistoryScreenState extends ConsumerState<HomeHistoryScreen>
     String text,
     Color bgColor,
     Alignment alignment,
+    double height,
+    double width,
     String time, {
     Color textColor = AppColors.black,
-    double height = 40.0,
-    double width = 229.0,
     BubbleType bubbleType = BubbleType.fullRounded,
   }) {
     return Align(
@@ -338,3 +222,170 @@ enum BubbleType {
   topLeftRounded,
   topRightRounded,
 }
+
+class ChatMessage {
+  final String message;
+  final Color color;
+  final Alignment alignment;
+  final double height;
+  final double width;
+  final String time;
+  final Color? textColor;
+  final BubbleType bubbleType;
+
+  ChatMessage({
+    required this.message,
+    required this.color,
+    required this.alignment,
+    required this.height,
+    required this.width,
+    required this.time,
+    this.textColor,
+    required this.bubbleType,
+  });
+}
+
+List<ChatMessage> chatData = [
+  ChatMessage(
+    message: '오늘은 어떤일이 있었어?',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 40.h,
+    width: 178.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.bottomLeftRounded,
+  ),
+  ChatMessage(
+    message: '블라블라 오늘도 블라블트라',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 199.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.bottomRightRounded,
+  ),
+  ChatMessage(
+    message: '오늘은 어떤일이 있었어?',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 40.h,
+    width: 178.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.bottomLeftRounded,
+  ),
+  ChatMessage(
+    message: '오늘은 어떤일이 있었어?',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 40.h,
+    width: 178.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.topLeftBottomLeftRounded,
+  ),
+  ChatMessage(
+    message: '오늘은 어떤일이 있었어?',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 40.h,
+    width: 178.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.topLeftRounded,
+  ),
+  ChatMessage(
+    message: '아 배고파 오늘 뭐 먹지',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 163.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.bottomRightRounded,
+  ),
+  ChatMessage(
+    message: '너는?',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 60.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.topRightBottomRightRounded,
+  ),
+  ChatMessage(
+    message: '블라블라 오늘도 블라블티나',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 199.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.topRightRounded,
+  ),
+  ChatMessage(
+    message: '말풍선 안에 텍스트 최대 가로 길이\n229px 입니다.',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 64.h,
+    width: 253.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.bottomLeftRounded,
+  ),
+  ChatMessage(
+    message: '너는?',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 60.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.bottomRightRounded,
+  ),
+  ChatMessage(
+    message: '말풍선 안에 텍스트 최대 가로 길이\n229px 입니다.',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 64.h,
+    width: 253.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.topRightRounded,
+  ),
+  ChatMessage(
+    message: '오늘은 어떤일이 있었어?',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 40.h,
+    width: 178.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.topLeftRounded,
+  ),
+  ChatMessage(
+    message: '아래쪽이 최신순인가?',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 161.w,
+    time: '오전 9:20',
+    textColor: Colors.white,
+    bubbleType: BubbleType.bottomRightRounded,
+  ),
+  ChatMessage(
+    message: '위쪽이 최신순인가?',
+    color: AppColors.gray100,
+    alignment: Alignment.centerLeft,
+    height: 40.h,
+    width: 147.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.topLeftRounded,
+  ),
+  ChatMessage(
+    message: '블라블라 오늘도 블라블티나',
+    color: AppColors.royalBlue,
+    alignment: Alignment.centerRight,
+    height: 40.h,
+    width: 199.w,
+    time: '오전 9:20',
+    bubbleType: BubbleType.topRightRounded,
+  ),
+];
