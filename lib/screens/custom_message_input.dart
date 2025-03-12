@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../theme/color.dart';
+import 'package:ego/theme/color.dart';
 
 class CustomMessageInput extends StatelessWidget {
   final bool isVisible;
@@ -45,7 +45,7 @@ class CustomMessageInput extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: 10.sp,
+        spacing: 8.h,
         children: [
           Container(
             padding: EdgeInsets.only(
