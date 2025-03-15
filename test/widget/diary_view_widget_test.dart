@@ -1,4 +1,4 @@
-import 'package:ego/sample/cmyk-18/sample-diary-view-screen.dart';
+import 'package:ego/sample/cmyk-18/sample_diary_view_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:ego/screens/diary/diary_view_screen.dart';
 import 'package:ego/screens/diary/share_one_diary.dart';
 import 'package:ego/theme/color.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -93,10 +97,12 @@ class _DiaryContainerState extends State<DiaryContainer> {
                   padding: EdgeInsets.zero,
                   onPressed: () {
                     if (cnt > 0) {
-                      // TODO 이미지 재생성 로직
                       cnt--;
+                      fetchRandomCocktail();
                       setState(() {});
-                    } else {}
+                    } else {
+                      // TODO 횟수 다 사용했을 때 처리 (필요시 메시지 등 추가)
+                    }
                   },
                   icon: SvgPicture.asset(
                     'assets/icon/image_regen.svg',
@@ -176,5 +182,27 @@ class _DiaryContainerState extends State<DiaryContainer> {
         ],
       ),
     );
+  }
+
+  // 임시 호출 API (이미지 URL을 반환)
+  Future<void> fetchRandomCocktail() async {
+    final url = 'https://www.thecocktaildb.com/api/json/v1/1/random.php';
+
+    try {
+      // GET 방식으로 API 호출
+      final response = await http.get(Uri.parse(url));
+
+      // 응답이 성공적인 경우
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          randomImageUrl = data['drinks'][0]['strDrinkThumb'];
+        });
+      } else {
+        print('API 호출 실패, 상태 코드: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('API 호출 중 에러 발생: $e');
+    }
   }
 }
