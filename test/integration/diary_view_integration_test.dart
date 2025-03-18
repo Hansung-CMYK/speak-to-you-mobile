@@ -1,8 +1,8 @@
+import 'package:ego/diary-view-screen-test/test_sample_diary_view_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import '../diary-view-screen-test/test_sample_diary_view_screen.dart';
 
 void main() {
   group('DiaryViewIntegrationTest/', () {
@@ -95,7 +95,7 @@ void main() {
             updatedDecorationImage!.image as NetworkImage;
         print('📷 DiaryView의 첫번째 일기 이미지 URL: ${networkImage.url}');
       } else {
-        print('❌ NetworkImage가 아닙니다.');
+        fail('❌ NetworkImage가 아닙니다.');
       }
     });
   });
