@@ -1,12 +1,13 @@
-import 'package:ego/sample/cmyk-18/sample_diary_view_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import '../diary-view-screen-test/test_sample_diary_view_screen.dart';
+
 void main() {
   // Diary View Screen을  띄우기 위한 버튼이 있는지 확인
   testWidgets('Diary View Widget Test', (WidgetTester tester) async {
-    await tester.pumpWidget(const DiaryViewApp());
+    await tester.pumpWidget(const TestDiaryViewApp());
 
     final gotoDiaryViewButton = find.text('Diary 화면으로 이동');
 
@@ -15,7 +16,7 @@ void main() {
 
   // Diary View Screen을 띄우기
   testWidgets('Goto Diary View Screen', (WidgetTester tester) async {
-    await tester.pumpWidget(const DiaryViewApp());
+    await tester.pumpWidget(const TestDiaryViewApp());
 
     // 화면 이동 버튼 찾기
     final gotoDiaryViewButton = find.text('Diary 화면으로 이동');
@@ -32,7 +33,7 @@ void main() {
 
   // 이미지 재생성시 횟수가 바뀌는지 확인하기 위함
   testWidgets('Goto Diary View Screen', (WidgetTester tester) async {
-    await tester.pumpWidget(const DiaryViewApp());
+    await tester.pumpWidget(const TestDiaryViewApp());
 
     // 화면 이동 버튼 찾기
     final gotoDiaryViewButton = find.text('Diary 화면으로 이동');

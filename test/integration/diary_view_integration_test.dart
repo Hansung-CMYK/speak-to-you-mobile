@@ -1,7 +1,8 @@
-import 'package:ego/sample/cmyk-18/sample_diary_view_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+
+import '../diary-view-screen-test/test_sample_diary_view_screen.dart';
 
 void main() {
   group('DiaryViewIntegrationTest/', () {
@@ -10,7 +11,7 @@ void main() {
     testWidgets('RegenImageBtn_getDiaryImage_isFetchedData', (
       WidgetTester tester,
     ) async {
-      await tester.pumpWidget(const DiaryViewApp());
+      await tester.pumpWidget(const TestDiaryViewApp());
 
       // 화면 이동 버튼 찾기
       final gotoDiaryViewButton = find.text('Diary 화면으로 이동');
