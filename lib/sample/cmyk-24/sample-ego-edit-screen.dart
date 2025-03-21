@@ -2,6 +2,7 @@ import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/ego_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../theme/theme.dart';
 
 void main() {
