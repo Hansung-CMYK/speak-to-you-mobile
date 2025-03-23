@@ -1,7 +1,8 @@
-import 'package:ego/diary-view-screen-test/test_sample_diary_view_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../diary-view-screen-test/test_sample_diary_view_screen.dart';
 
 
 void main() {
