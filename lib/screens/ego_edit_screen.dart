@@ -176,6 +176,8 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                             },
                             decoration: _getInputDecoration('MBTI 선택'),
                             menuMaxHeight: 200.h,
+                            dropdownColor: AppColors.gray100,
+                            borderRadius: BorderRadius.circular(12.r),
                           ),
                         ),
                         SizedBox(height: 24.h),
