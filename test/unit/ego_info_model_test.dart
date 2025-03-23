@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 /// 임시 EGO Model 테스트 입니다.
 ///
 void main() {
-  group('EGO Model Test / ', () {
+  group('EGO Info Model Test', () {
     // 임시 test 객체
     final egoInfoModel = EgoInfoModel(
       id: '1',
@@ -16,10 +16,10 @@ void main() {
       egoSelfIntro: '안녕, 나는 Test EGO야',
     );
 
-    /// 'EgoInfoModel_Serialization_MatchesExpectedValues' 테스트 시나리오
+    /// 'EGO Info Model 직렬화 TC' 테스트 시나리오
     ///
     /// 위에서 정의한 egoInfoModel이 직렬화가 잘 이루어지는지 확인
-    test('EgoInfoModel_Serialization_MatchesExpectedValues', () {
+    test('EGO Info Model 직렬화 TC', () {
       final expectedJson = {
         'id': '1',
         'egoIcon': '',
@@ -32,10 +32,10 @@ void main() {
       expect(egoInfoModel.toJson(), equals(expectedJson));
     });
 
-    /// 'EgoInfoModel_Deserialization_MatchesExpectedValues' 테스트 시나리오
+    /// 'EGO Info Model 역직렬화 TC' 테스트 시나리오
     ///
     /// 위에서 정의한 egoInfoModel이 역직렬화가 잘 이루어지는지 확인
-    test('EgoInfoModel_Deserialization_MatchesExpectedValues', () {
+    test('EGO Info Model 역직렬화 TC', () {
       final ego = EgoInfoModel.fromJson(egoInfoModel.toJson());
 
       expect(ego.id, '1');
@@ -46,10 +46,10 @@ void main() {
       expect(ego.egoSelfIntro, '안녕, 나는 Test EGO야');
     });
 
-    /// 'calcRemainingDays_fromToday_zero' 테스트 시나리오
+    /// 'EGO 생일까지 남은 일자 계산 TC' 테스트 시나리오
     ///
-    /// 오늘이 EGO의 생일인 경우 D-0이 나와냐 하므로 expect 값을 0으로 설정
-    test('calcRemainingDays_fromToday_zero', () {
+    /// 오늘이 EGO의 생일인 경우 D-0이 나와야 하므로 expect 값을 0으로 설정
+    test('EGO 생일까지 남은 일자 계산 TC', () {
       expect(egoInfoModel.calcRemainingDays(), 0);
     });
   });
