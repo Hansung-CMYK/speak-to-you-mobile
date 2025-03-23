@@ -84,13 +84,23 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                                 backgroundColor: AppColors.white,
                                 child: Image.asset('assets/image/ego_icon.png'),
                               ),
-                              IconButton(
-                                icon: SvgPicture.asset(
-                                  'assets/icon/camera.svg',
+                              Container(
+                                width: 48.w,
+                                height: 48.h,
+                                decoration: ShapeDecoration(
+                                  color: AppColors.gray100,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(100.r),
+                                  ),
                                 ),
-                                onPressed: () {
-                                  //TODO 이미지 선택 및 변경 + 변경된 이미지 전송
-                                },
+                                child: IconButton(
+                                  icon: SvgPicture.asset(
+                                    'assets/icon/camera.svg',
+                                  ),
+                                  onPressed: () {
+                                    //TODO 이미지 선택 및 변경 + 변경된 이미지 전송
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -101,9 +111,9 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           style: TextStyle(
                             fontSize: 16.sp,
                             color:
-                                isNameEmpty
-                                    ? AppColors.errorDark
-                                    : AppColors.black,
+                            isNameEmpty
+                                ? AppColors.errorDark
+                                : AppColors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -134,31 +144,31 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           child: DropdownButtonFormField<String>(
                             value: myEgoInfoModel.egoMBTI,
                             items:
-                                [
-                                      "INTJ",
-                                      "INTP",
-                                      "ENTJ",
-                                      "ENTP",
-                                      "INFJ",
-                                      "INFP",
-                                      "ENFJ",
-                                      "ENFP",
-                                      "ISTJ",
-                                      "ISFJ",
-                                      "ESTJ",
-                                      "ESFJ",
-                                      "ISTP",
-                                      "ISFP",
-                                      "ESTP",
-                                      "ESFP",
-                                    ]
-                                    .map(
-                                      (e) => DropdownMenuItem(
-                                        value: e,
-                                        child: Text(e),
-                                      ),
-                                    )
-                                    .toList(),
+                            [
+                              "INTJ",
+                              "INTP",
+                              "ENTJ",
+                              "ENTP",
+                              "INFJ",
+                              "INFP",
+                              "ENFJ",
+                              "ENFP",
+                              "ISTJ",
+                              "ISFJ",
+                              "ESTJ",
+                              "ESFJ",
+                              "ISTP",
+                              "ISFP",
+                              "ESTP",
+                              "ESFP",
+                            ]
+                                .map(
+                                  (e) => DropdownMenuItem(
+                                value: e,
+                                child: Text(e),
+                              ),
+                            )
+                                .toList(),
                             onChanged: (value) {
                               setState(() {
                                 selectedMBTI = value!;
@@ -174,9 +184,9 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           style: TextStyle(
                             fontSize: 16.sp,
                             color:
-                                isIntroEmpty
-                                    ? AppColors.errorDark
-                                    : AppColors.black,
+                            isIntroEmpty
+                                ? AppColors.errorDark
+                                : AppColors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
