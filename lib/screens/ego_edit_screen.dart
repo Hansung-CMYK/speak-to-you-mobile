@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 /// 사용자 EGO를 수정하는 화며입니다.
 ///
@@ -35,6 +36,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
     myEgoInfoModel = widget.myEgoInfoModel;
     _nameController.text = myEgoInfoModel.egoName;
     _egoIntroController.text = myEgoInfoModel.egoSelfIntro;
+    selectedMBTI = myEgoInfoModel.egoMBTI;
   }
 
   @override
@@ -105,15 +107,17 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                             ],
                           ),
                         ),
+
+                        // EGO 이름 부분
                         SizedBox(height: 20.h),
                         Text(
                           'EGO 이름',
                           style: TextStyle(
                             fontSize: 16.sp,
                             color:
-                            isNameEmpty
-                                ? AppColors.errorDark
-                                : AppColors.black,
+                                isNameEmpty
+                                    ? AppColors.errorDark
+                                    : AppColors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -130,6 +134,8 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                             decoration: _getInputDecoration('EGO 이름 입력'),
                           ),
                         ),
+
+                        // MBTI DropDownMenu 부분
                         SizedBox(height: 10.h),
                         Text(
                           'MBTI',
@@ -141,54 +147,79 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(top: 8.h),
-                          child: DropdownButtonFormField<String>(
-                            value: myEgoInfoModel.egoMBTI,
-                            items:
-                            [
-                              "INTJ",
-                              "INTP",
-                              "ENTJ",
-                              "ENTP",
-                              "INFJ",
-                              "INFP",
-                              "ENFJ",
-                              "ENFP",
-                              "ISTJ",
-                              "ISFJ",
-                              "ESTJ",
-                              "ESFJ",
-                              "ISTP",
-                              "ISFP",
-                              "ESTP",
-                              "ESFP",
-                            ]
-                                .map(
-                                  (e) => DropdownMenuItem(
-                                value: e,
-                                child: Text(e),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              value: selectedMBTI,
+                              items:
+                                  [
+                                        "INTJ",
+                                        "INTP",
+                                        "ENTJ",
+                                        "ENTP",
+                                        "INFJ",
+                                        "INFP",
+                                        "ENFJ",
+                                        "ENFP",
+                                        "ISTJ",
+                                        "ISFJ",
+                                        "ESTJ",
+                                        "ESFJ",
+                                        "ISTP",
+                                        "ISFP",
+                                        "ESTP",
+                                        "ESFP",
+                                      ]
+                                      .map(
+                                        (e) => DropdownMenuItem(
+                                          value: e,
+                                          child: Text(
+                                            e,
+                                            style: TextStyle(fontSize: 16.sp),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedMBTI = value!;
+                                });
+                              },
+                              underline: SizedBox(),
+                              dropdownStyleData: DropdownStyleData(
+                                maxHeight: 200.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12.r),
+                                  color: AppColors.gray100,
+                                ),
                               ),
-                            )
-                                .toList(),
-                            onChanged: (value) {
-                              setState(() {
-                                selectedMBTI = value!;
-                              });
-                            },
-                            decoration: _getInputDecoration('MBTI 선택'),
-                            menuMaxHeight: 200.h,
-                            dropdownColor: AppColors.gray100,
-                            borderRadius: BorderRadius.circular(12.r),
+                              buttonStyleData: ButtonStyleData(
+                                height: 60.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.r),
+                                  border: Border.all(color: AppColors.gray200),
+                                  color: AppColors.gray100,
+                                ),
+                              ),
+                              hint: Text(
+                                'MBTI 선택',
+                                style: TextStyle(color: AppColors.gray300),
+                              ),
+                            ),
                           ),
                         ),
+
+                        // 소개글 부분
                         SizedBox(height: 24.h),
                         Text(
                           'EGO 소개글',
                           style: TextStyle(
                             fontSize: 16.sp,
                             color:
-                            isIntroEmpty
-                                ? AppColors.errorDark
-                                : AppColors.black,
+                                isIntroEmpty
+                                    ? AppColors.errorDark
+                                    : AppColors.black,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -210,6 +241,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                     ),
                   ),
 
+                  // 완료 버튼 부분
                   _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () {
                     //TODO 전송 로직 작성
                   }),
