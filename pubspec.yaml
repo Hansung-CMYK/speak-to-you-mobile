@@ -49,6 +49,7 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   url_launcher: ^6.3.1
   share_plus: ^10.1.4
+  dropdown_button2: ^2.3.9
 
 dependency_overrides:
   intl: ^0.20.2
@@ -148,6 +149,10 @@ flutter:
     - assets/icon/paper_plane.svg
     - assets/icon/right_arrow.svg
     - assets/icon/danger.svg
+    - assets/icon/camera.svg
+
+
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 
