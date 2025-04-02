@@ -11,7 +11,9 @@ void main() {
       id: '1',
       egoIcon: '',
       egoName: 'Power',
-      egoBirth: DateFormat('yyyy/MM/dd').format(DateTime.now().add(Duration(days: 0))),
+      egoBirth: DateFormat(
+        'yyyy/MM/dd',
+      ).format(DateTime.now().add(Duration(days: 0))),
       egoPersonality: '착함, 활발',
       egoSelfIntro: '안녕, 나는 Test EGO야',
     );
@@ -24,6 +26,7 @@ void main() {
         'id': '1',
         'egoIcon': '',
         'egoName': 'Power',
+        'egoMBTI': '',
         'egoBirth': DateFormat('yyyy/MM/dd').format(DateTime.now()),
         'egoPersonality': '착함, 활발',
         'egoSelfIntro': '안녕, 나는 Test EGO야',
@@ -42,6 +45,7 @@ void main() {
       expect(ego.egoIcon, '');
       expect(ego.egoName, 'Power');
       expect(ego.egoBirth, DateFormat('yyyy/MM/dd').format(DateTime.now()));
+      expect(ego.egoMBTI, '');
       expect(ego.egoPersonality, '착함, 활발');
       expect(ego.egoSelfIntro, '안녕, 나는 Test EGO야');
     });
