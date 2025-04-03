@@ -5,11 +5,11 @@ import '../../screens/diary/diary_view_screen.dart';
 import '../../theme/theme.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const DiaryViewApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DiaryViewApp extends StatelessWidget {
+  const DiaryViewApp({super.key});
 
   @override
   Widget build(BuildContext context) {
