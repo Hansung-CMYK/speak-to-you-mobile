@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import '../diary-view-screen-test/test_sample_diary_view_screen.dart';
+import '../test-diary-view-screen/test_sample_diary_view_screen.dart';
 
 
 void main() {
