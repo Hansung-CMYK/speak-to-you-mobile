@@ -20,6 +20,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
   /// 선택한 Tab과 Body를 매핑하는 Controller이다.
   late TabController _tabController;
   late final List<EgoInfoModel> egoList;
+  late EgoInfoModel selectedEgo; // 전택된 EGO의 정보
 
   /// _tabCntroller 초기화
   @override
@@ -27,6 +28,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     egoList = widget.egoList;
+    selectedEgo = egoList.first;
   }
 
   /// _tabCntroller 제거
@@ -55,11 +57,9 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                       final index = entry.key;
                       final ego = entry.value;
 
-                      if (index == 0) {
-                        return _buildAvatarWithGradient(ego.egoIcon);
-                      } else {
-                        return _buildAvatar(ego.egoIcon);
-                      }
+                      return index == 0
+                          ? _buildAvatarWithGradient(ego.egoIcon, () => setState(() => selectedEgo = ego))
+                          : _buildAvatar(ego.egoIcon, () => setState(() => selectedEgo = ego));
                     }).toList(),
               ),
             ),
@@ -86,24 +86,74 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
       ),
     );
   }
+
+  // 현재 Ego의 정보 Card
+  Widget _buildSelectedEGO() {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 30.h),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16.r),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.shadowColor,
+              blurRadius: 8,
+              offset: Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '현재 EGO',
+                  style: TextStyle(
+                    color: AppColors.gray600,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.sp,
+                  ),
+                ),
+                Text(
+                  selectedEgo.egoName,
+                  style: TextStyle(
+                    color: AppColors.gray900,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16.sp,
+                  ),
+                ),
+              ],
+            ),
+            _buildAvatar(selectedEgo.egoIcon, () {}), // 클릭 없음
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 // Ego 사진
-Widget _buildAvatar(String assetPath) {
+Widget _buildAvatar(String assetPath, VoidCallback onTap) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 4.w),
-    child: CircleAvatar(backgroundImage: AssetImage(assetPath), radius: 28),
+    child: GestureDetector(
+      onTap: onTap,
+      child: CircleAvatar(backgroundImage: AssetImage(assetPath), radius: 28),
+    ),
   );
 }
 
 // Gradient가 있는 EGO 사진
-Widget _buildAvatarWithGradient(String assetPath) {
+Widget _buildAvatarWithGradient(String assetPath, VoidCallback onTap) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 4.w),
     child: Stack(
       alignment: Alignment.center,
       children: [
-        // 바깥 그라데이션 테두리
         Container(
           width: 72.w,
           height: 72.h,
@@ -121,8 +171,6 @@ Widget _buildAvatarWithGradient(String assetPath) {
             ),
           ),
         ),
-
-        // 중간 배경 (공간을 만들어 주는 역할)
         Container(
           width: 64.w,
           height: 64.h,
@@ -131,55 +179,8 @@ Widget _buildAvatarWithGradient(String assetPath) {
             color: AppColors.white,
           ),
         ),
-
-        // 아바타 이미지
-        _buildAvatar(assetPath)
+        _buildAvatar(assetPath, onTap),
       ],
-    ),
-  );
-}
-
-// 현재 Ego의 정보 Card
-Widget _buildSelectedEGO() {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 30.h),
-    child: Container(
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16.r),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4)),
-        ],
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '현재 EGO',
-                style: TextStyle(
-                  color: AppColors.gray600,
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14.sp,
-                ),
-              ),
-              Text(
-                '선택된 EGO',
-                style: TextStyle(
-                  color: AppColors.gray900,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 16.sp,
-                ),
-              ),
-            ],
-          ),
-
-          _buildAvatar(""),
-        ],
-      ),
     ),
   );
 }
