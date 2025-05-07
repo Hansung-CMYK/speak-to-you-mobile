@@ -2,9 +2,12 @@ import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../models/ego_info_model.dart';
 import '../theme/color.dart';
+import '../widgets/egoicon/ego_list_icon.dart';
+import '../widgets/egoicon/ego_list_icon_gradient.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
   final List<EgoInfoModel> egoList;
@@ -58,8 +61,14 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                       final ego = entry.value;
 
                       return index == 0
-                          ? _buildAvatarWithGradient(ego.egoIcon, () => setState(() => selectedEgo = ego))
-                          : _buildAvatar(ego.egoIcon, () => setState(() => selectedEgo = ego));
+                          ? buildEgoListItemGradient(
+                            ego.egoIcon,
+                            () => setState(() => selectedEgo = ego),
+                          )
+                          : buildEgoListItem(
+                            ego.egoIcon,
+                            () => setState(() => selectedEgo = ego),
+                          );
                     }).toList(),
               ),
             ),
@@ -87,100 +96,97 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
     );
   }
 
-  // 현재 Ego의 정보 Card
+  // 현재 클릭된 EGO의 정보 Card
   Widget _buildSelectedEGO() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 30.h),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16.r),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.shadowColor,
-              blurRadius: 8,
-              offset: Offset(0, 4),
+      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+      child: Slidable(
+        key: Key(selectedEgo.id),
+        startActionPane: ActionPane(
+          motion: BehindMotion(),
+          extentRatio: 0.3,
+          dismissible: DismissiblePane(
+            onDismissed: () {
+              print('문자 보내기 실행!');
+              // TODO: 문자 전송 함수 호출
+            },
+          ),
+          children: [
+            SlidableAction(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+              ),
+              onPressed: (_) {},
+              // 클릭 불필요
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              icon: Icons.message,
+              label: '문자',
             ),
           ],
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          dismissible: DismissiblePane(
+            onDismissed: () {
+              // 👉 우 ➝ 좌: 전화 걸기
+              print('전화 걸기 실행!');
+              // TODO: 전화 관련 함수 호출
+            },
+          ),
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '현재 EGO',
-                  style: TextStyle(
-                    color: AppColors.gray600,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.sp,
-                  ),
-                ),
-                Text(
-                  selectedEgo.egoName,
-                  style: TextStyle(
-                    color: AppColors.gray900,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16.sp,
-                  ),
-                ),
-              ],
+            SlidableAction(
+              onPressed: (_) {},
+              backgroundColor: Colors.blue,
+              foregroundColor: Colors.white,
+              icon: Icons.phone,
+              label: '전화',
             ),
-            _buildAvatar(selectedEgo.egoIcon, () {}), // 클릭 없음
           ],
+        ),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.shadowColor,
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '현재 EGO',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                    ),
+                  ),
+                  Text(
+                    selectedEgo.egoName,
+                    style: TextStyle(
+                      color: Colors.grey[900],
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+              buildEgoListItem(selectedEgo.egoIcon, () {}),
+            ],
+          ),
         ),
       ),
     );
   }
-}
-
-// Ego 사진
-Widget _buildAvatar(String assetPath, VoidCallback onTap) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 4.w),
-    child: GestureDetector(
-      onTap: onTap,
-      child: CircleAvatar(backgroundImage: AssetImage(assetPath), radius: 28),
-    ),
-  );
-}
-
-// Gradient가 있는 EGO 사진
-Widget _buildAvatarWithGradient(String assetPath, VoidCallback onTap) {
-  return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 4.w),
-    child: Stack(
-      alignment: Alignment.center,
-      children: [
-        Container(
-          width: 72.w,
-          height: 72.h,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment(1, 0),
-              end: Alignment(-1, 0),
-              colors: [
-                AppColors.royalBlue,
-                AppColors.amethystPurple,
-                AppColors.softCoralPink,
-                AppColors.vividOrange,
-              ],
-            ),
-          ),
-        ),
-        Container(
-          width: 64.w,
-          height: 64.h,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.white,
-          ),
-        ),
-        _buildAvatar(assetPath, onTap),
-      ],
-    ),
-  );
 }
