@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/color.dart';
-import 'ego_list_icon.dart';
+import 'ego_list_item.dart';
 
 Widget buildEgoListItemGradient(String assetPath, VoidCallback onTap) {
   return Padding(

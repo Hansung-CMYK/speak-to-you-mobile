@@ -6,8 +6,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../models/ego_info_model.dart';
 import '../theme/color.dart';
-import '../widgets/egoicon/ego_list_icon.dart';
-import '../widgets/egoicon/ego_list_icon_gradient.dart';
+import '../widgets/egoicon/ego_list_item.dart';
+import '../widgets/egoicon/ego_list_item_gradient.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
   final List<EgoInfoModel> egoList;
@@ -60,6 +60,13 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                       final index = entry.key;
                       final ego = entry.value;
 
+                      if (index == 10) {
+                        // 11번째는 더보기 버튼
+                        return buildEgoListItem("", () => {}, isMoreBtn: true);
+                      } else if(index>10){
+                        return null;
+                      }
+
                       return index == 0
                           ? buildEgoListItemGradient(
                             ego.egoIcon,
@@ -69,7 +76,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                             ego.egoIcon,
                             () => setState(() => selectedEgo = ego),
                           );
-                    }).toList(),
+                    }).whereType<Widget>().toList(),
               ),
             ),
           ),
