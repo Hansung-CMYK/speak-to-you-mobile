@@ -23,6 +23,9 @@ class BlurredListScreen extends StatefulWidget {
 class _BlurredListScreenState extends State<BlurredListScreen> {
   late List<EgoInfoModel> filteredList;
   String searchQuery = '';
+  String selectedSort = '최신대화순';
+
+  final List<String> sortOptions = ['최신대화순', '이름순'];
 
   @override
   void initState() {
@@ -30,7 +33,6 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
     filteredList = List.from(widget.egoList);
   }
 
-  // 검색 기능 구현
   void _filterList(String query) {
     setState(() {
       searchQuery = query;
@@ -41,7 +43,64 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                     ego.egoName.toLowerCase().contains(query.toLowerCase()),
               )
               .toList();
+      _applySort(); // 필터 후 정렬도 적용
     });
+  }
+
+  void _selectSort(String sort) {
+    setState(() {
+      selectedSort = sort;
+      _applySort();
+    });
+  }
+
+  void _applySort() {
+    // 먼저 검색어에 맞게 필터링
+    filteredList =
+        widget.egoList
+            .where(
+              (ego) =>
+                  ego.egoName.toLowerCase().contains(searchQuery.toLowerCase()),
+            )
+            .toList();
+
+    // 그런 다음 정렬 적용
+    if (selectedSort == '이름순') {
+      filteredList.sort((a, b) => a.egoName.compareTo(b.egoName));
+    }
+  }
+
+  Widget _buildSortButton(String option) {
+    final isSelected = selectedSort == option;
+    return GestureDetector(
+      onTap: () => _selectSort(option),
+      child: Container(
+        margin: EdgeInsets.only(right: 8.w),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+        decoration: BoxDecoration(
+          color: isSelected ? Color(0xFF6975FB) : AppColors.unfilterBtn,
+          border: Border.all(
+            color: isSelected ? Color(0xFF6975FB) : AppColors.unfilterBtn,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.25),
+              blurRadius: 2,
+              offset: Offset(0, 5),
+            ),
+          ],
+        ),
+        child: Text(
+          option,
+          style: TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14.sp,
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -50,16 +109,13 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
       backgroundColor: AppColors.transparent,
       body: Stack(
         children: [
-
-          // Blur 효과
+          // 투명한 배경
           BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              color: Color.fromRGBO(136, 136, 136, 0.5),
-            ),
+            child: Container(color: Color.fromRGBO(136, 136, 136, 0.5)),
           ),
 
-          // SafeArea 내에서 검색창과 리스트를 세로로 배치
+          // List 몸통
           SafeArea(
             child: Column(
               children: [
@@ -76,7 +132,7 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                       hintStyle: TextStyle(
                         color: AppColors.gray600,
                         fontWeight: FontWeight.w700,
-                        fontSize: 16.sp
+                        fontSize: 16.sp,
                       ),
                       filled: true,
                       fillColor: AppColors.white,
@@ -86,6 +142,25 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                         borderSide: BorderSide(color: AppColors.gray200),
                       ),
                     ),
+                  ),
+                ),
+
+                // 정렬 버튼
+                Padding(
+                  padding: EdgeInsets.only(bottom: 8.h),
+                  child: Row(
+                    children: [
+                      SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Row(
+                          children:
+                              sortOptions
+                                  .map((option) => _buildSortButton(option))
+                                  .toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 

@@ -48,6 +48,7 @@ class AppColors {
   // 기타 색상
   static const Color transparent = Colors.transparent;
   static const Color naverColor = Color(0xFF03C754);
+  static const Color unfilterBtn = Color(0xFFB2B2B2);
 
   static const Color vividOrange = Color(0xFFFEAC5E);
   static const Color softCoralPink = Color(0xFFE6968D);

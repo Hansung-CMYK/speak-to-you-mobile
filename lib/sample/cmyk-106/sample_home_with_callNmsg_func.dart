@@ -128,6 +128,15 @@ class MyApp extends StatelessWidget {
       egoPersonality: '열정적이고 사람을 끌어당기는 리더형',
       egoSelfIntro: '사람들과 함께 성장하고 싶은 아라입니다.',
     ),
+    EgoInfoModel(
+      id: '14',
+      egoIcon: 'assets/image/ego_icon.png',
+      egoName: '옥바바',
+      egoBirth: '2002/08/08',
+      egoMBTI: 'ENFJ',
+      egoPersonality: '열정적이고 사람을 끌어당기는 리더형',
+      egoSelfIntro: '사람들과 함께 성장하고 싶은 아라입니다.',
+    ),
   ];
 
   MyApp({super.key});
