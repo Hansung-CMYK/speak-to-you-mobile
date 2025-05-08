@@ -8,6 +8,7 @@ import '../models/ego_info_model.dart';
 import '../theme/color.dart';
 import '../widgets/egoicon/ego_list_item.dart';
 import '../widgets/egoicon/ego_list_item_gradient.dart';
+import 'ego_list_blurred_screen.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
   final List<EgoInfoModel> egoList;
@@ -56,27 +57,48 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
                 children:
-                    egoList.asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final ego = entry.value;
+                    egoList
+                        .asMap()
+                        .entries
+                        .map((entry) {
+                          final index = entry.key;
+                          final ego = entry.value;
 
-                      if (index == 10) {
-                        // 11번째는 더보기 버튼
-                        return buildEgoListItem("", () => {}, isMoreBtn: true);
-                      } else if(index>10){
-                        return null;
-                      }
+                          if (index == 10) {
+                            // 11번째는 더보기 버튼
+                            return buildEgoListItem("", () {
+                              Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                  opaque: false,
+                                  pageBuilder:
+                                      (_, __, ___) => BlurredListScreen(
+                                        egoList: egoList,
+                                        onEgoSelected: (selected) {
+                                          setState(
+                                            () => selectedEgo = selected,
+                                          );
+                                        },
+                                      ),
+                                ),
+                              );
+                            }, isMoreBtn: true);
+                          } else if (index > 10) {
+                            return null;
+                          }
 
-                      return index == 0
-                          ? buildEgoListItemGradient(
-                            ego.egoIcon,
-                            () => setState(() => selectedEgo = ego),
-                          )
-                          : buildEgoListItem(
-                            ego.egoIcon,
-                            () => setState(() => selectedEgo = ego),
-                          );
-                    }).whereType<Widget>().toList(),
+                          return index == 0
+                              ? buildEgoListItemGradient(
+                                ego.egoIcon,
+                                () => setState(() => selectedEgo = ego),
+                              )
+                              : buildEgoListItem(
+                                ego.egoIcon,
+                                () => setState(() => selectedEgo = ego),
+                              );
+                        })
+                        .whereType<Widget>()
+                        .toList(),
               ),
             ),
           ),
