@@ -1,14 +1,14 @@
 import 'package:ego/widgets/appbar/main_app_bar.dart';
+import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/theme/color.dart';
+import 'package:ego/widgets/egocard/swipable_ego_card.dart';
+import 'package:ego/widgets/egoicon/ego_list_item.dart';
+import 'package:ego/widgets/egoicon/ego_list_item_gradient.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../models/ego_info_model.dart';
-import '../theme/color.dart';
-import '../widgets/egocard/swipable_ego_card.dart';
-import '../widgets/egoicon/ego_list_item.dart';
-import '../widgets/egoicon/ego_list_item_gradient.dart';
 import 'ego_list_blurred_screen.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
@@ -25,7 +25,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
   /// 선택한 Tab과 Body를 매핑하는 Controller이다.
   late TabController _tabController;
   late final List<EgoInfoModel> egoList;
-  late EgoInfoModel selectedEgo; // 전택된 EGO의 정보
+  late EgoInfoModel selectedEgo; // 선택된 EGO의 정보
 
   /// _tabCntroller 초기화
   @override

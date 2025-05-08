@@ -1,5 +1,7 @@
 import 'package:ego/theme/color.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
 class SwipeActionContainer extends StatefulWidget {
@@ -17,7 +19,8 @@ class SwipeActionContainer extends StatefulWidget {
   _SwipeActionContainerState createState() => _SwipeActionContainerState();
 }
 
-class _SwipeActionContainerState extends State<SwipeActionContainer> with SingleTickerProviderStateMixin {
+class _SwipeActionContainerState extends State<SwipeActionContainer>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
   double _dragOffset = 0; // 현재 드래그된 위치
@@ -33,8 +36,10 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
       vsync: this,
     );
 
-    _offsetAnimation = Tween<Offset>(begin: Offset.zero, end: Offset.zero)
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset.zero,
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
   }
 
   void _onHorizontalDragUpdate(DragUpdateDetails details) {
@@ -50,8 +55,10 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
       }
 
       // 드래그된 위치로 애니메이션을 즉시 업데이트
-      _offsetAnimation = Tween<Offset>(begin: Offset(_dragOffset, 0), end: Offset(_dragOffset, 0))
-          .animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
+      _offsetAnimation = Tween<Offset>(
+        begin: Offset(_dragOffset, 0),
+        end: Offset(_dragOffset, 0),
+      ).animate(CurvedAnimation(parent: _controller, curve: Curves.linear));
     });
   }
 
@@ -69,8 +76,10 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
 
   void _animateSlide(double targetOffset, VoidCallback? onComplete) {
     // 애니메이션 속도 설정을 위해 duration 및 curve를 변경
-    _offsetAnimation = Tween<Offset>(begin: Offset(_dragOffset, 0), end: Offset(targetOffset, 0))
-        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+    _offsetAnimation = Tween<Offset>(
+      begin: Offset(_dragOffset, 0),
+      end: Offset(targetOffset, 0),
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.reset();
     _controller.forward();
@@ -100,7 +109,7 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
       onHorizontalDragEnd: _onHorizontalDragEnd,
       child: Stack(
         children: [
-          // 배경 UI (색 + 아이콘 + 텍스트)
+          // 카드 뒷 배경 UI (색 + 아이콘 + 텍스트)
           Positioned.fill(
             child: Stack(
               children: [
@@ -114,13 +123,20 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 20),
+                      padding: EdgeInsets.only(left: 20.w),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset("assets/icon/phone_icon.svg"),
-                          SizedBox(width: 8),
-                          Text("전화", style: TextStyle(color: AppColors.white)),
+                          SizedBox(width: 8.w),
+                          Text(
+                            "전화",
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -129,12 +145,19 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
-                      padding: EdgeInsets.only(right: 20),
+                      padding: EdgeInsets.only(right: 20.w),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text("채팅", style: TextStyle(color: Colors.white)),
-                          SizedBox(width: 8),
+                          Text(
+                            "채팅",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
                           SvgPicture.asset("assets/icon/chat_icon.svg"),
                         ],
                       ),
@@ -143,6 +166,7 @@ class _SwipeActionContainerState extends State<SwipeActionContainer> with Single
               ],
             ),
           ),
+
           // 애니메이션 적용된 위치에 자식 위젯
           AnimatedBuilder(
             animation: _offsetAnimation,
