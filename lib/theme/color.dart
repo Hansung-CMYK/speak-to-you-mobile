@@ -55,6 +55,7 @@ class AppColors {
   static const Color strongOrange = Color(0xFFFF7410);
   static const Color amethystPurple = Color(0xFFC779D0);
   static const Color royalBlue = Color(0xFF5865F2);
+  static const Color callColor = Color(0xFF14B16A);
 
   static const Color red = Colors.red;
 }

@@ -6,6 +6,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../models/ego_info_model.dart';
 import '../theme/color.dart';
+import '../widgets/egocard/swipable_ego_card.dart';
 import '../widgets/egoicon/ego_list_item.dart';
 import '../widgets/egoicon/ego_list_item_gradient.dart';
 import 'ego_list_blurred_screen.dart';
@@ -128,54 +129,18 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
   // 현재 클릭된 EGO의 정보 Card
   Widget _buildSelectedEGO() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-      child: Slidable(
-        key: Key(selectedEgo.id),
-        startActionPane: ActionPane(
-          motion: BehindMotion(),
-          extentRatio: 0.3,
-          dismissible: DismissiblePane(
-            onDismissed: () {
-              print('문자 보내기 실행!');
-              // TODO: 문자 전송 함수 호출
-            },
-          ),
-          children: [
-            SlidableAction(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16),
-                bottomLeft: Radius.circular(16),
-              ),
-              onPressed: (_) {},
-              // 클릭 불필요
-              backgroundColor: Colors.green,
-              foregroundColor: Colors.white,
-              icon: Icons.message,
-              label: '문자',
-            ),
-          ],
-        ),
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          dismissible: DismissiblePane(
-            onDismissed: () {
-              // 👉 우 ➝ 좌: 전화 걸기
-              print('전화 걸기 실행!');
-              // TODO: 전화 관련 함수 호출
-            },
-          ),
-          children: [
-            SlidableAction(
-              onPressed: (_) {},
-              backgroundColor: Colors.blue,
-              foregroundColor: Colors.white,
-              icon: Icons.phone,
-              label: '전화',
-            ),
-          ],
-        ),
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 30.h),
+      child: SwipeActionContainer(
+        onCall: () {
+          // 전화 걸기 액션
+          print('전화 걸기');
+        },
+        onText: () {
+          // 문자 보내기 액션
+          print('문자 보내기');
+        },
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
@@ -196,17 +161,17 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                   Text(
                     '현재 EGO',
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color: AppColors.gray600,
                       fontWeight: FontWeight.w500,
-                      fontSize: 14,
+                      fontSize: 14.sp,
                     ),
                   ),
                   Text(
                     selectedEgo.egoName,
                     style: TextStyle(
-                      color: Colors.grey[900],
+                      color: AppColors.gray900,
                       fontWeight: FontWeight.w700,
-                      fontSize: 16,
+                      fontSize: 16.sp,
                     ),
                   ),
                 ],

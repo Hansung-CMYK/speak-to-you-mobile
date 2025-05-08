@@ -154,6 +154,8 @@ flutter:
     - assets/icon/right_arrow.svg
     - assets/icon/danger.svg
     - assets/icon/camera.svg
+    - assets/icon/phone_icon.svg
+    - assets/icon/chat_icon.svg
 
 
 
