@@ -27,6 +27,8 @@ class AppColors {
   static const Color gray800 = Color(0xFF26282B);
   static const Color gray900 = Color(0xFF1E1E1E);
 
+  static const Color shadowColor = Color(0x1F000000);
+
   static const Color blueGray500 = Color(0xFF777B84);
   static const Color blueGray900 = Color(0xFF090E18);
 
@@ -46,12 +48,14 @@ class AppColors {
   // 기타 색상
   static const Color transparent = Colors.transparent;
   static const Color naverColor = Color(0xFF03C754);
+  static const Color unfilterBtn = Color(0xFFB2B2B2);
 
   static const Color vividOrange = Color(0xFFFEAC5E);
   static const Color softCoralPink = Color(0xFFE6968D);
   static const Color strongOrange = Color(0xFFFF7410);
   static const Color amethystPurple = Color(0xFFC779D0);
   static const Color royalBlue = Color(0xFF5865F2);
+  static const Color callColor = Color(0xFF14B16A);
 
   static const Color red = Colors.red;
 }

@@ -70,6 +70,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               // 지정된 Tab * 알림과 설정은 탭이 아닌 버튼을 통해 다른 페이지로 이동한다.
               Tab(text: "스피크"),
               Tab(text: "캘린더"),
+              Tab(text: "채팅방",)
             ],
           ),
         ),
