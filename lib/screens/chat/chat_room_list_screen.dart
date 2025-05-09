@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../models/chat/chat_room_model.dart';
-import '../../theme/color.dart';
-import '../../types/dialog_type.dart';
-import '../../widgets/confirm_dialog.dart';
-import '../../widgets/egoicon/ego_list_item.dart';
+import 'package:ego/models/chat/chat_room_model.dart';
+import 'package:ego/theme/color.dart';
+import 'package:ego/types/dialog_type.dart';
+import 'package:ego/widgets/confirm_dialog.dart';
+import 'package:ego/widgets/egoicon/ego_list_item.dart';
+
 import 'chat_room_screen.dart';
 
+/**
+ * 채팅방 리스트를 확인하는 화면
+ * */
 class ChatListScreen extends StatefulWidget {
   const ChatListScreen({super.key});
 
@@ -147,7 +151,7 @@ class _ChatListScreenState extends State<ChatListScreen>
       ),
     ];
 
-    // 추후 API 요청 로직
+    // TODO 추후 API 요청 로직
     // fetchChatRooms();
   }
 
@@ -181,14 +185,15 @@ class _ChatListScreenState extends State<ChatListScreen>
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatRoomScreen(
-                    chatRoomId: chat.id,
-                    uid: chat.uid,
-                    egoProfileImage: chat.profileImage ?? "assets/image/ego_icon.png",
-                  ),
+                  builder:
+                      (context) => ChatRoomScreen(
+                        chatRoomId: chat.id,
+                        uid: chat.uid,
+                        egoProfileImage:
+                            chat.profileImage ?? "assets/image/ego_icon.png",
+                      ),
                 ),
               );
-
             },
             onLongPress: () async {
               final result = await showConfirmDialog(
@@ -247,7 +252,7 @@ class _ChatListScreenState extends State<ChatListScreen>
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          '자기소개 또는 최근 메시지',
+                          '최근 메시지',
                           style: TextStyle(
                             color: AppColors.gray600,
                             fontSize: 14.sp,

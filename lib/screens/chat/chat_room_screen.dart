@@ -1,11 +1,13 @@
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
+import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
+import 'package:ego/widgets/egoicon/ego_list_item.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../../models/chat/chat_history_model.dart';
-import '../../widgets/bottomsheet/today_ego_intro.dart';
-import '../../widgets/egoicon/ego_list_item.dart';
+
 import 'chat_bubble.dart';
 
 class ChatRoomScreen extends StatefulWidget {
@@ -146,7 +148,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
-              padding: EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.symmetric(vertical: 8.h),
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final previous = index > 0 ? messages[index - 1] : null;
@@ -173,40 +175,38 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             color: Colors.white,
             padding: EdgeInsets.all(10),
             child: SafeArea(
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      focusNode: _focusNode,
-                      autofocus: false,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: Color(0xFF6750A4)),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(color: AppColors.gray200, width: 2.w),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        focusNode: _focusNode,
+                        autofocus: false,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(width: 8),
-                  CircleAvatar(
-                    backgroundColor: AppColors.accent,
-                    child: IconButton(
-                      icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
-                      onPressed: _sendMessage,
+                    SizedBox(width: 8.w),
+                    CircleAvatar(
+                      backgroundColor: AppColors.accent,
+                      child: IconButton(
+                        icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
+                        onPressed: _sendMessage,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
