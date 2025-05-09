@@ -112,7 +112,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.gray200,
       appBar: AppBar(
-        title: Text("보글보글 캘라몬"),
+        title: Text(
+          "보글보글 캘라몬",
+          style: TextStyle(
+            color: AppColors.gray900,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        centerTitle: true,
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10.w),
