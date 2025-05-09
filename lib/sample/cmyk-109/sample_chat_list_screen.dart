@@ -38,10 +38,6 @@ class MainScreenTest extends StatelessWidget {
                 return SampleMainScreen();
               },
             ),
-            'Settings': (context) => TmpScreen(text: "설정 페이지"),
-            'Alert': (context) => TmpScreen(text: "알림 페이지"),
-            'Diary': (context) => TmpScreen(text: "일기 페이지"),
-            'Recap' : (context) => TmpScreen(text: "RECAP 페이지"),
           }
       ),
     );
