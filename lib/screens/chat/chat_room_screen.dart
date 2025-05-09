@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../models/chat/chat_room_model.dart';
 import '../../theme/color.dart';
+import '../../types/dialog_type.dart';
+import '../../widgets/confirm_dialog.dart';
 import '../../widgets/egoicon/ego_list_item.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -169,19 +171,34 @@ class _ChatListScreenState extends State<ChatListScreen>
         itemBuilder: (context, index) {
           final chat = _chatRoomList[index];
 
-          return GestureDetector(
+          return InkWell(
             onTap: () {
               setState(() {
                 _selectedChatRoomId = chat.id;
               });
               print('채팅방 ${chat.egoName} 클릭됨');
-              // Navigator.push(context, MaterialPageRoute(...));
+            },
+            onLongPress: () async {
+              final result = await showConfirmDialog(
+                context: context,
+                title: '채팅방을 나가시겠어요?',
+                content: '${chat.egoName} 채팅방에서 나가면 대화 내용이 삭제됩니다.',
+                dialogType: DialogType.info,
+                stack: true,
+                cancelText: '취소',
+                confirmText: '나가기',
+                confirmBackgroundColor: AppColors.red,
+                confirmForegroundColor: AppColors.white,
+                confirmOverlayColor: AppColors.white,
+              );
+
+              if (result == true) {
+                setState(() {
+                  _chatRoomList.removeWhere((element) => element.id == chat.id);
+                });
+              }
             },
             child: Container(
-              color:
-                  _selectedChatRoomId == chat.id
-                      ? AppColors.gray200
-                      : Colors.transparent,
               padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
               child: Row(
                 children: [
