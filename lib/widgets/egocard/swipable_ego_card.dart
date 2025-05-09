@@ -116,7 +116,7 @@ class _SwipeActionContainerState extends State<SwipeActionContainer>
                 Container(
                   decoration: BoxDecoration(
                     color: _backgroundColor,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 if (_dragOffset > 0)

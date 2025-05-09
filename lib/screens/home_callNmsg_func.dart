@@ -143,7 +143,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
             boxShadow: [
               BoxShadow(
                 color: AppColors.shadowColor,
