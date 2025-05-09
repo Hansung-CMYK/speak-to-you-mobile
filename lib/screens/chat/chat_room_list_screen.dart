@@ -171,104 +171,112 @@ class _ChatListScreenState extends State<ChatListScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView.builder(
-        itemCount: _chatRoomList.length,
-        itemBuilder: (context, index) {
-          final chat = _chatRoomList[index];
+      body: RawScrollbar(
+        thumbVisibility: true,
+        thickness: 3,
+        thumbColor: AppColors.gray700,
+        radius: Radius.circular(10.r),
+        child: ListView.builder(
+          itemCount: _chatRoomList.length,
+          itemBuilder: (context, index) {
+            final chat = _chatRoomList[index];
 
-          return InkWell(
-            onTap: () {
-              setState(() {
-                _selectedChatRoomId = chat.id;
-              });
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder:
-                      (context) => ChatRoomScreen(
-                        chatRoomId: chat.id,
-                        uid: chat.uid,
-                        egoProfileImage:
-                            chat.profileImage ?? "assets/image/ego_icon.png",
-                      ),
-                ),
-              );
-            },
-            onLongPress: () async {
-              final result = await showConfirmDialog(
-                context: context,
-                title: '채팅방을 나가시겠어요?',
-                content: '${chat.egoName} 채팅방에서 나가면 대화 내용이 삭제됩니다.',
-                dialogType: DialogType.info,
-                stack: true,
-                cancelText: '취소',
-                confirmText: '나가기',
-                confirmBackgroundColor: AppColors.red,
-                confirmForegroundColor: AppColors.white,
-                confirmOverlayColor: AppColors.white,
-              );
-
-              if (result == true) {
+            return InkWell(
+              onTap: () {
                 setState(() {
-                  _chatRoomList.removeWhere((element) => element.id == chat.id);
+                  _selectedChatRoomId = chat.id;
                 });
-              }
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
-              child: Row(
-                children: [
-                  buildEgoListItem(
-                    chat.profileImage ?? 'assets/image/ego_icon.png',
-                    () {},
-                    radius: 25.5,
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => ChatRoomScreen(
+                          chatRoomId: chat.id,
+                          uid: chat.uid,
+                          egoProfileImage:
+                              chat.profileImage ?? "assets/image/ego_icon.png",
+                        ),
                   ),
-                  SizedBox(width: 24.w),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              chat.egoName ?? '이름 없음',
-                              style: TextStyle(
-                                color: AppColors.gray900,
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            Text(
-                              _formatTime(chat.lastChatAt),
-                              style: TextStyle(
-                                fontSize: 12.sp,
-                                color: AppColors.gray600,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 4.h),
-                        Text(
-                          '최근 메시지',
-                          style: TextStyle(
-                            color: AppColors.gray600,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
+                );
+              },
+              onLongPress: () async {
+                final result = await showConfirmDialog(
+                  context: context,
+                  title: '채팅방을 나가시겠어요?',
+                  content: '${chat.egoName} 채팅방에서 나가면 대화 내용이 삭제됩니다.',
+                  dialogType: DialogType.info,
+                  stack: true,
+                  cancelText: '취소',
+                  confirmText: '나가기',
+                  confirmBackgroundColor: AppColors.red,
+                  confirmForegroundColor: AppColors.white,
+                  confirmOverlayColor: AppColors.white,
+                );
+
+                if (result == true) {
+                  setState(() {
+                    _chatRoomList.removeWhere(
+                      (element) => element.id == chat.id,
+                    );
+                  });
+                }
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
+                child: Row(
+                  children: [
+                    buildEgoListItem(
+                      chat.profileImage ?? 'assets/image/ego_icon.png',
+                      () {},
+                      radius: 25.5,
                     ),
-                  ),
-                ],
+                    SizedBox(width: 24.w),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                chat.egoName ?? '이름 없음',
+                                style: TextStyle(
+                                  color: AppColors.gray900,
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              Text(
+                                _formatTime(chat.lastChatAt),
+                                style: TextStyle(
+                                  fontSize: 12.sp,
+                                  color: AppColors.gray600,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 4.h),
+                          Text(
+                            '최근 메시지',
+                            style: TextStyle(
+                              color: AppColors.gray600,
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

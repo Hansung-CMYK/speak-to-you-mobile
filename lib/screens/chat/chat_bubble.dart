@@ -5,6 +5,7 @@ import 'package:ego/widgets/confirm_dialog.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /**
  * 채팅 내역 하나를 표시하는 ChatBubble 위젯
@@ -59,17 +60,17 @@ class ChatBubble extends StatelessWidget {
     final textColor = isUser ? AppColors.white : AppColors.black;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 3.h),
       child: Row(
         mainAxisAlignment: alignment,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (isUser)
             Padding(
-              padding: const EdgeInsets.only(right: 4),
+              padding: EdgeInsets.only(right: 4),
               child: Text(
                 message.formattedChatAt,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey),
               ),
             ),
           Flexible(
@@ -93,14 +94,14 @@ class ChatBubble extends StatelessWidget {
                 }
               },
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                 decoration: BoxDecoration(
                   color: bubbleColor,
                   borderRadius: bubbleRadius,
                 ),
                 child: Text(
                   message.content,
-                  style: TextStyle(fontSize: 15, color: textColor),
+                  style: TextStyle(fontSize: 15.sp, color: textColor),
                 ),
               ),
             ),
@@ -110,7 +111,7 @@ class ChatBubble extends StatelessWidget {
               padding: const EdgeInsets.only(left: 4),
               child: Text(
                 message.formattedChatAt,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(fontSize: 12.sp, color: Colors.grey),
               ),
             ),
         ],

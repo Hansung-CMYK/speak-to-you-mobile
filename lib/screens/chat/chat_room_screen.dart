@@ -122,6 +122,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             fontWeight: FontWeight.w700,
           ),
         ),
+        surfaceTintColor: AppColors.white,
         centerTitle: true,
         actions: [
           Padding(
@@ -146,31 +147,39 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
+            child: RawScrollbar(
+              thumbVisibility: true,
+              thickness: 3,
+              thumbColor: AppColors.gray700,
+              radius: Radius.circular(10.r),
               controller: _scrollController,
-              padding: EdgeInsets.symmetric(vertical: 8.h),
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                final previous = index > 0 ? messages[index - 1] : null;
-                final next =
-                    index < messages.length - 1 ? messages[index + 1] : null;
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: EdgeInsets.symmetric(vertical: 8.h),
+                itemCount: messages.length,
+                itemBuilder: (context, index) {
+                  final previous = index > 0 ? messages[index - 1] : null;
+                  final next =
+                      index < messages.length - 1 ? messages[index + 1] : null;
 
-                return ChatBubble(
-                  message: messages[index],
-                  previousMessage: previous,
-                  nextMessage: next,
-                  onDelete: () {
-                    setState(() {
-                      messages.removeAt(index);
-                    });
-                    _focusNode.unfocus();
+                  return ChatBubble(
+                    message: messages[index],
+                    previousMessage: previous,
+                    nextMessage: next,
+                    onDelete: () {
+                      setState(() {
+                        messages.removeAt(index);
+                      });
+                      _focusNode.unfocus();
 
-                    //TODO 삭제 요청
-                  },
-                );
-              },
+                      //TODO 삭제 요청
+                    },
+                  );
+                },
+              ),
             ),
           ),
+
           Container(
             color: Colors.white,
             padding: EdgeInsets.all(10),
