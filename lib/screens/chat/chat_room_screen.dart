@@ -1,6 +1,8 @@
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../../models/chat/chat_history_model.dart';
+import 'chat_bubble.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
@@ -15,6 +17,9 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final TextEditingController _controller = TextEditingController();
+  late FocusNode _focusNode;
+
+  final ScrollController _scrollController = ScrollController();
 
   late List<ChatHistory> messages;
 
@@ -51,6 +56,15 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         isDeleted: false,
       ),
     ];
+    _focusNode = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
 
   void _sendMessage() {
@@ -67,7 +81,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             isDeleted: false,
           ),
         );
+
+        //TODO 채팅 내역 전송 API
+
         _controller.clear();
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       });
     }
   }
@@ -75,12 +100,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.gray200,
       appBar: AppBar(title: Text("보글보글 캘라몬")),
       body: Column(
         children: [
           Expanded(
             child: ListView.builder(
+              controller: _scrollController,
               padding: EdgeInsets.symmetric(vertical: 8),
               itemCount: messages.length,
               itemBuilder: (context, index) {
@@ -92,20 +119,30 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   message: messages[index],
                   previousMessage: previous,
                   nextMessage: next,
+                  onDelete: () {
+                    setState(() {
+                      messages.removeAt(index);
+                    });
+                    _focusNode.unfocus();
+
+                    //TODO 삭제 요청
+                  },
                 );
               },
             ),
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(12, 0, 12, 12),
+          Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(10),
             child: SafeArea(
               child: Row(
                 children: [
                   Expanded(
                     child: TextField(
                       controller: _controller,
+                      focusNode: _focusNode,
+                      autofocus: false,
                       decoration: InputDecoration(
-                        hintText: "생각보다 괜찮은 하루였어! 아침에",
                         filled: true,
                         fillColor: Colors.white,
                         contentPadding: EdgeInsets.symmetric(
@@ -125,9 +162,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                   ),
                   SizedBox(width: 8),
                   CircleAvatar(
-                    backgroundColor: Color(0xFF6750A4),
+                    backgroundColor: AppColors.accent,
                     child: IconButton(
-                      icon: Icon(Icons.send, color: Colors.white),
+                      icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
                       onPressed: _sendMessage,
                     ),
                   ),
@@ -135,91 +172,6 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               ),
             ),
           ),
-        ],
-      ),
-    );
-  }
-}
-
-class ChatBubble extends StatelessWidget {
-  final ChatHistory message;
-  final ChatHistory? previousMessage;
-  final ChatHistory? nextMessage;
-
-  const ChatBubble({
-    required this.message,
-    this.previousMessage,
-    this.nextMessage,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isUser = message.type == "U";
-
-    // 이전, 다음 메시지와 같은 타입인지 판단
-    final bool sameAsPrevious = previousMessage?.type == message.type;
-    final bool sameAsNext = nextMessage?.type == message.type;
-
-    // 기본 반지름
-    final Radius radius = Radius.circular(16);
-
-    BorderRadius bubbleRadius;
-
-    if (isUser) {
-      bubbleRadius = BorderRadius.only(
-        topLeft: radius,
-        topRight: sameAsPrevious ? Radius.circular(5) : radius,
-        bottomLeft: radius,
-        bottomRight: sameAsNext ? Radius.circular(5) : radius,
-      );
-    } else {
-      bubbleRadius = BorderRadius.only(
-        topLeft: sameAsPrevious ? Radius.circular(5) : radius,
-        topRight: radius,
-        bottomLeft: sameAsNext ? Radius.circular(5) : radius,
-        bottomRight: radius,
-      );
-    }
-
-    final alignment = isUser ? MainAxisAlignment.end : MainAxisAlignment.start;
-    final bubbleColor = isUser ? AppColors.accent : AppColors.white;
-    final textColor = isUser ? AppColors.white : AppColors.black;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-      child: Row(
-        mainAxisAlignment: alignment,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          if (isUser)
-            Padding(
-              padding: const EdgeInsets.only(right: 4),
-              child: Text(
-                message.formattedChatAt,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ),
-          Flexible(
-            child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: bubbleColor,
-                borderRadius: bubbleRadius,
-              ),
-              child: Text(
-                message.content,
-                style: TextStyle(fontSize: 15, color: textColor),
-              ),
-            ),
-          ),
-          if (!isUser)
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Text(
-                message.formattedChatAt,
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ),
         ],
       ),
     );
