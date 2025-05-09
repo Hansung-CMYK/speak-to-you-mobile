@@ -1,15 +1,24 @@
+import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../models/chat/chat_history_model.dart';
+import '../../widgets/bottomsheet/today_ego_intro.dart';
+import '../../widgets/egoicon/ego_list_item.dart';
 import 'chat_bubble.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
+  final String egoProfileImage;
 
-  const ChatRoomScreen({Key? key, required this.chatRoomId, required this.uid})
-    : super(key: key);
+  const ChatRoomScreen({
+    Key? key,
+    required this.chatRoomId,
+    required this.uid,
+    required this.egoProfileImage,
+  }) : super(key: key);
 
   @override
   _ChatRoomScreenState createState() => _ChatRoomScreenState();
@@ -102,7 +111,28 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: AppColors.gray200,
-      appBar: AppBar(title: Text("보글보글 캘라몬")),
+      appBar: AppBar(
+        title: Text("보글보글 캘라몬"),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 10.w),
+            child: buildEgoListItem(widget.egoProfileImage, () {
+              //TODO EGO ID로 EGO 정보 요청
+
+              EgoInfoModel egoInfoModel = EgoInfoModel(
+                id: "a",
+                egoIcon: "assets/image/ego_icon.png",
+                egoName: "사과",
+                egoBirth: "2005/05/05",
+                egoPersonality: "활발함",
+                egoSelfIntro: "히히 사과 좋아",
+              );
+
+              showTodayEgoIntroSheet(this.context, egoInfoModel);
+            }, radius: 17),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(

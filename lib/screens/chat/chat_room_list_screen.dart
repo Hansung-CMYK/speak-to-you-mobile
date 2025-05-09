@@ -184,6 +184,7 @@ class _ChatListScreenState extends State<ChatListScreen>
                   builder: (context) => ChatRoomScreen(
                     chatRoomId: chat.id,
                     uid: chat.uid,
+                    egoProfileImage: chat.profileImage ?? "assets/image/ego_icon.png",
                   ),
                 ),
               );
