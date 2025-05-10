@@ -155,6 +155,13 @@ flutter:
     - assets/icon/camera.svg
     - assets/icon/phone_icon.svg
     - assets/icon/chat_icon.svg
+    - assets/icon/appear_chat.svg
+    - assets/icon/disappear_chat.svg
+    - assets/icon/mic_on.svg
+    - assets/icon/mic_off.svg
+    - assets/icon/sound_on.svg
+    - assets/icon/sound_off.svg
+    - assets/icon/chat_history.svg
 
 
 
