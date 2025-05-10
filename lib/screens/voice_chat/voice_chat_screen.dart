@@ -141,6 +141,36 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
             padding: EdgeInsets.only(top: 40.h),
             child: TopCallTimeBanner(egoName: egoInfo.egoName),
           ),
+          Expanded(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: EdgeInsets.only(bottom: 30.h),
+                    child: Image.asset(
+                      'assets/image/ego_1.png',
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                if (isChatVisible)
+                  Positioned.fill(
+                    child: Container(
+                      color: Colors.black.withOpacity(0.4), // 반투명 오버레이
+                      child: Center(
+                        child: Text(
+                          '채팅 화면 (예시)',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.sp,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ],
       ),
     );
