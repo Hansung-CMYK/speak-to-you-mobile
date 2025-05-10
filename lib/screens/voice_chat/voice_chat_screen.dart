@@ -3,6 +3,7 @@ import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/voice_chat/call_time_banner.dart';
 import 'package:ego/screens/voice_chat/voice_chat_overlay.dart';
 import 'package:ego/theme/color.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -285,6 +286,10 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   }
 }
 
+
+/**
+ * 실시간 대화 종료 버튼
+ * */
 class CallEndButton extends StatelessWidget {
   final VoidCallback onPressed;
 

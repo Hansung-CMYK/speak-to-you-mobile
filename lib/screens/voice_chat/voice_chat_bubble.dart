@@ -1,9 +1,12 @@
+import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/theme/color.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../models/chat/chat_history_model.dart';
-import '../../theme/color.dart';
-
+/**
+ * 실시간 대화 화면 위에 그려지는 채팅 Bubble [VoiceChatOverlay]에서 사용
+ * */
 class VoiceChatBubble extends StatelessWidget {
   final ChatHistory message;
   final ChatHistory? previousMessage;

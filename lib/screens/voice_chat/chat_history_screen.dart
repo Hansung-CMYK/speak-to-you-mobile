@@ -1,11 +1,13 @@
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/screens/chat/chat_bubble.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../chat/chat_bubble.dart';
-
+/**
+ * 실시간 대화에서 나누었던 대화 기록을 한번에 확인하기 위함
+ * */
 class ChatHistoryScreen extends StatefulWidget {
   final List<ChatHistory> chatHistories;
 

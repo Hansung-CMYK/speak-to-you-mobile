@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+
+/**
+ * 실시간대화 화면에서 EGO모델 위에 그려지는 대화창
+ * */
 class VoiceChatOverlay extends StatelessWidget {
   final List<ChatHistory> chatHistories;
   final ScrollController scrollController;
