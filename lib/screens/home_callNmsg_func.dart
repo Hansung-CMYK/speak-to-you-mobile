@@ -1,4 +1,4 @@
-import 'package:ego/screens/voice_chat_screen.dart';
+import 'package:ego/screens/voice_chat/voice_chat_screen.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
@@ -140,10 +140,19 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  CallScreen(uid: "User_1", egoId: int.parse(selectedEgo.id)),
+                  VoiceChatScreen(uid: "User_1", egoInfoModel: selectedEgo),
             ),
-          );
+          ).then((_) {
+            // VoiceChatScreen에서 돌아온 후, HomeScreenCallnMsg 화면을 새로 로드
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreenCallnMsg(egoList: egoList),
+              ),
+            );
+          });
         },
+
         onText: () {
           // 문자 보내기 액션
           print('문자 보내기');
