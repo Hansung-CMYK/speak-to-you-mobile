@@ -8,8 +8,13 @@ import 'package:ego/theme/color.dart';
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
 /// context : 띄워질 부모의 context [BuildContext]
 /// egoInfoModel : 띄울 EGO의 정보 [EgoInfoModel]
-void showTodayEgoIntroSheet(BuildContext context, EgoInfoModel egoInfoModel) {
-
+void showTodayEgoIntroSheet(
+    BuildContext context,
+    EgoInfoModel egoInfoModel, {
+      bool isOtherEgo = false,
+      VoidCallback? onChatWithEgo,
+      VoidCallback? onChatWithHuman,
+    }) {
   showModalBottomSheet(
     context: context,
     backgroundColor: AppColors.gray100,
@@ -28,13 +33,17 @@ void showTodayEgoIntroSheet(BuildContext context, EgoInfoModel egoInfoModel) {
           padding: EdgeInsets.only(top: 24.h, right: 20.w, left: 20.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [_header(context), _body(egoInfoModel, context)],
+            children: [
+              _header(context),
+              _body(context, egoInfoModel, isOtherEgo, onChatWithEgo, onChatWithHuman),
+            ],
           ),
         ),
       );
     },
   );
 }
+
 
 /// BottomSheet의 Header 부분 '제목, 닫기 버튼'으로 구성됨
 ///
@@ -68,15 +77,22 @@ Widget _header(BuildContext context) {
 ///
 /// [egoInfoModel] : EGO의 정보를 가지고 있는 model입니다. [EgoInfoModel]
 /// [context] : BottomSheet를 닫기 위해 context를 전달해 줍니다. [BuildContext]
-Widget _body(EgoInfoModel egoInfoModel, BuildContext context) {
+Widget _body(
+    BuildContext context,
+    EgoInfoModel egoInfoModel,
+    bool isOtherEgo,
+    VoidCallback? onChatWithEgo,
+    VoidCallback? onChatWithHuman,
+    ) {
   return Column(
     children: [
       _egoInfoCard(egoInfoModel),
       _egoSpecificInfo(egoInfoModel),
-      _checkButton(context),
+      _footerButtons(context, isOtherEgo, onChatWithEgo, onChatWithHuman),
     ],
   );
 }
+
 
 /// Ego의 프로필이미지, 이름, 생일을 보여줍니다.
 ///
@@ -224,28 +240,83 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
 /// 확인 버튼
 ///
 /// [context] : 확인을 누르면 BottomSheet를 닫기 위함
-Widget _checkButton(BuildContext context) {
-  return Container(
-    width: double.infinity,
-    margin: EdgeInsets.only(top: 60.h),
-    child: TextButton(
-      onPressed: () => Navigator.pop(context),
-      style: TextButton.styleFrom(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
-        backgroundColor: AppColors.strongOrange,
+Widget _footerButtons(
+    BuildContext context,
+    bool isOtherEgo,
+    VoidCallback? onChatWithEgo,
+    VoidCallback? onChatWithHuman,
+    ) {
+  if (isOtherEgo) {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: 60.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: TextButton(
+              onPressed: onChatWithEgo,
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                padding: EdgeInsets.symmetric(vertical: 15.h),
+                backgroundColor: AppColors.strongOrange,
+              ),
+              child: Text(
+                "EGO와 채팅",
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: 16.w),
+          Expanded(
+            child: TextButton(
+              onPressed: onChatWithHuman,
+              style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                padding: EdgeInsets.symmetric(vertical: 15.h),
+                backgroundColor: AppColors.strongOrange,
+              ),
+              child: Text(
+                "사람과 채팅",
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 16.sp,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      child: Text(
-        "확인",
-        style: TextStyle(
-          color: AppColors.white,
-          fontSize: 18.sp,
-          fontWeight: FontWeight.w700,
+    );
+  } else {
+    return Container(
+      width: double.infinity,
+      margin: EdgeInsets.only(top: 60.h),
+      child: TextButton(
+        onPressed: () => Navigator.pop(context),
+        style: TextButton.styleFrom(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 15.h),
+          backgroundColor: AppColors.strongOrange,
+        ),
+        child: Text(
+          "확인",
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
+
 
 /// 태그 모양을 가지는 위젯을 반환합니다.
 ///
