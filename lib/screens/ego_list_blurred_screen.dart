@@ -25,7 +25,7 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
   String searchQuery = '';
   String selectedSort = '최신대화순';
 
-  final List<String> sortOptions = ['최신대화순', '이름순'];
+  final List<String> sortOptions = ['최신대화순', '이름순', '평점순', '하트 많은 순'];
 
   @override
   void initState() {
@@ -148,19 +148,15 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                 // 정렬 버튼
                 Padding(
                   padding: EdgeInsets.only(bottom: 8.h),
-                  child: Row(
-                    children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: EdgeInsets.symmetric(horizontal: 16.w),
-                        child: Row(
-                          children:
-                              sortOptions
-                                  .map((option) => _buildSortButton(option))
-                                  .toList(),
-                        ),
-                      ),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: EdgeInsets.only(right: 16.h, left: 16.h, bottom: 5.h),
+                    child: Row(
+                      children:
+                          sortOptions
+                              .map((option) => _buildSortButton(option))
+                              .toList(),
+                    ),
                   ),
                 ),
 
@@ -188,10 +184,38 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          trailing: buildEgoListItem(
-                            ego.egoIcon,
-                            () {},
-                            radius: 19,
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text('4', style: TextStyle(fontSize: 14.sp)),
+                                ],
+                              ),
+                              SizedBox(width: 8.w),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.favorite,
+                                    color: AppColors.strongOrange,
+                                    size: 20,
+                                  ),
+                                  SizedBox(width: 4.w),
+                                  Text(
+                                    '123',
+                                    style: TextStyle(fontSize: 14.sp),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 10.w),
+                              buildEgoListItem(ego.egoIcon, () {}, radius: 19),
+                            ],
                           ),
                           onTap: () {
                             widget.onEgoSelected(ego);
