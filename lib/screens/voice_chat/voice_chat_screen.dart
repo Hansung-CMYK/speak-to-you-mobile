@@ -1,7 +1,7 @@
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/voice_chat/top_call_time_banner.dart';
-import 'package:ego/screens/voice_chat/voice_chat_history_overlay.dart';
+import 'package:ego/screens/voice_chat/voice_chat_overlay.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +22,8 @@ class VoiceChatScreen extends StatefulWidget {
 }
 
 class _VoiceChatScreenState extends State<VoiceChatScreen> {
+  final ScrollController _scrollController = ScrollController();
+
   bool isMicOn = true;
   bool isSpeakerOn = true;
   bool isChatVisible = false;
@@ -94,6 +96,32 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _addChat(ChatHistory chat) {
+    setState(() {
+      chatHistoryList.add(chat);
+    });
+    // 채팅이 추가된 후에 스크롤을 마지막으로 이동
+    _scrollToBottom();
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     EgoInfoModel egoInfo = widget.egoInfoModel;
     String uid = widget.uid;
@@ -126,6 +154,17 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                   onPressed: () {
                     setState(() {
                       isMicOn = !isMicOn;
+                      _addChat(
+                        ChatHistory(
+                          id: chatHistoryList.length + 1,
+                          uid: "some-uid",
+                          chatRoomId: 1,
+                          content: "자동 추가된 메시지",
+                          type: "U",
+                          chatAt: DateTime.now(),
+                          isDeleted: false,
+                        ),
+                      );
                     });
                   },
                 ),
@@ -225,6 +264,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                     child: VoiceChatOverlay(
                       chatHistories: chatHistoryList,
                       height: 300.h,
+                      scrollController: _scrollController,
                     ),
                   ),
               ],
