@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
 
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
-/// context : 띄워질 부모의 context [BuildContext]
-/// egoInfoModel : 띄울 EGO의 정보 [EgoInfoModel]
+/// context : 띄워질 부모의 context \[BuildContext]
+/// egoInfoModel : 띄울 EGO의 정보 \[EgoInfoModel]
 void showTodayEgoIntroSheet(
     BuildContext context,
     EgoInfoModel egoInfoModel, {
       bool isOtherEgo = false,
       VoidCallback? onChatWithEgo,
       VoidCallback? onChatWithHuman,
+      bool canChatWithHuman = false, // 사람과 채팅 가능한지 여부
+      String unavailableReason = "", // 채팅 불가능한 이유
     }) {
   showModalBottomSheet(
     context: context,
@@ -35,7 +37,7 @@ void showTodayEgoIntroSheet(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _header(context),
-              _body(context, egoInfoModel, isOtherEgo, onChatWithEgo, onChatWithHuman),
+              _body(context, egoInfoModel, isOtherEgo, onChatWithEgo, onChatWithHuman, canChatWithHuman, unavailableReason),
             ],
           ),
         ),
@@ -44,10 +46,9 @@ void showTodayEgoIntroSheet(
   );
 }
 
-
 /// BottomSheet의 Header 부분 '제목, 닫기 버튼'으로 구성됨
 ///
-/// [context] : BottomSheet를 닫기 위함 [BuildContext]
+/// \[context] : BottomSheet를 닫기 위함 \[BuildContext]
 Widget _header(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -75,28 +76,29 @@ Widget _header(BuildContext context) {
 
 /// BottomSheet의 Body부분 EGO의 정보들을 보여줍니다.
 ///
-/// [egoInfoModel] : EGO의 정보를 가지고 있는 model입니다. [EgoInfoModel]
-/// [context] : BottomSheet를 닫기 위해 context를 전달해 줍니다. [BuildContext]
+/// \[egoInfoModel] : EGO의 정보를 가지고 있는 model입니다. \[EgoInfoModel]
+/// \[context] : BottomSheet를 닫기 위해 context를 전달해 줍니다. \[BuildContext]
 Widget _body(
     BuildContext context,
     EgoInfoModel egoInfoModel,
     bool isOtherEgo,
     VoidCallback? onChatWithEgo,
     VoidCallback? onChatWithHuman,
+    bool canChatWithHuman,
+    String unavailableReason,
     ) {
   return Column(
     children: [
       _egoInfoCard(egoInfoModel),
       _egoSpecificInfo(egoInfoModel),
-      _footerButtons(context, isOtherEgo, onChatWithEgo, onChatWithHuman),
+      _footerButtons(context, isOtherEgo, onChatWithEgo, onChatWithHuman, canChatWithHuman, unavailableReason),
     ],
   );
 }
 
-
 /// Ego의 프로필이미지, 이름, 생일을 보여줍니다.
 ///
-/// [egoInfoModel] : EGO의 정보를 가지고 있습니다. [EgoInfoModel]
+/// \[egoInfoModel] : EGO의 정보를 가지고 있습니다. \[EgoInfoModel]
 Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
   return Row(
     children: [
@@ -124,7 +126,6 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // 생일 Tag부분
                 _tagWidget(
                   "assets/icon/cake.svg",
                   AppColors.strongOrange,
@@ -134,7 +135,6 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
                   12,
                   FontWeight.w700,
                 ),
-                // 생일 날짜 부분
                 Padding(
                   padding: EdgeInsets.only(left: 8.w, right: 4.w),
                   child: Text(
@@ -148,7 +148,6 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
                     ),
                   ),
                 ),
-                // 생일까지 남은 일짜 (D-000)
                 _tagWidget(
                   "",
                   AppColors.gray200,
@@ -169,7 +168,7 @@ Widget _egoInfoCard(EgoInfoModel egoInfoModel) {
 
 /// Today EGO의 세부 내용 (성격, 자기소개)
 ///
-/// [egoInfoModel] : EGO 정보
+/// \[egoInfoModel] : EGO 정보
 Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
   return Container(
     width: 353.w,
@@ -203,7 +202,6 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
             ],
           ),
         ),
-
         Container(
           padding: EdgeInsets.symmetric(vertical: 16.h),
           decoration: BoxDecoration(
@@ -239,59 +237,78 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
 
 /// 확인 버튼
 ///
-/// [context] : 확인을 누르면 BottomSheet를 닫기 위함
+/// \[context] : 확인을 누르면 BottomSheet를 닫기 위함
 Widget _footerButtons(
     BuildContext context,
     bool isOtherEgo,
     VoidCallback? onChatWithEgo,
     VoidCallback? onChatWithHuman,
+    bool canChatWithHuman,
+    String unavailableReason,
     ) {
   if (isOtherEgo) {
-    return Container(
-      width: double.infinity,
-      margin: EdgeInsets.only(top: 60.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            child: TextButton(
-              onPressed: onChatWithEgo,
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-                padding: EdgeInsets.symmetric(vertical: 15.h),
-                backgroundColor: AppColors.strongOrange,
-              ),
-              child: Text(
-                "EGO와 채팅",
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
+    return Column(
+      children: [
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.only(top: 60.h),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(
+                child: TextButton(
+                  onPressed: onChatWithEgo,
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    padding: EdgeInsets.symmetric(vertical: 15.h),
+                    backgroundColor: AppColors.strongOrange,
+                  ),
+                  child: Text(
+                    "EGO와 채팅",
+                    style: TextStyle(
+                      color: AppColors.white,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child: TextButton(
-              onPressed: onChatWithHuman,
-              style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
-                padding: EdgeInsets.symmetric(vertical: 15.h),
-                backgroundColor: AppColors.strongOrange,
-              ),
-              child: Text(
-                "사람과 채팅",
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16.sp,
-                  fontWeight: FontWeight.w700,
+              SizedBox(width: 16.w),
+              Expanded(
+                child: TextButton(
+                  onPressed: canChatWithHuman ? onChatWithHuman : null,
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+                    padding: EdgeInsets.symmetric(vertical: 15.h),
+                    backgroundColor: canChatWithHuman ? AppColors.strongOrange : AppColors.gray300,
+                  ),
+                  child: Text(
+                    "사람과 채팅",
+                    style: TextStyle(
+                      color: canChatWithHuman ? AppColors.white : AppColors.gray600,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
                 ),
               ),
+            ],
+          ),
+        ),
+        if (!canChatWithHuman && unavailableReason.isNotEmpty)
+          Padding(
+            padding: EdgeInsets.only(top: 12.h),
+            child: Text(
+              unavailableReason,
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: AppColors.gray600,
+                fontWeight: FontWeight.w500,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
-        ],
-      ),
+      ],
     );
   } else {
     return Container(
@@ -320,22 +337,22 @@ Widget _footerButtons(
 
 /// 태그 모양을 가지는 위젯을 반환합니다.
 ///
-/// [iconPath] : icon의 경로[String]
-/// [tagColor] : tag의 배경색[Color]
-/// [fontColor] : tag의 글자 색[Color]
-/// [borderRadius] : tag의 굴곡[double]
-/// [text] : tag명[String]
-/// [fontSize] : tag 글자 사이즈[int]
-/// [fontWeight] : tag 글자 두께[FontWeight]
+/// \[iconPath] : icon의 경로\[String]
+/// \[tagColor] : tag의 배경색\[Color]
+/// \[fontColor] : tag의 글자 색\[Color]
+/// \[borderRadius] : tag의 굴곡\[double]
+/// \[text] : tag명\[String]
+/// \[fontSize] : tag 글자 사이즈\[int]
+/// \[fontWeight] : tag 글자 두께\[FontWeight]
 Widget _tagWidget(
-  String iconPath,
-  Color tagColor,
-  Color fontColor,
-  double borderRadius,
-  String text,
-  int fontSize,
-  FontWeight fontWeight,
-) {
+    String iconPath,
+    Color tagColor,
+    Color fontColor,
+    double borderRadius,
+    String text,
+    int fontSize,
+    FontWeight fontWeight,
+    ) {
   return Container(
     decoration: BoxDecoration(
       color: tagColor,

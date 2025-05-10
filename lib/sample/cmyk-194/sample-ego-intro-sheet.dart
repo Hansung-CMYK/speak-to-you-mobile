@@ -50,15 +50,34 @@ class ButtonScreen extends StatelessWidget {
                   context,
                   egoInfoModel,
                   isOtherEgo: true,
+                  canChatWithHuman: false,
+                  unavailableReason: "EGO와 더 많이 대화하세요!",
                   onChatWithEgo: () {
-                    // EGO와 채팅 로직
+                    print("EGO와 채팅");
                   },
                   onChatWithHuman: () {
-                    // 사람과 채팅 로직
+                    print("사람과 채팅");
                   },
                 );
               },
               child: Text('타인 EGO'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                showTodayEgoIntroSheet(
+                  context,
+                  egoInfoModel,
+                  isOtherEgo: true,
+                  canChatWithHuman: true,
+                  onChatWithEgo: () {
+                    print("EGO와 채팅");
+                  },
+                  onChatWithHuman: () {
+                    print("사람과 채팅");
+                  },
+                );
+              },
+              child: Text('나의 EGO'),
             ),
           ],
         ),
