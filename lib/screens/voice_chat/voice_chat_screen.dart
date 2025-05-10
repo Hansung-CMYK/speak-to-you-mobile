@@ -1,5 +1,7 @@
+import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/voice_chat/top_call_time_banner.dart';
+import 'package:ego/screens/voice_chat/voice_chat_history_overlay.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,6 +28,70 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
 
   final double iconWidth = 35;
   final double iconHeight = 35;
+
+  late List<ChatHistory> chatHistoryList;
+
+  @override
+  void initState() {
+    super.initState();
+    // 임시 데이터
+    chatHistoryList = [
+      ChatHistory(
+        id: 1,
+        uid: "user1",
+        chatRoomId: 1,
+        content: "방가방가",
+        type: "E",
+        chatAt: DateTime.parse("2025-05-09 09:21:00.000"),
+        isDeleted: false,
+      ),
+      ChatHistory(
+        id: 2,
+        uid: "user1",
+        chatRoomId: 1,
+        content: "오늘은 어떤일이 있었어?",
+        type: "E",
+        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
+        isDeleted: false,
+      ),
+      ChatHistory(
+        id: 3,
+        uid: widget.uid,
+        chatRoomId: 1,
+        content: "블라블라 오늘도 블라블르라",
+        type: "U",
+        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
+        isDeleted: false,
+      ),
+      ChatHistory(
+        id: 3,
+        uid: widget.uid,
+        chatRoomId: 1,
+        content: "블라블라 오늘도 블라블르라",
+        type: "U",
+        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
+        isDeleted: false,
+      ),
+      ChatHistory(
+        id: 3,
+        uid: widget.uid,
+        chatRoomId: 1,
+        content: "블라블라 오늘도 블라블르라",
+        type: "U",
+        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
+        isDeleted: false,
+      ),
+      ChatHistory(
+        id: 3,
+        uid: widget.uid,
+        chatRoomId: 1,
+        content: "블라블라 오늘도 블라블르라",
+        type: "U",
+        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
+        isDeleted: false,
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -154,18 +220,11 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                   ),
                 ),
                 if (isChatVisible)
-                  Positioned.fill(
-                    child: Container(
-                      color: Colors.black.withOpacity(0.4), // 반투명 오버레이
-                      child: Center(
-                        child: Text(
-                          '채팅 화면 (예시)',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.sp,
-                          ),
-                        ),
-                      ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: VoiceChatOverlay(
+                      chatHistories: chatHistoryList,
+                      height: 300.h,
                     ),
                   ),
               ],
