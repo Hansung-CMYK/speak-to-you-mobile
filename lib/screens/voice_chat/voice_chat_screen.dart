@@ -1,11 +1,13 @@
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/screens/voice_chat/top_call_time_banner.dart';
+import 'package:ego/screens/voice_chat/call_time_banner.dart';
 import 'package:ego/screens/voice_chat/voice_chat_overlay.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'chat_history_screen.dart';
 
 class VoiceChatScreen extends StatefulWidget {
   final EgoInfoModel egoInfoModel;
@@ -66,7 +68,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         isDeleted: false,
       ),
       ChatHistory(
-        id: 3,
+        id: 4,
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
@@ -75,7 +77,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         isDeleted: false,
       ),
       ChatHistory(
-        id: 3,
+        id: 5,
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
@@ -84,7 +86,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         isDeleted: false,
       ),
       ChatHistory(
-        id: 3,
+        id: 6,
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
@@ -206,7 +208,14 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                   ),
                   padding: EdgeInsets.zero,
                   onPressed: () {
-                    // 채팅 기록 열기 등
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChatHistoryScreen(
+                          chatHistories: chatHistoryList,
+                        ),
+                      ),
+                    );
                   },
                 ),
                 SizedBox(width: 25.w),

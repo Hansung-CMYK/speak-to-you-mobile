@@ -2,9 +2,11 @@ import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/home_callNmsg_func.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import '../../theme/theme.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDateFormatting('ko');
   runApp(MyApp());
 }
 
