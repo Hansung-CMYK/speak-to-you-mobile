@@ -1,3 +1,4 @@
+import 'package:ego/screens/voice_chat_screen.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
@@ -58,48 +59,49 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                 scrollDirection: Axis.horizontal,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
                 children:
-                    egoList
-                        .asMap()
-                        .entries
-                        .map((entry) {
-                          final index = entry.key;
-                          final ego = entry.value;
+                egoList
+                    .asMap()
+                    .entries
+                    .map((entry) {
+                  final index = entry.key;
+                  final ego = entry.value;
 
-                          if (index == 10) {
-                            // 11번째는 더보기 버튼
-                            return buildEgoListItem("", () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  opaque: false,
-                                  pageBuilder:
-                                      (_, __, ___) => BlurredListScreen(
-                                        egoList: egoList,
-                                        onEgoSelected: (selected) {
-                                          setState(
-                                            () => selectedEgo = selected,
-                                          );
-                                        },
-                                      ),
-                                ),
-                              );
-                            }, isMoreBtn: true);
-                          } else if (index > 10) {
-                            return null;
-                          }
+                  if (index == 10) {
+                    // 11번째는 더보기 버튼
+                    return buildEgoListItem("", () {
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          opaque: false,
+                          pageBuilder:
+                              (_, __, ___) =>
+                              BlurredListScreen(
+                                egoList: egoList,
+                                onEgoSelected: (selected) {
+                                  setState(
+                                        () => selectedEgo = selected,
+                                  );
+                                },
+                              ),
+                        ),
+                      );
+                    }, isMoreBtn: true);
+                  } else if (index > 10) {
+                    return null;
+                  }
 
-                          return index == 0
-                              ? buildEgoListItemGradient(
-                                ego.egoIcon,
-                                () => setState(() => selectedEgo = ego),
-                              )
-                              : buildEgoListItem(
-                                ego.egoIcon,
-                                () => setState(() => selectedEgo = ego),
-                              );
-                        })
-                        .whereType<Widget>()
-                        .toList(),
+                  return index == 0
+                      ? buildEgoListItemGradient(
+                    ego.egoIcon,
+                        () => setState(() => selectedEgo = ego),
+                  )
+                      : buildEgoListItem(
+                    ego.egoIcon,
+                        () => setState(() => selectedEgo = ego),
+                  );
+                })
+                    .whereType<Widget>()
+                    .toList(),
               ),
             ),
           ),
@@ -133,7 +135,14 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
       child: SwipeActionContainer(
         onCall: () {
           // 전화 걸기 액션
-          print('전화 걸기');
+          // uid는 시스템 상에서 관리된다 가정
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  CallScreen(uid: "User_1", egoId: int.parse(selectedEgo.id)),
+            ),
+          );
         },
         onText: () {
           // 문자 보내기 액션
