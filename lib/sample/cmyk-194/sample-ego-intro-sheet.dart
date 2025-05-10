@@ -35,7 +35,7 @@ class ButtonScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Ego Intro Screen')),
       body: Center(
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
@@ -60,7 +60,7 @@ class ButtonScreen extends StatelessWidget {
                   },
                 );
               },
-              child: Text('타인 EGO'),
+              child: Text('타인 EGO - 비활성화'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -77,7 +77,7 @@ class ButtonScreen extends StatelessWidget {
                   },
                 );
               },
-              child: Text('나의 EGO'),
+              child: Text('나의 EGO - 활성화'),
             ),
           ],
         ),
