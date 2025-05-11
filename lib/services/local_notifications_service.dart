@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class LocalNotificationsService {
@@ -75,25 +77,41 @@ class LocalNotificationsService {
       String? body,
       String? payload,
       ) async {
-    // Android-specific notification details
-    AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+    final styleInformation = BigTextStyleInformation(
+      body ?? '',
+      contentTitle: title ?? '제목 없음',
+      summaryText: '🎉 오늘도 고생했어요 🎉',
+      htmlFormatContent: true,
+      htmlFormatContentTitle: true,
+    );
+
+    final androidDetails = AndroidNotificationDetails(
       _androidChannel.id,
       _androidChannel.name,
       channelDescription: _androidChannel.description,
       importance: Importance.max,
       priority: Priority.high,
+      styleInformation: styleInformation,
+      color: const Color(0xFF0066CC), // 푸른 계열 색상
+      colorized: true, // 배경 색상 반영
+      enableVibration: true,
+      playSound: true,
+      largeIcon: const DrawableResourceAndroidBitmap('diary_icon'),
+      icon: '@mipmap/ic_launcher',
+      visibility: NotificationVisibility.public,
     );
 
-    // iOS-specific notification details
-    const iosDetails = DarwinNotificationDetails();
+    const iosDetails = DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
 
-    // Combine platform-specific details
     final notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: iosDetails,
     );
 
-    // Display the notification
     await _flutterLocalNotificationsPlugin.show(
       _notificationIdCounter++,
       title,
