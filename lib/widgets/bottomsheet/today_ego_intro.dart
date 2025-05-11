@@ -1,3 +1,4 @@
+import 'package:ego/screens/egoreview/ego_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,6 +16,7 @@ void showTodayEgoIntroSheet(
   bool isOtherEgo = false,
   VoidCallback? onChatWithEgo,
   VoidCallback? onChatWithHuman,
+  String relationTag = "", // 관계 태그
   bool canChatWithHuman = false, // 사람과 채팅 가능한지 여부
   String unavailableReason = "", // 채팅 불가능한 이유
 }) {
@@ -44,6 +46,7 @@ void showTodayEgoIntroSheet(
                 isOtherEgo,
                 onChatWithEgo,
                 onChatWithHuman,
+                relationTag,
                 canChatWithHuman,
                 unavailableReason,
               ),
@@ -93,12 +96,17 @@ Widget _body(
   bool isOtherEgo,
   VoidCallback? onChatWithEgo,
   VoidCallback? onChatWithHuman,
+  String relationTag,
   bool canChatWithHuman,
   String unavailableReason,
 ) {
   return Column(
     children: [
-      EgoInfoCard(egoInfoModel: egoInfoModel, isOtherEgo: isOtherEgo),
+      EgoInfoCard(
+        egoInfoModel: egoInfoModel,
+        isOtherEgo: isOtherEgo,
+        relationTag: relationTag,
+      ),
       _egoSpecificInfo(egoInfoModel),
       _footerButtons(
         context,
@@ -119,8 +127,13 @@ Widget _body(
 class EgoInfoCard extends StatefulWidget {
   final EgoInfoModel egoInfoModel;
   final bool isOtherEgo;
+  final String relationTag;
 
-  EgoInfoCard({required this.egoInfoModel, required this.isOtherEgo});
+  EgoInfoCard({
+    required this.egoInfoModel,
+    required this.isOtherEgo,
+    required this.relationTag,
+  });
 
   @override
   _EgoInfoCardState createState() => _EgoInfoCardState();
@@ -165,12 +178,42 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(bottom: 4.h),
-                    child: Text(
-                      widget.egoInfoModel.egoName,
-                      style: TextStyle(
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
+                    child: Row(
+                      children: [
+                        if (widget.relationTag.isNotEmpty) ...[
+                          Padding(
+                            padding: EdgeInsets.only(right: 4.w),
+                            child: _sizableTagWidget(
+                              "assets/icon/pencil.svg",
+                              AppColors.accent,
+                              AppColors.white,
+                              4,
+                              widget.relationTag,
+                              12,
+                              FontWeight.w700,
+                              size: 13,
+                              onClick: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder:
+                                        (context) => EgoReviewScreen(
+                                          egoInfoModel: widget.egoInfoModel,
+                                        ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                        Text(
+                          widget.egoInfoModel.egoName,
+                          style: TextStyle(
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   Row(
@@ -447,31 +490,76 @@ Widget _tagWidget(
   double borderRadius,
   String text,
   int fontSize,
-  FontWeight fontWeight,
-) {
-  return Container(
-    decoration: BoxDecoration(
-      color: tagColor,
-      borderRadius: BorderRadius.circular(borderRadius),
-    ),
-    padding: EdgeInsets.all(4.0),
-    child: Row(
-      children: [
-        if (iconPath != "") ...[
-          Padding(
-            padding: EdgeInsets.only(right: 2.w),
-            child: SvgPicture.asset(iconPath),
+  FontWeight fontWeight, {
+  VoidCallback? onClick,
+}) {
+  return GestureDetector(
+    onTap: onClick,
+    child: Container(
+      decoration: BoxDecoration(
+        color: tagColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      padding: EdgeInsets.all(4.0),
+      child: Row(
+        children: [
+          if (iconPath != "") ...[
+            Padding(
+              padding: EdgeInsets.only(right: 2.w),
+              child: SvgPicture.asset(iconPath),
+            ),
+          ],
+          Text(
+            text,
+            style: TextStyle(
+              color: fontColor,
+              fontSize: fontSize.sp,
+              fontWeight: fontWeight,
+            ),
           ),
         ],
-        Text(
-          text,
-          style: TextStyle(
-            color: fontColor,
-            fontSize: fontSize.sp,
-            fontWeight: fontWeight,
+      ),
+    ),
+  );
+}
+
+Widget _sizableTagWidget(
+  String iconPath,
+  Color tagColor,
+  Color fontColor,
+  double borderRadius,
+  String text,
+  int fontSize,
+  FontWeight fontWeight, {
+  VoidCallback? onClick,
+  double size = 18.0,
+}) {
+  return GestureDetector(
+    onTap: onClick,
+    child: Container(
+      decoration: BoxDecoration(
+        color: tagColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
+      padding: EdgeInsets.all(4.0),
+      child: Row(
+        children: [
+          if (iconPath != "") ...[
+            Padding(
+              padding: EdgeInsets.only(right: 2.w),
+              child: SvgPicture.asset(iconPath, width: size, height: size),
+            ),
+          ],
+          Text(
+            text,
+            style: TextStyle(
+              color: fontColor,
+              fontSize: fontSize.sp,
+              fontWeight: fontWeight,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     ),
   );
 }

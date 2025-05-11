@@ -51,6 +51,7 @@ class ButtonScreen extends StatelessWidget {
                   egoInfoModel,
                   isOtherEgo: true,
                   canChatWithHuman: false,
+                  relationTag: "친절한",
                   unavailableReason: "EGO와 더 많이 대화하세요!",
                   onChatWithEgo: () {
                     print("EGO와 채팅");
@@ -69,6 +70,7 @@ class ButtonScreen extends StatelessWidget {
                   egoInfoModel,
                   isOtherEgo: true,
                   canChatWithHuman: true,
+                  relationTag: "친절한",
                   onChatWithEgo: () {
                     print("EGO와 채팅");
                   },

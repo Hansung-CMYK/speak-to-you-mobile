@@ -162,6 +162,7 @@ flutter:
     - assets/icon/sound_on.svg
     - assets/icon/sound_off.svg
     - assets/icon/chat_history.svg
+    - assets/icon/pencil.svg
 
 
 
