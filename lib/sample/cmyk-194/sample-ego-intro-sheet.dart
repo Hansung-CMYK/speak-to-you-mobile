@@ -79,7 +79,7 @@ class ButtonScreen extends StatelessWidget {
                   },
                 );
               },
-              child: Text('나의 EGO - 활성화'),
+              child: Text('타인 EGO - 활성화'),
             ),
           ],
         ),

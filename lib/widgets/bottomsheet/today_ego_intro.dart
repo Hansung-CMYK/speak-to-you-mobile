@@ -381,8 +381,9 @@ Widget _footerButtons(
           width: double.infinity,
           margin: EdgeInsets.only(top: 60.h),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // EGO 버튼
               Expanded(
                 child: TextButton(
                   onPressed: onChatWithEgo,
@@ -404,48 +405,54 @@ Widget _footerButtons(
                 ),
               ),
               SizedBox(width: 16.w),
+              // 사람과 채팅 버튼 + 안내문
               Expanded(
-                child: TextButton(
-                  onPressed: canChatWithHuman ? onChatWithHuman : null,
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextButton(
+                      onPressed: canChatWithHuman ? onChatWithHuman : null,
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 15.h),
+                        backgroundColor:
+                            canChatWithHuman
+                                ? AppColors.strongOrange
+                                : AppColors.gray300,
+                      ),
+                      child: Text(
+                        "사람과 채팅",
+                        style: TextStyle(
+                          color:
+                              canChatWithHuman
+                                  ? AppColors.white
+                                  : AppColors.gray600,
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 15.h),
-                    backgroundColor:
-                        canChatWithHuman
-                            ? AppColors.strongOrange
-                            : AppColors.gray300,
-                  ),
-                  child: Text(
-                    "사람과 채팅",
-                    style: TextStyle(
-                      color:
-                          canChatWithHuman
-                              ? AppColors.white
-                              : AppColors.gray600,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
+                    if (!canChatWithHuman && unavailableReason.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.h),
+                        child: Text(
+                          unavailableReason,
+                          style: TextStyle(
+                            fontSize: 14.sp,
+                            color: AppColors.gray600,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-        if (!canChatWithHuman && unavailableReason.isNotEmpty)
-          Padding(
-            padding: EdgeInsets.only(top: 12.h),
-            child: Text(
-              unavailableReason,
-              style: TextStyle(
-                fontSize: 14.sp,
-                color: AppColors.gray600,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
       ],
     );
   } else {
@@ -546,12 +553,12 @@ Widget _sizableTagWidget(
         children: [
           if (iconPath != "") ...[
             Padding(
-              padding: EdgeInsets.only(right: 2.w),
+              padding: EdgeInsets.only(left: 2.w,right: 5.w),
               child: SvgPicture.asset(iconPath, width: size, height: size),
             ),
           ],
           Text(
-            text,
+            text + " ",
             style: TextStyle(
               color: fontColor,
               fontSize: fontSize.sp,
