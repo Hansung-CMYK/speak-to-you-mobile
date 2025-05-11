@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class EgoModel {
   final int id;
   final String name;
