@@ -1,4 +1,4 @@
-import 'package:ego/firebase_options.dart';
+// import 'package:ego/firebase_options.dart';
 import 'package:ego/services/firebase_messaging_service.dart';
 import 'package:ego/services/local_notifications_service.dart';
 import 'package:ego/theme/theme.dart';
@@ -12,13 +12,13 @@ import 'screens/ex_home_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  final localNotificationsService = LocalNotificationsService.instance();
-  await localNotificationsService.init();
-
-  final firebaseMessagingService = FirebaseMessagingService.instance();
-  await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //
+  // final localNotificationsService = LocalNotificationsService.instance();
+  // await localNotificationsService.init();
+  //
+  // final firebaseMessagingService = FirebaseMessagingService.instance();
+  // await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
 
   runApp(
     ProviderScope(
