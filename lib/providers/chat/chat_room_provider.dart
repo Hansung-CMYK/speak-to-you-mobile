@@ -8,6 +8,6 @@ final chatRoomProvider = FutureProvider.family<List<ChatRoomModel>, String>((ref
   return await ChatRoomService.fetchChatRoomList(
     uid: uid,
     pageNum: 0,
-    pageSize: 10,
+    pageSize: 11,
   );
 });

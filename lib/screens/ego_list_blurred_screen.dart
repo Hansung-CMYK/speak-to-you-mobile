@@ -4,11 +4,12 @@ import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../models/ego_model.dart';
 import '../widgets/egoicon/ego_list_item.dart';
 
 class BlurredListScreen extends StatefulWidget {
-  final List<EgoInfoModel> egoList;
-  final void Function(EgoInfoModel) onEgoSelected;
+  final List<EgoModel> egoList;
+  final void Function(EgoModel) onEgoSelected;
 
   const BlurredListScreen({
     super.key,
@@ -21,7 +22,7 @@ class BlurredListScreen extends StatefulWidget {
 }
 
 class _BlurredListScreenState extends State<BlurredListScreen> {
-  late List<EgoInfoModel> filteredList;
+  late List<EgoModel> filteredList;
   String searchQuery = '';
   String selectedSort = '최신대화순';
 
@@ -40,7 +41,7 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
           widget.egoList
               .where(
                 (ego) =>
-                    ego.egoName.toLowerCase().contains(query.toLowerCase()),
+                    ego.name.toLowerCase().contains(query.toLowerCase()),
               )
               .toList();
       _applySort(); // 필터 후 정렬도 적용
@@ -60,13 +61,13 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
         widget.egoList
             .where(
               (ego) =>
-                  ego.egoName.toLowerCase().contains(searchQuery.toLowerCase()),
+                  ego.name.toLowerCase().contains(searchQuery.toLowerCase()),
             )
             .toList();
 
     // 그런 다음 정렬 적용
     if (selectedSort == '이름순') {
-      filteredList.sort((a, b) => a.egoName.compareTo(b.egoName));
+      filteredList.sort((a, b) => a.name.compareTo(b.name));
     }
   }
 
@@ -177,7 +178,7 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                         ),
                         child: ListTile(
                           title: Text(
-                            ego.egoName,
+                            ego.name,
                             style: TextStyle(
                               color: AppColors.gray900,
                               fontSize: 16.sp,
@@ -214,7 +215,7 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                                 ],
                               ),
                               SizedBox(width: 10.w),
-                              buildEgoListItem(ego.egoIcon, () {}, radius: 19),
+                              buildEgoListItem(ego.profileImage, () {}, radius: 19),
                             ],
                           ),
                           onTap: () {

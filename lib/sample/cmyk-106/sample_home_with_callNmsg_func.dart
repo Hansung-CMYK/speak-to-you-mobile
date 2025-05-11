@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../../models/ego_model.dart';
 import '../../providers/ego_provider.dart';
 import '../../theme/theme.dart';
 
@@ -33,21 +34,45 @@ class MyApp extends StatelessWidget {
 class HomeScreenCallnMsgWrapper extends ConsumerWidget {
   const HomeScreenCallnMsgWrapper({super.key});
 
-  // 1단계 : uid와 일치하는 ChatRoomList를 가져온다. - 완
-  // 2단계 : ChatRoomList에는 egoId가 있으므로 egoId별로 ego를 가져온다. -
+  // 1단계 : uid와 일치하는 ChatRoomList를 가져온다.
+  // 2단계 : ChatRoomList에는 egoId가 있으므로 egoId별로 ego를 가져온다.
   // 3단계 : 가져온 EGO정보로 main화면의 EGOList를 그린다.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // chatRoomProvider로 전달되는 uid는 로그인됨과 동시에 디바이스에 전역변수로 관리할 예정
     final chatRoomListAsync = ref.watch(chatRoomProvider('test'));
 
-    final egoListAsync = ref.watch(egoListProvider);
+    return chatRoomListAsync.when(
+      data: (chatRoomList) {
+        // 각 egoId를 기반으로 egoModel Future 리스트를 만듦
+        final futures = chatRoomList.map(
+              (chatRoom) => ref.watch(egoByIdProvider(chatRoom.egoId).future),
+        ).toList();
 
-
-    return egoListAsync.when(
-      data: (egoList) => HomeScreenCallnMsg(egoList: []),
+        // 여러 개의 future를 기다리기 위해 Future.wait 사용
+        return FutureBuilder<List<EgoModel>>(
+          future: Future.wait(futures),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Scaffold(
+                body: Center(child: CircularProgressIndicator()),
+              );
+            } else if (snapshot.hasError) {
+              return Scaffold(
+                body: Center(child: Text('에러 발생: ${snapshot.error}')),
+              );
+            } else if (snapshot.hasData) {
+              final egoList = snapshot.data!;
+              return HomeScreenCallnMsg(egoList: egoList);
+            } else {
+              return const Scaffold(
+                body: Center(child: Text('예상치 못한 오류')),
+              );
+            }
+          },
+        );
+      },
       loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (err, stack) => Scaffold(body: Center(child: Text('에러 발생: $err'))),
+      error: (err, stack) => Scaffold(body: Center(child: Text('에러 발생1: $err'))),
     );
   }
 }
