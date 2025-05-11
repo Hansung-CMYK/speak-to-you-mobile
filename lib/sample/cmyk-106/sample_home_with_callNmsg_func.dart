@@ -1,3 +1,4 @@
+import 'package:ego/providers/chat/chat_room_provider.dart';
 import 'package:ego/screens/home_callNmsg_func.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,9 +33,16 @@ class MyApp extends StatelessWidget {
 class HomeScreenCallnMsgWrapper extends ConsumerWidget {
   const HomeScreenCallnMsgWrapper({super.key});
 
+  // 1단계 : uid와 일치하는 ChatRoomList를 가져온다. - 완
+  // 2단계 : ChatRoomList에는 egoId가 있으므로 egoId별로 ego를 가져온다. -
+  // 3단계 : 가져온 EGO정보로 main화면의 EGOList를 그린다.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // chatRoomProvider로 전달되는 uid는 로그인됨과 동시에 디바이스에 전역변수로 관리할 예정
+    final chatRoomListAsync = ref.watch(chatRoomProvider('test'));
+
     final egoListAsync = ref.watch(egoListProvider);
+
 
     return egoListAsync.when(
       data: (egoList) => HomeScreenCallnMsg(egoList: []),

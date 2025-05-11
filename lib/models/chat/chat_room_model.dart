@@ -4,8 +4,6 @@ class ChatRoomModel {
   final int egoId;
   final DateTime lastChatAt;
   final bool isDeleted;
-  final String? egoName;
-  final String? profileImage;
 
   ChatRoomModel({
     required this.id,
@@ -13,33 +11,27 @@ class ChatRoomModel {
     required this.egoId,
     required this.lastChatAt,
     required this.isDeleted,
-    this.egoName,
-    this.profileImage,
   });
 
-  /// JSON → ChatRoomModel
+  // JSON -> ChatRoomModel
   factory ChatRoomModel.fromJson(Map<String, dynamic> json) {
     return ChatRoomModel(
       id: json['id'],
       uid: json['uid'],
-      egoId: json['ego_id'],
-      lastChatAt: DateTime.parse(json['last_chat_at']),
-      isDeleted: json['is_deleted'] as bool,
-      egoName: json['ego_name'],
-      profileImage: json['profile_image'],
+      egoId: json['egoId'],
+      lastChatAt: DateTime.parse(json['lastChatAt']),
+      isDeleted: json['isDeleted'],
     );
   }
 
-  /// ChatRoomModel → JSON
+  // ChatRoomModel -> JSON
   Map<String, dynamic> toJson() {
     return {
       'id': id,
       'uid': uid,
-      'ego_id': egoId,
-      'last_chat_at': lastChatAt.toIso8601String(),
-      'is_deleted': isDeleted,
-      'ego_name': egoName,
-      'profile_image': profileImage,
+      'egoId': egoId,
+      'lastChatAt': lastChatAt.toIso8601String(),
+      'isDeleted': isDeleted,
     };
   }
 }

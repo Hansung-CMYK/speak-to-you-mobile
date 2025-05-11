@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:ego/models/chat/chat_room_model.dart';
+import 'package:ego/models/chat/chat_room_list_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
@@ -22,7 +22,7 @@ class ChatListScreen extends StatefulWidget {
 class _ChatListScreenState extends State<ChatListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  List<ChatRoomModel> _chatRoomList = [];
+  List<ChatRoomListModel> _chatRoomList = [];
   int? _selectedChatRoomId;
 
   @override
@@ -32,7 +32,7 @@ class _ChatListScreenState extends State<ChatListScreen>
 
     // TODO: 실제 API 요청 전에 임시 데이터
     _chatRoomList = [
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 2,
         uid: 'user456',
         egoId: 102,
@@ -41,7 +41,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '마루',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 3,
         uid: 'user789',
         egoId: 103,
@@ -50,7 +50,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '세린',
         profileImage: 'assets/image/ego_icon.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 4,
         uid: 'user012',
         egoId: 104,
@@ -59,7 +59,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '준호',
         profileImage: 'assets/image/ego_icon.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 5,
         uid: 'user345',
         egoId: 105,
@@ -68,7 +68,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '하늘',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 6,
         uid: 'user678',
         egoId: 106,
@@ -77,7 +77,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '태윤',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 7,
         uid: 'user901',
         egoId: 107,
@@ -86,7 +86,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '미소',
         profileImage: 'assets/image/ego_icon.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 8,
         uid: 'user234',
         egoId: 108,
@@ -95,7 +95,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '유리',
         profileImage: 'assets/image/ego_icon.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 9,
         uid: 'user567',
         egoId: 109,
@@ -104,7 +104,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '진우',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 10,
         uid: 'user890',
         egoId: 110,
@@ -113,7 +113,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '아라',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 11,
         uid: 'user112',
         egoId: 111,
@@ -122,7 +122,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '사과',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 12,
         uid: 'user223',
         egoId: 112,
@@ -131,7 +131,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '바나나',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 13,
         uid: 'user334',
         egoId: 113,
@@ -140,7 +140,7 @@ class _ChatListScreenState extends State<ChatListScreen>
         egoName: '옥수수',
         profileImage: 'assets/image/ego_1.png',
       ),
-      ChatRoomModel(
+      ChatRoomListModel(
         id: 14,
         uid: 'user445',
         egoId: 114,
