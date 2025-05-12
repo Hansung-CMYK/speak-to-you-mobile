@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'ego_list_blurred_screen.dart';
+import 'egolistview/ego_list_blurred_screen.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
   final List<EgoModel> egoList;
@@ -76,6 +76,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                           pageBuilder:
                               (_, __, ___) =>
                               BlurredListScreen(
+                                // uid는 시스템상에 존재한다 가정
                                 uid: "test",
                                 onEgoSelected: (selected) {
                                   setState(

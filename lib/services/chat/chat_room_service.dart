@@ -2,9 +2,10 @@ import 'dart:convert';
 import 'package:ego/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
-import '../../models/chat/chat_room_model.dart';
+import 'package:ego/models/chat/chat_room_model.dart';
 
 class ChatRoomService {
+  // page 단위로 ChatRoom을 가져옵니다.
   static Future<List<ChatRoomModel>> fetchChatRoomList({
     required String uid,
     required int pageNum,

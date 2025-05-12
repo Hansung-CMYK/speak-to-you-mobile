@@ -5,9 +5,12 @@ import 'package:ego/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
-import '../../providers/ego_provider.dart';
+import 'package:ego/providers/ego_provider.dart';
 
 class EgoService {
+  /**
+   * 서비스에 존재하는 전체 EGO List를 요청합니다.
+   * */
   static Future<List<EgoModel>> fetchAllEgoList() async {
     final response = await http.get(Uri.parse('$baseUrl/ego'));
 
@@ -24,6 +27,9 @@ class EgoService {
     }
   }
 
+  /**
+   * 특정 EGOID를 가지는 EGO를 요청합니다.
+   * */
   static Future<EgoModel> fetchEgoById(int egoId) async {
     final response = await http.get(Uri.parse('$baseUrl/ego/$egoId'));
 
@@ -41,6 +47,9 @@ class EgoService {
     }
   }
 
+  /**
+   * 전달된 ChatRoomModel들을 바탕으로 EGO정보를 조회합니다.
+   * */
   static Future<List<EgoModel>> fetchEgoModelsForChatRooms(List<ChatRoomModel> chatRoomList, WidgetRef ref) async {
     // 각 chatRoom에 대한 egoId를 기반으로 egoModel Future 리스트 생성
     final futures = chatRoomList.map(

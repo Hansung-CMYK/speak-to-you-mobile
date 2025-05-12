@@ -1,15 +1,14 @@
 import 'dart:ui';
-import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
+import 'package:ego/models/chat/chat_room_model.dart';
+import 'package:ego/models/ego_model.dart';
+import 'package:ego/services/chat/chat_room_service.dart';
+import 'package:ego/services/ego/ego_service.dart';
+import 'package:ego/widgets/egoicon/ego_list_item.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../models/chat/chat_room_model.dart';
-import '../models/ego_model.dart';
-import '../services/chat/chat_room_service.dart';
-import '../services/ego/ego_service.dart';
-import '../widgets/egoicon/ego_list_item.dart';
 
 class BlurredListScreen extends ConsumerStatefulWidget {
   final String uid;
@@ -26,12 +25,12 @@ class BlurredListScreen extends ConsumerStatefulWidget {
 }
 
 class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
-  final ScrollController _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController(); // scroller가 끝까지 간경우 다음 page 요청
   final List<ChatRoomModel> _chatRooms = [];
   final List<EgoModel> _egoList = [];
-  late List<EgoModel> filteredList = [];
+  late List<EgoModel> filteredList = []; // 정렬된 EGO List
 
-  String searchQuery = '';
+  String searchQuery = ''; // 검색할 EGO 이름
   String selectedSort = '최신대화순';
 
   final List<String> sortOptions = ['최신대화순', '이름순', '평점순', '하트 많은 순'];
@@ -45,6 +44,7 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     super.initState();
     _fetchInitialData();
 
+    // 무한 스크롤 감지
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
               _scrollController.position.maxScrollExtent - 200 &&
@@ -55,6 +55,13 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     });
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  // 초기 데이터 요청
   Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
     final chatRooms = await ChatRoomService.fetchChatRoomList(
@@ -77,6 +84,7 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     setState(() => _isLoading = false);
   }
 
+  // 무한 스크롤 요청 로직
   Future<void> _fetchMoreData() async {
     setState(() => _isLoading = true);
     final chatRooms = await ChatRoomService.fetchChatRoomList(
@@ -98,12 +106,7 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     setState(() => _isLoading = false);
   }
 
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
+  // ego 이름으로 검색
   void _filterList(String query) {
     setState(() {
       searchQuery = query;
@@ -111,13 +114,7 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     });
   }
 
-  void _selectSort(String sort) {
-    setState(() {
-      selectedSort = sort;
-      _applySort();
-    });
-  }
-
+  // ego이름으로 검색한 후 정렬방식을 적용
   void _applyFilterAndSort() {
     filteredList = _egoList
         .where((ego) =>
@@ -126,17 +123,27 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     _applySort();
   }
 
+  // 정렬 방식 선택
+  void _selectSort(String sort) {
+    setState(() {
+      selectedSort = sort;
+      _applySort();
+    });
+  }
+
+  // 정렬 방식에 따른 로직
   void _applySort() {
     switch (selectedSort) {
       case '이름순':
         filteredList.sort((a, b) => a.name.compareTo(b.name));
         break;
-      case '최신대화순':
+      case '최신대화순': // 최초 API 응답값 자체가 시간순이라 _egoList로 filteredList의 값을 변경하면 됨
         filteredList = List.from(_egoList);
         break;
     }
   }
 
+  // 정렬 옵션 버튼 builder
   Widget _buildSortButton(String option) {
     final isSelected = selectedSort == option;
     return GestureDetector(
