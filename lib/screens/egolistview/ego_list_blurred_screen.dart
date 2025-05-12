@@ -139,7 +139,6 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     });
   }
 
-  // 정렬 방식에 따른 로직
   void _applySort() {
     switch (selectedSort) {
       case '이름순':
