@@ -1,12 +1,13 @@
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/home_callNmsg_func.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:firebase_core/firebase_core.dart';
+// import '../../firebase_options.dart';
+// import '../../services/firebase_messaging_service.dart';
+// import '../../services/local_notifications_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import '../../firebase_options.dart';
-import '../../services/firebase_messaging_service.dart';
-import '../../services/local_notifications_service.dart';
+import '../../screens/alarm/alarm_screen.dart';
 import '../../theme/theme.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -16,13 +17,13 @@ Future<void> main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
-  final localNotificationsService = LocalNotificationsService.instance();
-  await localNotificationsService.init();
-
-  final firebaseMessagingService = FirebaseMessagingService.instance();
-  await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
+  // await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  //
+  // final localNotificationsService = LocalNotificationsService.instance();
+  // await localNotificationsService.init();
+  //
+  // final firebaseMessagingService = FirebaseMessagingService.instance();
+  // await firebaseMessagingService.init(localNotificationsService: localNotificationsService);
 
   runApp(MyApp());
 }
@@ -171,6 +172,9 @@ class MyApp extends StatelessWidget {
         darkTheme: AppTheme.darkTheme,
         navigatorKey: navigatorKey,
         home: HomeScreenCallnMsg(egoList: dummyEgoList),
+        routes: {
+          '/alert': (context) => AlarmScreen(),
+        },
       ),
     );
   }
