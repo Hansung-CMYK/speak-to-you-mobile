@@ -11,9 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'diary_view_screen.dart';
 
 class DiaryEditScreen extends StatefulWidget {
-  final List<Diary> diaries;
+  final Diary diary;
 
-  const DiaryEditScreen({super.key, required this.diaries});
+  const DiaryEditScreen({super.key, required this.diary});
 
   @override
   State<DiaryEditScreen> createState() => _DiaryEditScreenState();
@@ -22,7 +22,7 @@ class DiaryEditScreen extends StatefulWidget {
 class _DiaryEditScreenState extends State<DiaryEditScreen> {
   @override
   Widget build(BuildContext context) {
-    final diaries = widget.diaries;
+    final diary = widget.diary;
 
     return Scaffold(
       appBar: StackAppBar(title: '일기수정'),
@@ -44,7 +44,7 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 8.h, top: 12.h),
                         child: Text(
-                          diaries[0].date,
+                          diary.date,
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: AppColors.strongOrange,
@@ -53,12 +53,11 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                         ),
                       ),
                     ),
-                    ...diaries.map(
-                      (diary) => _DiaryEditContainer(
-                        context,
-                        diary.title,
-                        diary.content,
-                      ),
+
+                    _DiaryEditContainer(
+                      context,
+                      diary.title,
+                      diary.content,
                     ),
                   ],
                 ),
@@ -72,7 +71,6 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
             child: TextButton(
               onPressed: () {
                 // TODO 일기 저장
-
               },
               style: TextButton.styleFrom(
                 shape: RoundedRectangleBorder(
@@ -98,10 +96,10 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
 }
 
 Widget _DiaryEditContainer(
-  BuildContext context,
-  String subject,
-  String content,
-) {
+    BuildContext context,
+    String subject,
+    String content,
+    ) {
   return Container(
     decoration: BoxDecoration(
       border: Border(
@@ -128,7 +126,7 @@ Widget _DiaryEditContainer(
         // 내용
         Container(
           margin: EdgeInsets.only(bottom: 12.h),
-          height: 96.h,
+          height: 150.h,
           child: RawScrollbar(
             thumbVisibility: true,
             thickness: 4.w,
