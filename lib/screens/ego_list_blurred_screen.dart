@@ -2,49 +2,112 @@ import 'dart:ui';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../models/chat/chat_room_model.dart';
 import '../models/ego_model.dart';
+import '../services/chat/chat_room_service.dart';
+import '../services/ego/ego_service.dart';
 import '../widgets/egoicon/ego_list_item.dart';
 
-class BlurredListScreen extends StatefulWidget {
-  final List<EgoModel> egoList;
+class BlurredListScreen extends ConsumerStatefulWidget {
+  final String uid;
   final void Function(EgoModel) onEgoSelected;
 
   const BlurredListScreen({
     super.key,
-    required this.egoList,
+    required this.uid,
     required this.onEgoSelected,
   });
 
   @override
-  State<BlurredListScreen> createState() => _BlurredListScreenState();
+  ConsumerState<BlurredListScreen> createState() => _BlurredListScreenState();
 }
 
-class _BlurredListScreenState extends State<BlurredListScreen> {
-  late List<EgoModel> filteredList;
+class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final List<ChatRoomModel> _chatRooms = [];
+  final List<EgoModel> _egoList = [];
+  late List<EgoModel> filteredList = [];
+
   String searchQuery = '';
   String selectedSort = '최신대화순';
 
   final List<String> sortOptions = ['최신대화순', '이름순', '평점순', '하트 많은 순'];
 
+  int _pageNum = 0;
+  bool _isLoading = false;
+  bool _hasMore = true;
+
   @override
   void initState() {
     super.initState();
-    filteredList = List.from(widget.egoList);
+    _fetchInitialData();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 200 &&
+          !_isLoading &&
+          _hasMore) {
+        _fetchMoreData();
+      }
+    });
+  }
+
+  Future<void> _fetchInitialData() async {
+    setState(() => _isLoading = true);
+    final chatRooms = await ChatRoomService.fetchChatRoomList(
+      uid: widget.uid,
+      pageNum: _pageNum,
+      pageSize: 11,
+    );
+    if (chatRooms.isEmpty) {
+      setState(() => _hasMore = false);
+    } else {
+      final egos = await EgoService.fetchEgoModelsForChatRooms(chatRooms, ref);
+      setState(() {
+        _chatRooms.addAll(chatRooms);
+        _egoList.addAll(egos);
+        filteredList = List.from(_egoList);
+        _applySort(); // 정렬 적용
+        _pageNum++;
+      });
+    }
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _fetchMoreData() async {
+    setState(() => _isLoading = true);
+    final chatRooms = await ChatRoomService.fetchChatRoomList(
+      uid: widget.uid,
+      pageNum: _pageNum,
+      pageSize: 11,
+    );
+    if (chatRooms.isEmpty) {
+      setState(() => _hasMore = false);
+    } else {
+      final egos = await EgoService.fetchEgoModelsForChatRooms(chatRooms, ref);
+      setState(() {
+        _chatRooms.addAll(chatRooms);
+        _egoList.addAll(egos);
+        _applyFilterAndSort(); // 필터 + 정렬 적용
+        _pageNum++;
+      });
+    }
+    setState(() => _isLoading = false);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _filterList(String query) {
     setState(() {
       searchQuery = query;
-      filteredList =
-          widget.egoList
-              .where(
-                (ego) =>
-                    ego.name.toLowerCase().contains(query.toLowerCase()),
-              )
-              .toList();
-      _applySort(); // 필터 후 정렬도 적용
+      _applyFilterAndSort();
     });
   }
 
@@ -55,19 +118,22 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
     });
   }
 
-  void _applySort() {
-    // 먼저 검색어에 맞게 필터링
-    filteredList =
-        widget.egoList
-            .where(
-              (ego) =>
-                  ego.name.toLowerCase().contains(searchQuery.toLowerCase()),
-            )
-            .toList();
+  void _applyFilterAndSort() {
+    filteredList = _egoList
+        .where((ego) =>
+        ego.name.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+    _applySort();
+  }
 
-    // 그런 다음 정렬 적용
-    if (selectedSort == '이름순') {
-      filteredList.sort((a, b) => a.name.compareTo(b.name));
+  void _applySort() {
+    switch (selectedSort) {
+      case '이름순':
+        filteredList.sort((a, b) => a.name.compareTo(b.name));
+        break;
+      case '최신대화순':
+        filteredList = List.from(_egoList);
+        break;
     }
   }
 
@@ -151,7 +217,11 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                   padding: EdgeInsets.only(bottom: 8.h),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-                    padding: EdgeInsets.only(right: 16.h, left: 16.h, bottom: 5.h),
+                    padding: EdgeInsets.only(
+                      right: 16.h,
+                      left: 16.h,
+                      bottom: 5.h,
+                    ),
                     child: Row(
                       children:
                           sortOptions
@@ -164,9 +234,14 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                 // 리스트
                 Expanded(
                   child: ListView.builder(
+                    controller: _scrollController,
                     padding: EdgeInsets.symmetric(horizontal: 16.w),
-                    itemCount: filteredList.length,
+                    itemCount: filteredList.length + (_isLoading ? 1 : 0),
                     itemBuilder: (context, index) {
+                      if (index == filteredList.length) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
                       final ego = filteredList[index];
                       return Container(
                         margin: EdgeInsets.only(bottom: 12.h),
@@ -215,7 +290,11 @@ class _BlurredListScreenState extends State<BlurredListScreen> {
                                 ],
                               ),
                               SizedBox(width: 10.w),
-                              buildEgoListItem(ego.profileImage, () {}, radius: 19),
+                              buildEgoListItem(
+                                ego.profileImage,
+                                () {},
+                                radius: 19,
+                              ),
                             ],
                           ),
                           onTap: () {

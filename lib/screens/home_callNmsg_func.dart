@@ -76,7 +76,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                           pageBuilder:
                               (_, __, ___) =>
                               BlurredListScreen(
-                                egoList: egoList,
+                                uid: "test",
                                 onEgoSelected: (selected) {
                                   setState(
                                         () => selectedEgo = selected,
