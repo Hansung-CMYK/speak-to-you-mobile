@@ -55,6 +55,7 @@ dependencies:
   googleapis_auth: ^2.0.0
   flutter_local_notifications: ^19.2.0
   firebase_core: ^3.13.0
+  another_flushbar: ^1.10.29
 
 dependency_overrides:
   intl: ^0.20.2
@@ -167,6 +168,7 @@ flutter:
     - assets/icon/sound_off.svg
     - assets/icon/chat_history.svg
     - assets/icon/pencil.svg
+    - assets/icon/fcm_pencil.svg
 
 
 

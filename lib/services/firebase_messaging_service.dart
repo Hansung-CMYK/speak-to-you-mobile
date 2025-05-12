@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:ego/screens/in_app_message.dart';
 import 'local_notifications_service.dart';
 
 class FirebaseMessagingService {
@@ -77,8 +78,11 @@ class FirebaseMessagingService {
     final notificationData = message.notification;
     if (notificationData != null) {
       // Display a local notification using the service
-      _localNotificationsService?.showNotification(
-          notificationData.title, notificationData.body, message.data.toString());
+      // _localNotificationsService?.showNotification(
+      //     notificationData.title, notificationData.body, message.data.toString());
+
+      // FCM Custom in App Alert
+      showFlushBarFromForeground(message);
     }
   }
 
