@@ -1,3 +1,4 @@
+import 'package:ego/models/ego_info_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 import 'package:ego/screens/in_app_message.dart';
@@ -81,8 +82,13 @@ class FirebaseMessagingService {
       // _localNotificationsService?.showNotification(
       //     notificationData.title, notificationData.body, message.data.toString());
 
+      // 지금은 Egomodel을 하드코딩했지만 이후에는 notificationData에서 egoId를 전달 받을 것임
+      EgoInfoModel egoInfoModel = EgoInfoModel(id: "id", egoIcon: "assets/image/ego_icon.png", egoName: "사과", egoBirth: "2002/02/02", egoPersonality: "활발함", egoSelfIntro: "사과좋아");
+
       // FCM Custom in App Alert
-      showFlushBarFromForeground(message);
+      showFlushBarFromForeground(message, egoInfoModel);
+
+      // TODO 알림 저장 API 보내기
     }
   }
 

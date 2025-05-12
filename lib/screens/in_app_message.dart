@@ -1,13 +1,16 @@
 import 'package:another_flushbar/flushbar.dart';
+import 'package:ego/models/ego_info_model.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../main.dart';
-import '../theme/color.dart';
 
-void showFlushBarFromForeground(RemoteMessage message) {
+import '../sample/cmyk-196/sample_home_with_fcm.dart'; // 나중에 있을 main화면 완성본에 맞게 경로 수정
+import '../theme/color.dart';
+import 'egoreview/ego_review.dart';
+
+void showFlushBarFromForeground(RemoteMessage message, EgoInfoModel egoInfoModel) {
   final context = navigatorKey.currentContext;
   if (context == null) return;
 
@@ -65,7 +68,13 @@ void showFlushBarFromForeground(RemoteMessage message) {
             ),
             onPressed: () {
               Navigator.of(context).pop();
-              print("눌림");
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  // EGO 평가 화면으로 이동
+                  builder: (context) => EgoReviewScreen(egoInfoModel: egoInfoModel),
+                ),
+              );
             },
             child: Text(
               '작성하기',
