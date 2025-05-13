@@ -127,7 +127,6 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
   // 정렬 방식 선택
   void _selectSort(String sort) {
     setState(() {
-<<<<<<< HEAD
       if (selectedSort == sort) {
         // 같은 정렬을 다시 누르면 방향 변경
         _isAscending = !_isAscending;
@@ -136,17 +135,11 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
         selectedSort = sort;
         _isAscending = true;
       }
-=======
-      selectedSort = sort;
->>>>>>> 59c314b ([cmyk-199] : 주석추가 및 코드 정리)
       _applySort();
     });
   }
 
-<<<<<<< HEAD
-=======
   // 정렬 방식에 따른 로직
->>>>>>> 59c314b ([cmyk-199] : 주석추가 및 코드 정리)
   void _applySort() {
     switch (selectedSort) {
       case '이름순':
@@ -154,7 +147,7 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
             ? a.name.compareTo(b.name)
             : b.name.compareTo(a.name));
         break;
-      case '최신대화순': // 최초 API 응답값 자체가 시간순이라 _egoList로 filteredList의 값을 변경하면 됨
+      case '최신대화순':
         filteredList = List.from(_egoList);
         if (!_isAscending) {
           filteredList = filteredList.reversed.toList();
@@ -163,10 +156,7 @@ class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
     }
   }
 
-<<<<<<< HEAD
 
-=======
->>>>>>> 59c314b ([cmyk-199] : 주석추가 및 코드 정리)
   // 정렬 옵션 버튼 builder
   Widget _buildSortButton(String option) {
     final isSelected = selectedSort == option;
