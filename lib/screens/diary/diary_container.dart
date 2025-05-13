@@ -39,7 +39,8 @@ class _DiaryContainerState extends State<DiaryContainer> {
 
     return Container(
       key: Key('DiaryContainer_${containerId}'),
-      padding: EdgeInsets.symmetric(),
+      color: AppColors.white,
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

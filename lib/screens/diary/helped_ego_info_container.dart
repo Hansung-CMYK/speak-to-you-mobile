@@ -10,7 +10,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 Widget HelpedEgoInfoContainer(BuildContext context, EgoInfoModel egoInfoModel) {
   return Container(
-    margin: EdgeInsets.only(bottom: 32.h),
+    padding: EdgeInsets.only(bottom: 32.h, left: 20.w, right: 20.w),
+    decoration: BoxDecoration(
+      color: AppColors.white,
+      borderRadius: BorderRadius.only(
+        bottomLeft: Radius.circular(20.r),
+        bottomRight: Radius.circular(20.r),
+      ),
+    ),
     child: Column(
       children: [
         Container(
@@ -75,7 +82,7 @@ Widget HelpedEgoInfoContainer(BuildContext context, EgoInfoModel egoInfoModel) {
                         fontSize: 14.sp,
                       ),
                     ),
-                    SizedBox(width: 8.w,),
+                    SizedBox(width: 8.w),
                     SvgPicture.asset('assets/icon/right_arrow.svg'),
                   ],
                 ),
