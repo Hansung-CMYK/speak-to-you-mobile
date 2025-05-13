@@ -8,7 +8,9 @@ import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
-import '../../providers/chat/chat_room_list_provider.dart';
+
+import '../../services/chat/chat_room_service.dart';
+import '../../services/ego/ego_service.dart';
 import 'chat_room_screen.dart';
 
 /**
@@ -27,24 +29,73 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
   List<ChatRoomListModel> _chatRoomList = [];
   int? _selectedChatRoomId;
 
+  int _pageNum = 0; // 페이지 번호
+  bool _isLoading = false; // 로딩 상태 추적
+  bool _hasMore = true;
+  late ScrollController _scrollController; // 스크롤 컨트롤러
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
 
     fetchChatRooms();
   }
 
+  void _scrollListener() {
+    // 스크롤이 리스트 끝에 가까워지면 새로운 데이터를 요청
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      fetchChatRooms();
+    }
+  }
+
   Future<void> fetchChatRooms() async {
-    final data = await ref.read(chatRoomListModelProvider("test").future);
-    setState(() {
-      _chatRoomList = data;
-    });
+    // uid는 시스템상에 존재
+    setState(() => _isLoading = true);
+    final chatRooms = await ChatRoomService.fetchChatRoomList(
+      uid: "test",
+      pageNum: _pageNum,
+      pageSize: 11,
+    );
+
+    if (chatRooms.isEmpty) {
+      setState(() => _hasMore = false);
+    } else {
+      // ego 정보 가져오기
+      final egos = await EgoService.fetchEgoModelsForChatRooms(chatRooms, ref);
+
+      // ChatRoomListModel 생성
+      final chatRoomListModels = <ChatRoomListModel>[];
+
+      for (int i = 0; i < chatRooms.length; i++) {
+        final chatRoom = chatRooms[i];
+        final ego = egos[i];
+
+        chatRoomListModels.add(ChatRoomListModel(
+          id: chatRoom.id,
+          uid: chatRoom.uid,
+          egoId: chatRoom.egoId,
+          lastChatAt: chatRoom.lastChatAt,
+          isDeleted: chatRoom.isDeleted,
+          egoName: ego.name,
+          profileImage: ego.profileImage,
+        ));
+      }
+
+      // 리스트에 누적
+      setState(() {
+        _chatRoomList.addAll(chatRoomListModels);
+        _pageNum++;
+      });
+    }
+    setState(() => _isLoading = false);
   }
 
   @override
   void dispose() {
+    _scrollController.dispose();
     _tabController.dispose();
     super.dispose();
   }
@@ -53,11 +104,13 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       body: RawScrollbar(
+        controller: _scrollController,
         thumbVisibility: true,
         thickness: 3,
         thumbColor: AppColors.gray700,
         radius: Radius.circular(10.r),
         child: ListView.builder(
+          controller: _scrollController,
           itemCount: _chatRoomList.length,
           itemBuilder: (context, index) {
             final chat = _chatRoomList[index];
