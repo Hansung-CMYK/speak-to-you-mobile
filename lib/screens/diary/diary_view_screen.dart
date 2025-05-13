@@ -47,7 +47,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
     date: '2025/02/28',
     title: '친구랑 밥',
     content:
-    '오늘은 친구랑 맛있는 음식을 먹으러 갔다. 오랜만에 만나서 그런지 더욱 맛있게 느껴졌고, 웃음꽃을 피우며 즐거운 시간을 보냈다. 음식도 맛있었고, 대화도 흥미로워서 시간 가는 줄 몰랐다. 너무 행복한 하루였다.',
+        '오늘은 친구랑 맛있는 음식을 먹으러 갔다. 오랜만에 만나서 그런지 더욱 맛있게 느껴졌고, 웃음꽃을 피우며 즐거운 시간을 보냈다. 음식도 맛있었고, 대화도 흥미로워서 시간 가는 줄 몰랐다. 너무 행복한 하루였다.',
     image: 'assets/image/first_diary_sample_image.png',
   );
 
@@ -59,7 +59,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
     egoBirth: '2002/02/03',
     egoPersonality: '단순함, 바보, 멍청',
     egoSelfIntro:
-    '크하하! 나는 최고로 귀엽고, 강하고, 멋진 피의 마녀, Power다! 인간 따위보다 우월한 악마다! 내 피를 다루는 능력으로 어떤 적이든 박살 내 줄 수 있지! 덴지 녀석이랑 계약해서 일하고 있긴 하지만, 솔직히 내가 없으면 아무것도 못 해! 머리도 좋고, 싸움도 잘하고, 심지어 미모까지 완벽하니까! 피 냄새 나는 전쟁터가 딱 나한테 어울리지! 하지만 배고프면 기운이 없으니까, 고기랑 피를 실컷 먹게 해준다면 너도 내 충성심을 얻을 수 있을지도 모르지! 크하하하!',
+        '크하하! 나는 최고로 귀엽고, 강하고, 멋진 피의 마녀, Power다! 인간 따위보다 우월한 악마다! 내 피를 다루는 능력으로 어떤 적이든 박살 내 줄 수 있지! 덴지 녀석이랑 계약해서 일하고 있긴 하지만, 솔직히 내가 없으면 아무것도 못 해! 머리도 좋고, 싸움도 잘하고, 심지어 미모까지 완벽하니까! 피 냄새 나는 전쟁터가 딱 나한테 어울리지! 하지만 배고프면 기운이 없으니까, 고기랑 피를 실컷 먹게 해준다면 너도 내 충성심을 얻을 수 있을지도 모르지! 크하하하!',
   );
 
   late FToast fToast;
@@ -82,123 +82,142 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
           thickness: 4.w,
           radius: Radius.circular(8.r),
           thumbColor: AppColors.gray700,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: 20.w),
-            child: Column(
-              children: [
-                // edit(전체수정), share(전체공유) 버튼
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SvgButton(
-                      svgPath: 'assets/icon/share_icon.svg',
-                      width: 20.w,
-                      height: 20.h,
-                      radius: 16.r,
-                      onTab: () {
-                        // TODO 일기 공유시 템플렛 필요
-                        final customToast = CustomToast(
-                          toastMsg: '일기가 공유되었습니다.',
+          child: Container(
+            color: AppColors.splitterColor,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  // edit(전체수정), share(전체공유) 버튼
+                  Container(
+                    color: AppColors.white,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        SvgButton(
+                          svgPath: 'assets/icon/share_icon.svg',
+                          width: 20.w,
+                          height: 20.h,
+                          radius: 16.r,
+                          onTab: () {
+                            // TODO 일기 공유시 템플렛 필요
+                            final customToast = CustomToast(
+                              toastMsg: '일기가 공유되었습니다.',
+                              iconPath: 'assets/icon/complete.svg',
+                              backgroundColor: AppColors.accent,
+                              fontColor: AppColors.white,
+                            );
+                            customToast.init(fToast);
+
+                            shareAllDiary('전체 공유', customToast);
+                          },
+                        ),
+                        SizedBox(width: 12.w),
+                        SvgButton(
+                          svgPath: 'assets/icon/edit_icon.svg',
+                          width: 20.w,
+                          height: 20.h,
+                          radius: 16.r,
+                          onTab: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) => DiaryEditScreen(diary: diary),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  // 감정 Container
+                  TodayEmotionContainer(emotions),
+
+                  // 날짜
+                  Container(
+                    color: AppColors.white,
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 8.h,
+                        top: 12.h,
+                        left: 20.w,
+                        right: 20.w,
+                      ),
+                      child: Text(
+                        diary.date,
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: AppColors.gray600,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  // 일기 정보 제공
+                  DiaryContainer(diary: diary, containerId: 0),
+
+                  // 일기 작성해준 EGO 정보
+                  HelpedEgoInfoContainer(context, egoInfoModel),
+
+                  SizedBox(height: 14.h),
+
+                  // 오늘의 한 줄 요약
+                  OneSentenceReview(
+                    "홍길동 에고와 가장 많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이 대화하고, 의성어를 주로 사용해 배드민턴 이야기를 했어요.",
+                  ),
+
+                  // 일기 저장 버튼
+                  Container(
+                    width: double.infinity,
+                    color: AppColors.white,
+                    padding: EdgeInsets.only(
+                      bottom: 40.h,
+                      left: 20.w,
+                      right: 20.w,
+                      top: 15.h,
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        // TODO 일기 저장 API
+                        final customBottomToast = CustomToast(
+                          toastMsg: '일기가 저장되었습니다.',
                           iconPath: 'assets/icon/complete.svg',
                           backgroundColor: AppColors.accent,
                           fontColor: AppColors.white,
                         );
-                        customToast.init(fToast);
+                        customBottomToast.init(fToast);
 
-                        shareAllDiary('전체 공유', customToast);
-                      },
-                    ),
-                    SizedBox(width: 12.w),
-                    SvgButton(
-                      svgPath: 'assets/icon/edit_icon.svg',
-                      width: 20.w,
-                      height: 20.h,
-                      radius: 16.r,
-                      onTab: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DiaryEditScreen(diary: diary),
-                          ),
+                        final position = 107.0.h;
+
+                        customBottomToast.showBottomPositionedToast(
+                          bottom: position,
                         );
                       },
-                    ),
-                  ],
-                ),
-
-                // 감정 Container
-                TodayEmotionContainer(emotions),
-
-                // 날짜
-                Container(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 8.h, top: 12.h),
-                    child: Text(
-                      diary.date,
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        color: AppColors.gray600,
-                        fontWeight: FontWeight.w700,
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8.r),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 20.w,
+                          vertical: 15.h,
+                        ),
+                        backgroundColor: AppColors.strongOrange,
+                      ),
+                      child: Text(
+                        "일기저장",
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
-                ),
-
-                // 일기 정보 제공
-                DiaryContainer(
-                  diary: diary,
-                  containerId: 0,
-                ),
-
-                // 일기 작성해준 EGO 정보
-                HelpedEgoInfoContainer(context, egoInfoModel),
-
-                // 오늘의 한 줄 요약
-                OneSentenceReview("홍길동 에고와 가장 많이 대화하고, 의성어를 주로 사용해 배드민턴 이야기를 했어요."),
-
-                // 일기 저장 버튼
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(bottom: 40.h),
-                  child: TextButton(
-                    onPressed: () {
-                      // TODO 일기 저장 API
-                      final customBottomToast = CustomToast(
-                        toastMsg: '일기가 저장되었습니다.',
-                        iconPath: 'assets/icon/complete.svg',
-                        backgroundColor: AppColors.accent,
-                        fontColor: AppColors.white,
-                      );
-                      customBottomToast.init(fToast);
-
-                      final position = 107.0.h;
-
-                      customBottomToast.showBottomPositionedToast(
-                        bottom: position,
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 15.h,
-                      ),
-                      backgroundColor: AppColors.strongOrange,
-                    ),
-                    child: Text(
-                      "일기저장",
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

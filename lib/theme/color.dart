@@ -27,6 +27,7 @@ class AppColors {
   static const Color gray800 = Color(0xFF26282B);
   static const Color gray900 = Color(0xFF1E1E1E);
 
+  static const Color splitterColor = Color(0xFFF7F8F9);
   static const Color shadowColor = Color(0x1F000000);
   static const Color darkCharcoal = Color(0xFF3B3A3A);
 
