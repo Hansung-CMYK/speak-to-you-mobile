@@ -27,4 +27,35 @@ class ChatRoomService {
       throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
     }
   }
+
+  static Future<bool> deleteChatRoom({required String uid, required int egoId}) async {
+    final url = Uri.parse('$baseUrl/chat-room');
+
+    final headers = {
+      'Content-Type': 'application/json',
+    };
+
+    final body = jsonEncode({
+      'uid': uid,
+      'egoId': egoId,
+    });
+
+    final request = http.Request("DELETE", url)
+      ..headers.addAll(headers)
+      ..body = body;
+
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+
+    if (response.statusCode == 200) {
+      print('✅ 채팅방 삭제 성공');
+      print('응답: $responseBody');
+      return true;
+    } else {
+      print('❌ 삭제 실패: ${response.statusCode}');
+      print('에러 응답: $responseBody');
+      return false;
+    }
+  }
+
 }

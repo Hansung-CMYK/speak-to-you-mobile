@@ -149,6 +149,9 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
                 );
 
                 if (result == true) {
+                  // uid는 시스템 상에 존재
+                  await ChatRoomService.deleteChatRoom(uid: "test",egoId:  chat.egoId);
+
                   setState(() {
                     _chatRoomList.removeWhere(
                       (element) => element.id == chat.id,
