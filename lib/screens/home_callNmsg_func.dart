@@ -1,6 +1,6 @@
+import 'package:ego/models/ego_model.dart';
 import 'package:ego/screens/voice_chat/voice_chat_screen.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
-import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/egocard/swipable_ego_card.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import 'ego_list_blurred_screen.dart';
+import 'egolistview/ego_list_blurred_screen.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
-  final List<EgoInfoModel> egoList;
+  final List<EgoModel> egoList;
 
   const HomeScreenCallnMsg({super.key, required this.egoList});
 
@@ -25,8 +25,8 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
     with SingleTickerProviderStateMixin {
   /// 선택한 Tab과 Body를 매핑하는 Controller이다.
   late TabController _tabController;
-  late final List<EgoInfoModel> egoList;
-  late EgoInfoModel selectedEgo; // 선택된 EGO의 정보
+  late final List<EgoModel> egoList;
+  late EgoModel selectedEgo; // 선택된 EGO의 정보
 
   /// _tabCntroller 초기화
   @override
@@ -76,7 +76,8 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                           pageBuilder:
                               (_, __, ___) =>
                               BlurredListScreen(
-                                egoList: egoList,
+                                // uid는 시스템상에 존재한다 가정
+                                uid: "test",
                                 onEgoSelected: (selected) {
                                   setState(
                                         () => selectedEgo = selected,
@@ -92,11 +93,11 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
 
                   return index == 0
                       ? buildEgoListItemGradient(
-                    ego.egoIcon,
+                    ego.profileImage,
                         () => setState(() => selectedEgo = ego),
                   )
                       : buildEgoListItem(
-                    ego.egoIcon,
+                    ego.profileImage,
                         () => setState(() => selectedEgo = ego),
                   );
                 })
@@ -136,21 +137,22 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
         onCall: () {
           // 전화 걸기 액션
           // uid는 시스템 상에서 관리된다 가정
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  VoiceChatScreen(uid: "User_1", egoInfoModel: selectedEgo),
-            ),
-          ).then((_) {
-            // VoiceChatScreen에서 돌아온 후, HomeScreenCallnMsg 화면을 새로 로드
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HomeScreenCallnMsg(egoList: egoList),
-              ),
-            );
-          });
+          //TODO egoInfoModel을 EGOModel로 바꾸어서 발생하는 ERROR 이후 VoiceChatScreen FE issue에서 처리 예정
+          // Navigator.push(
+          //   context,
+          //   MaterialPageRoute(
+          //     builder: (context) =>
+          //         VoiceChatScreen(uid: "User_1", egoInfoModel: selectedEgo),
+          //   ),
+          // ).then((_) {
+          //   // VoiceChatScreen에서 돌아온 후, HomeScreenCallnMsg 화면을 새로 로드
+          //   Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => HomeScreenCallnMsg(egoList: egoList),
+          //     ),
+          //   );
+          // });
         },
 
         onText: () {
@@ -185,7 +187,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                     ),
                   ),
                   Text(
-                    selectedEgo.egoName,
+                    selectedEgo.name,
                     style: TextStyle(
                       color: AppColors.gray900,
                       fontWeight: FontWeight.w700,
@@ -194,7 +196,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                   ),
                 ],
               ),
-              buildEgoListItem(selectedEgo.egoIcon, () {}),
+              buildEgoListItem(selectedEgo.profileImage, () {}),
             ],
           ),
         ),

@@ -9,3 +9,6 @@ const String SERVICE_NAME = "SPEAK TO YOU";
 enum Emotion {
   anger, disappointment, embarrassment, happiness, sadness
 }
+
+// local device base url
+const String baseUrl = 'http://10.0.2.2:8080/api/v1';
