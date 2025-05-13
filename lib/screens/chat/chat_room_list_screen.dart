@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ego/models/chat/chat_room_list_model.dart';
 import 'package:ego/theme/color.dart';
@@ -7,19 +8,20 @@ import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
+import '../../providers/chat/chat_room_list_provider.dart';
 import 'chat_room_screen.dart';
 
 /**
  * 채팅방 리스트를 확인하는 화면
  * */
-class ChatListScreen extends StatefulWidget {
+class ChatListScreen extends ConsumerStatefulWidget  {
   const ChatListScreen({super.key});
 
   @override
-  State<ChatListScreen> createState() => _ChatListScreenState();
+  _ChatListScreenState createState() => _ChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen>
+class _ChatListScreenState extends ConsumerState<ChatListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<ChatRoomListModel> _chatRoomList = [];
@@ -30,137 +32,16 @@ class _ChatListScreenState extends State<ChatListScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
 
-    // TODO: 실제 API 요청 전에 임시 데이터
-    _chatRoomList = [
-      ChatRoomListModel(
-        id: 2,
-        uid: 'user456',
-        egoId: 102,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 2)),
-        isDeleted: false,
-        egoName: '마루',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 3,
-        uid: 'user789',
-        egoId: 103,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 4)),
-        isDeleted: false,
-        egoName: '세린',
-        profileImage: 'assets/image/ego_icon.png',
-      ),
-      ChatRoomListModel(
-        id: 4,
-        uid: 'user012',
-        egoId: 104,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 5)),
-        isDeleted: false,
-        egoName: '준호',
-        profileImage: 'assets/image/ego_icon.png',
-      ),
-      ChatRoomListModel(
-        id: 5,
-        uid: 'user345',
-        egoId: 105,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 6)),
-        isDeleted: false,
-        egoName: '하늘',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 6,
-        uid: 'user678',
-        egoId: 106,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 7)),
-        isDeleted: false,
-        egoName: '태윤',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 7,
-        uid: 'user901',
-        egoId: 107,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 8)),
-        isDeleted: false,
-        egoName: '미소',
-        profileImage: 'assets/image/ego_icon.png',
-      ),
-      ChatRoomListModel(
-        id: 8,
-        uid: 'user234',
-        egoId: 108,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 9)),
-        isDeleted: false,
-        egoName: '유리',
-        profileImage: 'assets/image/ego_icon.png',
-      ),
-      ChatRoomListModel(
-        id: 9,
-        uid: 'user567',
-        egoId: 109,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 10)),
-        isDeleted: false,
-        egoName: '진우',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 10,
-        uid: 'user890',
-        egoId: 110,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 11)),
-        isDeleted: false,
-        egoName: '아라',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 11,
-        uid: 'user112',
-        egoId: 111,
-        lastChatAt: DateTime.now().subtract(Duration(hours: 12)),
-        isDeleted: false,
-        egoName: '사과',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 12,
-        uid: 'user223',
-        egoId: 112,
-        lastChatAt: DateTime.now().subtract(Duration(days: 2)),
-        isDeleted: false,
-        egoName: '바나나',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 13,
-        uid: 'user334',
-        egoId: 113,
-        lastChatAt: DateTime.now().subtract(Duration(days: 5)),
-        isDeleted: false,
-        egoName: '옥수수',
-        profileImage: 'assets/image/ego_1.png',
-      ),
-      ChatRoomListModel(
-        id: 14,
-        uid: 'user445',
-        egoId: 114,
-        lastChatAt: DateTime.now().subtract(Duration(days: 10)),
-        isDeleted: false,
-        egoName: '옥바바',
-        profileImage: 'assets/image/ego_icon.png',
-      ),
-    ];
 
-    // TODO 추후 API 요청 로직
-    // fetchChatRooms();
+    fetchChatRooms();
   }
 
-  // Future<void> fetchChatRooms() async {
-  //   final data = await YourApiService.getChatRooms();
-  //   setState(() {
-  //     _chatRoomList = data;
-  //   });
-  // }
+  Future<void> fetchChatRooms() async {
+    final data = await ref.read(chatRoomListModelProvider("test").future);
+    setState(() {
+      _chatRoomList = data;
+    });
+  }
 
   @override
   void dispose() {
