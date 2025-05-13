@@ -81,26 +81,55 @@ class _MainAppBarState extends State<MainAppBar> {
           Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (unreadCount > 0)
-                Text(
-                  "+$unreadCount",
-                  style: TextStyle(
-                    color: AppColors.red,
-                    fontWeight: FontWeight.w700,
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // 알림 아이콘
+                  Container(
+                    width: 24.w,
+                    height: 24.h,
+                    child: IconButton(
+                      icon: SvgPicture.asset(
+                        'assets/icon/notification.svg',
+                        fit: BoxFit.cover,
+                      ),
+                      highlightColor: Colors.transparent,
+                      onPressed: () => alertMethod(context),
+                      padding: EdgeInsets.zero,
+                    ),
                   ),
-                ),
-              Container(
-                width: 24.w,
-                height: 24.h,
-                child: IconButton(
-                  icon: SvgPicture.asset(
-                    'assets/icon/notification.svg',
-                    fit: BoxFit.cover,
-                  ),
-                  highlightColor: Colors.transparent,
-                  onPressed: () => alertMethod(context),
-                  padding: EdgeInsets.zero,
-                ),
+
+                  // 알림 배지 (unreadCount > 0일 때만 표시)
+                  if (unreadCount > 0)
+                    Positioned(
+                      left: 10, // 아이콘의 오른쪽 위로 위치
+                      bottom: 12,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 6.w,
+                          vertical: 2.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        constraints: BoxConstraints(
+                          minWidth: 16.w,
+                          minHeight: 16.h,
+                        ),
+                        child: Text(
+                          '$unreadCount',
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                ],
               ),
               Padding(
                 padding: EdgeInsets.only(left: 8.w),
