@@ -10,6 +10,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'chat_bubble.dart';
 
+// 초기 데이터 fetch
+// spring에서 불러온 채팅 내용은 ChatHistory의 형식을 따른다.
+// 송신
+// 입력 받은 채팅을 ChatHistory의 형식으로 리스트에 저장한다.
+// 입력 받은 채팅 내용은 ChatHistoryKafka의 형식으로 Kafka에 보낸다.
+// 문제점 : 채팅 기록을 삭제하고 싶으면 ChatHistory의 id값을 알아야하는데 FE에서 알 수 없음
+// 해결방법 : 카프카로 hash값을 전달한다.
+// 수신
+// kafka에서 받은 ChatHistoryKafka 데이터를 ChatHistory로 바꾼다.
+// 리스트에 추가한다.
 class ChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
@@ -93,7 +103,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           ),
         );
 
-        //TODO 채팅 내역 전송 API
+        //TODO 채팅 내역 Kafka로 바꾸기
+        //TODO 채팅 내역 Kafka 전송 API
 
         _controller.clear();
       });
