@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../relation/ego_relation_screen.dart';
+
 class ChartScreen extends StatefulWidget {
   const ChartScreen({super.key});
 
@@ -24,11 +26,15 @@ class _ChartScreenState extends State<ChartScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // EGO 관계 화면 부분
             Container(
               color: AppColors.white,
               child: Padding(
                 padding: EdgeInsets.only(bottom: 17.h, left: 20.w, right: 20.w),
-                child: Column(children: [CalendarIndicator(), EmotionChart()]),
+                child: SizedBox(
+                  height: 300.h,  // 적절한 높이로 제한
+                  child: GraphWidget(),
+                ),
               ),
             ),
             SizedBox(height: 12.h),
@@ -43,13 +49,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       });
                     },
                   ),
-                  if (selectedFilter == null || selectedFilter!.index == -1)
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      padding: EdgeInsets.only(left: 18.w, top: 12.h),
-                      child: SvgPicture.asset('assets/image/emotion_popup.svg'),
-                    )
-                  else
+                  if (selectedFilter != null && selectedFilter!.index != -1)
                     DiarySection(
                       filterIndex: selectedFilter!.index,
                       diaryCount: selectedFilter!.count,

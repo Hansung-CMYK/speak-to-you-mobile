@@ -79,6 +79,7 @@ class _RecordScreenState extends State<RecordScreen>
   Widget _tabBarView() {
     return Expanded(
       child: TabBarView(
+        physics: const NeverScrollableScrollPhysics(),
         controller: _tabController, // 컨트롤러 부여
         children: [
           CalendarScreen(),
