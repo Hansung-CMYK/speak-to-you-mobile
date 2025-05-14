@@ -62,13 +62,13 @@ class ChatHistory {
     return digest.toString();
   }
 
-  static ChatHistoryKafka convertToKafka(ChatHistory chat, {required String to, bool mcpEnabled = false}) {
+  static ChatHistoryKafka convertToKafka(ChatHistory chat, {required String to, required String type, bool mcpEnabled = false}) {
     return ChatHistoryKafka(
       from: chat.uid,
       to: to,
       chatRoomId: chat.chatRoomId,
       content: chat.content,
-      type: chat.type,
+      type: type,
       mcpEnabled: mcpEnabled,
       messageHash: chat.messageHash!,
     );

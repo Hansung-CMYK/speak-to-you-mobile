@@ -14,6 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
+import '../../services/websocket/chat_kafka_socket_service.dart';
 import 'chat_bubble.dart';
 
 // 초기 데이터 fetch
@@ -44,6 +45,7 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final TextEditingController _controller = TextEditingController();
+  final SocketService _socketService = SocketService();
 
   late FToast fToast;
   final customToast = CustomToast(
@@ -74,6 +76,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         _fetchMoreData();
       }
     });
+
+    _socketService.connect(
+      onMessageReceived: (message) {
+        setState(() {
+          messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
+        });
+      },
+      //uid는 시스템에 존재한다 가정
+      uid: widget.uid,
+    );
 
     _focusNode = FocusNode();
   }
@@ -120,6 +132,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
+    _socketService.disconnect();
     _focusNode.dispose();
     super.dispose();
   }
@@ -144,13 +157,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         );
 
         ChatHistoryKafka kafkaReqMessage = ChatHistory.convertToKafka(
-          inputMessage,
           to: widget.egoModel.id.toString(),
+          inputMessage,
+          type: "TEXT"
         );
 
-        messages.insert(0, inputMessage);
+        _socketService.sendMessage(kafkaReqMessage);
 
-        //TODO 채팅 내역 Kafka 전송 API
+        messages.insert(0, inputMessage);
 
         _controller.clear();
       });
@@ -237,7 +251,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           messages.removeAt(index);
                         });
                         _focusNode.unfocus();
-                      } catch (e) { // 삭제 오류시 ToastMSG 생성
+                      } catch (e) {
+                        // 삭제 오류시 ToastMSG 생성
                         customToast.init(fToast);
                         customToast.showTopToast();
                       }

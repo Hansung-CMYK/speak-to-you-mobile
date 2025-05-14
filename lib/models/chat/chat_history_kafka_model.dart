@@ -1,6 +1,8 @@
+import 'package:ego/models/chat/chat_history_model.dart';
+
 class ChatHistoryKafka {
-  final String from;
-  final String to;
+  String from;
+  String to;
   final int chatRoomId;
   final String content;
   final String type;
@@ -39,5 +41,16 @@ class ChatHistoryKafka {
       'mcpEnabled': mcpEnabled,
       'messageHash' : messageHash
     };
+  }
+
+  static ChatHistory convertToChatHistory(ChatHistoryKafka kafkaMessage) {
+    return ChatHistory(
+      uid: kafkaMessage.from,
+      chatRoomId: kafkaMessage.chatRoomId,
+      content: kafkaMessage.content,
+      type: "E",
+      messageHash: kafkaMessage.messageHash,
+      chatAt: DateTime.now(),
+    );
   }
 }
