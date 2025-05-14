@@ -33,7 +33,9 @@ class _ChartScreenState extends State<ChartScreen> {
                 padding: EdgeInsets.only(bottom: 17.h, left: 20.w, right: 20.w),
                 child: SizedBox(
                   height: 300.h,  // 적절한 높이로 제한
-                  child: GraphWidget(),
+                  child: GraphWidget(
+                    filterSelection: selectedFilter ?? FilterSelection(index: 0, count: 5),
+                  ),
                 ),
               ),
             ),
@@ -42,6 +44,7 @@ class _ChartScreenState extends State<ChartScreen> {
               padding: EdgeInsets.symmetric(horizontal: 20.w),
               child: Column(
                 children: [
+                  // Filter 부분
                   EmotionFilter(
                     onFilterSelected: (FilterSelection selection) {
                       setState(() {
@@ -49,6 +52,7 @@ class _ChartScreenState extends State<ChartScreen> {
                       });
                     },
                   ),
+                  // 일기 부분
                   if (selectedFilter != null && selectedFilter!.index != -1)
                     DiarySection(
                       filterIndex: selectedFilter!.index,

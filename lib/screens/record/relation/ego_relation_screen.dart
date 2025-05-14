@@ -1,11 +1,15 @@
 import 'dart:math';
 
+import 'package:ego/widgets/emotion_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_graph_view/flutter_graph_view.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:http/http.dart' as http;
 
 class GraphWidget extends StatefulWidget {
+  final FilterSelection filterSelection;
+
+  const GraphWidget({super.key, required this.filterSelection});
+
   @override
   _GraphWidgetState createState() => _GraphWidgetState();
 }
@@ -13,111 +17,133 @@ class GraphWidget extends StatefulWidget {
 class _GraphWidgetState extends State<GraphWidget> {
   bool _isLoading = true;
   Map<String, dynamic> _graphData = {};
+  late FilterSelection _currentFilter;
 
   @override
   void initState() {
     super.initState();
+    _currentFilter = widget.filterSelection;
     _fetchGraphData();
   }
 
-  Future<void> _fetchGraphData() async {
-    var r = Random();
-    var vertexes = <Map<String, dynamic>>[]; // 리스트로 변경
+  @override
+  void didUpdateWidget(covariant GraphWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
 
-    // "나" (EGO) 노드 추가
+    // 필터가 변경되었을 경우 다시 데이터를 불러옴
+    if (oldWidget.filterSelection.index != widget.filterSelection.index ||
+        oldWidget.filterSelection.count != widget.filterSelection.count) {
+      _currentFilter = widget.filterSelection;
+      _fetchGraphData();
+    }
+  }
+
+  Future<void> _fetchGraphData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    var r = Random();
+    var vertexes = <Map<String, dynamic>>[];
+
+    // "나" 노드 추가
     vertexes.add({
       'id': '나',
       'tag': '나',
       'tags': ['central'],
     });
 
-    var names = ['마리오', '엔젤', '준호', '지훈', '소연'];
-    for (var i = 0; i < names.length; i++) {
-      vertexes.add({
-        'id': names[i],
-        'tag': names[i],
-        'tags': [
-          'tag${r.nextInt(9)}',
-          if (r.nextBool()) 'tag${r.nextInt(4)}',
-          if (r.nextBool()) 'tag${r.nextInt(8)}',
-        ],
-      });
+    var names = ['마리오', '엔젤', '준호', '지훈', '소연', '미나', '태호', '보라'];
+    var relations = ['배드민턴', '활발한', '영화중독', '게이머', '맛집러버'];
+
+    Map<String, String> personToRelation = {};
+    for (int i = 0; i < names.length; i++) {
+      personToRelation[names[i]] = i < relations.length
+          ? relations[i]
+          : relations[r.nextInt(relations.length)];
     }
 
-    var edges = <Map<String, dynamic>>[]; // 리스트로 변경
+    String selectedRelation = relations[_currentFilter.index];
 
-    var relations = ['활발함', '적대적임', '다정함'];
-    for (var i = 0; i < names.length; i++) {
-      edges.add({
-        'srcId': '나',
-        'dstId': names[i],
-        'edgeName': relations[r.nextInt(relations.length)],
-        'ranking': r.nextInt(DateTime.now().millisecond),
-      });
+    var edges = <Map<String, dynamic>>[];
+
+    for (var name in names) {
+      if (personToRelation[name] == selectedRelation) {
+        vertexes.add({
+          'id': name,
+          'tag': name,
+          'tags': [
+            'tag${r.nextInt(9)}',
+            if (r.nextBool()) 'tag${r.nextInt(4)}',
+            if (r.nextBool()) 'tag${r.nextInt(8)}',
+          ],
+        });
+
+        edges.add({
+          'srcId': '나',
+          'dstId': name,
+          'edgeName': selectedRelation,
+          'ranking': r.nextInt(1000),
+        });
+      }
     }
 
     setState(() {
       _graphData = {
         'vertexes': vertexes,
         'edges': edges,
-      }; // edges가 리스트로 들어가도록 수정
+      };
       _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: double.infinity,
       height: double.infinity,
-      child:
-          _isLoading
-              ? Center(child: CircularProgressIndicator())
-              : SizedBox(
-                height: 300.h,
-                child: ClipRect(
-                  child: FlutterGraphWidget(
-                    data: _graphData,
-                    algorithm: ForceDirected(
-                      decorators: [
-                        HookeDecorator(),
-                        ForceDecorator(),
-                        ForceMotionDecorator(),
-                      ],
-                    ),
-                    convertor: MapConvertor(),
-                    options:
-                        Options()
-                          ..graphStyle =
-                              (GraphStyle()
-                                ..tagColor = {
-                                  'tag8': Colors.orangeAccent.shade200,
-                                }
-                                ..tagColorByIndex = [
-                                  Colors.red.shade200,
-                                  Colors.orange.shade200,
-                                  Colors.yellow.shade200,
-                                  Colors.green.shade200,
-                                  Colors.blue.shade200,
-                                  Colors.blueAccent.shade200,
-                                  Colors.purple.shade200,
-                                  Colors.pink.shade200,
-                                  Colors.blueGrey.shade200,
-                                  Colors.deepOrange.shade200,
-                                ])
-                          ..useLegend = false
-                          ..edgePanelBuilder =
-                              edgePanelBuilder // 간선 텍스트 표시
-                          ..vertexPanelBuilder = vertexPanelBuilder
-                          ..edgeShape =
-                              EdgeLineShape() // 간선 스타일
-                          ..vertexShape = VertexCircleShape(),
-                  ),
-                ),
-              ),
+      child: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SizedBox(
+        height: 300.h,
+        child: ClipRect(
+          child: FlutterGraphWidget(
+            data: _graphData,
+            algorithm: ForceDirected(
+              decorators: [
+                HookeDecorator(),
+                ForceDecorator(),
+                ForceMotionDecorator(),
+              ],
+            ),
+            convertor: MapConvertor(),
+            options: Options()
+              ..graphStyle = (GraphStyle()
+                ..tagColor = {'tag8': Colors.orangeAccent.shade200}
+                ..tagColorByIndex = [
+                  Colors.red.shade200,
+                  Colors.orange.shade200,
+                  Colors.yellow.shade200,
+                  Colors.green.shade200,
+                  Colors.blue.shade200,
+                  Colors.blueAccent.shade200,
+                  Colors.purple.shade200,
+                  Colors.pink.shade200,
+                  Colors.blueGrey.shade200,
+                  Colors.deepOrange.shade200,
+                ])
+              ..useLegend = false
+              ..edgePanelBuilder = edgePanelBuilder
+              ..vertexPanelBuilder = vertexPanelBuilder
+              ..edgeShape = EdgeLineShape()
+              ..vertexShape = VertexCircleShape(),
+          ),
+        ),
+      ),
     );
   }
 }
+
 
 // 간선 패널 빌더 - 간선에 텍스트 표시
 Widget edgePanelBuilder(Edge edge, Viewfinder viewfinder) {
