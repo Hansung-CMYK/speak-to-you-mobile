@@ -31,4 +31,23 @@ class ChatHistoryService {
       throw Exception('채팅방 내역 불러오기 실패: ${response.statusCode}');
     }
   }
+
+  static Future<void> deleteChatMessage({
+    required String uid,
+    required String messageHash,
+  }) async {
+
+    final uri = Uri.parse('$baseUrl/chat-history/$uid/$messageHash');
+
+    final headers = {'Content-Type': 'application/json'};
+
+
+    final response = await http.delete(uri, headers: headers);
+
+
+    if (response.statusCode != 200) {
+      throw Exception('채팅 메시지 삭제 실패: ${response.statusCode}');
+    }
+  }
+
 }

@@ -5,11 +5,13 @@ import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
+import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'chat_bubble.dart';
@@ -42,6 +44,14 @@ class ChatRoomScreen extends StatefulWidget {
 
 class _ChatRoomScreenState extends State<ChatRoomScreen> {
   final TextEditingController _controller = TextEditingController();
+
+  late FToast fToast;
+  final customToast = CustomToast(
+    toastMsg: "삭제 오류",
+    backgroundColor: AppColors.red,
+    fontColor: AppColors.white,
+  );
+
   late FocusNode _focusNode;
 
   final ScrollController _scrollController = ScrollController();
@@ -55,7 +65,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-
+    fToast = FToast();
+    fToast.init(context);
     _fetchInitialData();
 
     _scrollController.addListener(() {
@@ -174,7 +185,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           Padding(
             padding: EdgeInsets.only(right: 10.w),
             child: buildEgoListItem(widget.egoModel.profileImage, () {
-              //TODO EGO ID로 EGO 정보 요청
+              //TODO showTodayEgoIntroSheet의 매개변수를 EgoModel로 변경
 
               EgoInfoModel egoInfoModel = EgoInfoModel(
                 id: "a",
@@ -205,21 +216,31 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 padding: EdgeInsets.symmetric(vertical: 8.h),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  final previous = index < messages.length - 1 ? messages[index + 1] : null;
+                  final previous =
+                      index < messages.length - 1 ? messages[index + 1] : null;
                   final next = index > 0 ? messages[index - 1] : null;
-
 
                   return ChatBubble(
                     message: messages[index],
                     previousMessage: previous,
                     nextMessage: next,
-                    onDelete: () {
-                      setState(() {
-                        messages.removeAt(index);
-                      });
-                      _focusNode.unfocus();
+                    onDelete: () async {
+                      // uid는 시스템에 존재한다 가정
+                      try {
+                        // 메시지 삭제 요청
+                        await ChatHistoryService.deleteChatMessage(
+                          uid: "test",
+                          messageHash: messages[index].messageHash!,
+                        );
 
-                      //TODO 삭제 요청
+                        setState(() {
+                          messages.removeAt(index);
+                        });
+                        _focusNode.unfocus();
+                      } catch (e) { // 삭제 오류시 ToastMSG 생성
+                        customToast.init(fToast);
+                        customToast.showTopToast();
+                      }
                     },
                   );
                 },
@@ -227,6 +248,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             ),
           ),
 
+          // 입력 필드 부분
           Container(
             color: Colors.white,
             padding: EdgeInsets.all(10),
