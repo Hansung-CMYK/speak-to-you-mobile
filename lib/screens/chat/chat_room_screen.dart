@@ -131,6 +131,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     setState(() => _isLoading = false);
   }
 
+
   @override
   void dispose() {
     _controller.dispose();
