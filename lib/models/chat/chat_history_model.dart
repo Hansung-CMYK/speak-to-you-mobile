@@ -24,11 +24,11 @@ class ChatHistory {
     return ChatHistory(
       id: json['id'],
       uid: json['uid'],
-      chatRoomId: json['chat_room_id'],
+      chatRoomId: json['chatRoomId'],
       content: json['content'],
       type: json['type'],
-      chatAt: DateTime.parse(json['chat_at']),
-      isDeleted: json['is_deleted'],
+      chatAt: DateTime.parse(json['chatAt']),
+      isDeleted: json['isDeleted'],
     );
   }
 
@@ -37,11 +37,11 @@ class ChatHistory {
     return {
       'id': id,
       'uid': uid,
-      'chat_room_id': chatRoomId,
+      'chatRoom_Id': chatRoomId,
       'content': content,
       'type': type,
-      'chat_at': chatAt.toIso8601String(),
-      'is_deleted': isDeleted,
+      'chatAt': chatAt.toIso8601String(),
+      'isDeleted': isDeleted,
     };
   }
 

@@ -1,4 +1,5 @@
 import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
@@ -42,42 +43,66 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
-  late List<ChatHistory> messages;
+  late List<ChatHistory> messages=[];
+
+  int _pageNum = 0;
+  bool _isLoading = false;
+  bool _hasMore = true;
 
   @override
   void initState() {
     super.initState();
-    // 테스트용 초기 메시지
-    messages = [
-      ChatHistory(
-        id: 1,
-        uid: "user1",
-        chatRoomId: widget.chatRoomId,
-        content: "방가방가",
-        type: "E",
-        chatAt: DateTime.parse("2025-05-09 09:21:00.000"),
-        isDeleted: false,
-      ),
-      ChatHistory(
-        id: 2,
-        uid: "user1",
-        chatRoomId: widget.chatRoomId,
-        content: "오늘은 어떤일이 있었어?",
-        type: "E",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-      ),
-      ChatHistory(
-        id: 3,
-        uid: widget.uid,
-        chatRoomId: widget.chatRoomId,
-        content: "블라블라 오늘도 블라블르라",
-        type: "U",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-      ),
-    ];
+
+    _fetchInitialData();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels <= 200 &&
+          !_isLoading &&
+          _hasMore) {
+        _fetchMoreData();
+      }
+
+    });
+
     _focusNode = FocusNode();
+  }
+
+  Future<void> _fetchInitialData() async {
+    setState(() => _isLoading = true);
+    final chatHistories = await ChatHistoryService.fetchChatHistoryList(
+      uid: widget.uid,
+      pageNum: _pageNum,
+      pageSize: 15,
+      chatRoomId: widget.chatRoomId,
+    );
+    if (chatHistories.isEmpty) {
+      setState(() => _hasMore = false);
+    } else {
+      setState(() {
+        messages.addAll(chatHistories);
+        _pageNum++;
+      });
+    }
+    setState(() => _isLoading = false);
+  }
+
+  Future<void> _fetchMoreData() async {
+    setState(() => _isLoading = true);
+    final chatHistories = await ChatHistoryService.fetchChatHistoryList(
+      uid: widget.uid,
+      pageNum: _pageNum,
+      pageSize: 15,
+      chatRoomId: widget.chatRoomId,
+    );
+    if (chatHistories.isEmpty) {
+      setState(() => _hasMore = false);
+    } else {
+      setState(() {
+        messages.addAll(chatHistories);
+        _pageNum++;
+      });
+    }
+    setState(() => _isLoading = false);
   }
 
   @override
@@ -103,7 +128,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
           ),
         );
 
-        //TODO 채팅 내역 Kafka로 바꾸기
+        //TODO 채팅 내역 Kafka로 바꾸기 - hash 알고리즘
         //TODO 채팅 내역 Kafka 전송 API
 
         _controller.clear();
@@ -165,6 +190,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               radius: Radius.circular(10.r),
               controller: _scrollController,
               child: ListView.builder(
+                reverse: true,
                 controller: _scrollController,
                 padding: EdgeInsets.symmetric(vertical: 8.h),
                 itemCount: messages.length,

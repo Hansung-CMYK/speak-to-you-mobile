@@ -9,7 +9,7 @@ class ChatHistoryService {
   // page 단위로 ChatHistory를 가져옵니다.
   static Future<List<ChatHistory>> fetchChatHistoryList({
     required String uid,
-    required String chatRoomId,
+    required int chatRoomId,
     required int pageNum,
     required int pageSize,
   }) async {
