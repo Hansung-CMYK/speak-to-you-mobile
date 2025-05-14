@@ -79,8 +79,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
           egoId: chatRoom.egoId,
           lastChatAt: chatRoom.lastChatAt,
           isDeleted: chatRoom.isDeleted,
-          egoName: ego.name,
-          profileImage: ego.profileImage,
+          egoModel: ego
         ));
       }
 
@@ -128,8 +127,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
                         (context) => ChatRoomScreen(
                           chatRoomId: chat.id,
                           uid: chat.uid,
-                          egoProfileImage:
-                              chat.profileImage ?? "assets/image/ego_icon.png",
+                          egoModel: chat.egoModel,
                         ),
                   ),
                 );
@@ -138,7 +136,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
                 final result = await showConfirmDialog(
                   context: context,
                   title: '채팅방을 나가시겠어요?',
-                  content: '${chat.egoName} 채팅방에서 나가면 대화 내용이 삭제됩니다.',
+                  content: '${chat.egoModel.name} 채팅방에서 나가면 대화 내용이 삭제됩니다.',
                   dialogType: DialogType.info,
                   stack: true,
                   cancelText: '취소',
@@ -164,7 +162,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
                 child: Row(
                   children: [
                     buildEgoListItem(
-                      chat.profileImage ?? 'assets/image/ego_icon.png',
+                      chat.egoModel.profileImage ?? 'assets/image/ego_icon.png',
                       () {},
                       radius: 25.5,
                     ),
@@ -177,7 +175,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                chat.egoName ?? '이름 없음',
+                                chat.egoModel.name ?? '이름 없음',
                                 style: TextStyle(
                                   color: AppColors.gray900,
                                   fontSize: 16.sp,

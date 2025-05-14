@@ -1,4 +1,6 @@
+import 'package:ego/models/chat/chat_history_kafka_model.dart';
 import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/models/ego_model.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
@@ -8,6 +10,7 @@ import 'package:ego/widgets/egoicon/ego_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
 
 import 'chat_bubble.dart';
 
@@ -24,13 +27,13 @@ import 'chat_bubble.dart';
 class ChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
-  final String egoProfileImage;
+  final EgoModel egoModel;
 
   const ChatRoomScreen({
     Key? key,
     required this.chatRoomId,
     required this.uid,
-    required this.egoProfileImage,
+    required this.egoModel,
   }) : super(key: key);
 
   @override
@@ -43,7 +46,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
-  late List<ChatHistory> messages=[];
+  late List<ChatHistory> messages = [];
 
   int _pageNum = 0;
   bool _isLoading = false;
@@ -56,12 +59,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     _fetchInitialData();
 
     _scrollController.addListener(() {
-      if (_scrollController.position.pixels <= 200 &&
-          !_isLoading &&
-          _hasMore) {
+      if (_scrollController.position.pixels <= 200 && !_isLoading && _hasMore) {
         _fetchMoreData();
       }
-
     });
 
     _focusNode = FocusNode();
@@ -116,21 +116,29 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   void _sendMessage() {
     if (_controller.text.isNotEmpty) {
       setState(() {
-        messages.add(
+        final now = DateTime.now();
+        final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
 
-          // TODO hash값 만들기
-          ChatHistory(
-            id: messages.length + 1,
-            uid: widget.uid,
-            chatRoomId: widget.chatRoomId,
-            content: _controller.text,
-            type: "U",
-            chatAt: DateTime.now(),
-            isDeleted: false,
-          ),
+        final hashInput = "${widget.uid}|$formattedDate|${_controller.text}";
+        final messageHash = ChatHistory.generateSHA256(hashInput);
+
+        ChatHistory inputMessage = ChatHistory(
+          uid: widget.uid,
+          chatRoomId: widget.chatRoomId,
+          content: _controller.text,
+          type: "U",
+          chatAt: DateTime.now(),
+          isDeleted: false,
+          messageHash: messageHash,
         );
 
-        //TODO 채팅 내역 Kafka로 바꾸기 - hash 알고리즘
+        ChatHistoryKafka kafkaReqMessage = ChatHistory.convertToKafka(
+          inputMessage,
+          to: widget.egoModel.id.toString(),
+        );
+
+        messages.insert(0, inputMessage);
+
         //TODO 채팅 내역 Kafka 전송 API
 
         _controller.clear();
@@ -138,7 +146,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
+          _scrollController.position.minScrollExtent,
           duration: Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
@@ -153,7 +161,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       backgroundColor: AppColors.gray200,
       appBar: AppBar(
         title: Text(
-          "보글보글 캘라몬",
+          "${widget.egoModel.name}",
           style: TextStyle(
             color: AppColors.gray900,
             fontSize: 16.sp,
@@ -165,7 +173,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
         actions: [
           Padding(
             padding: EdgeInsets.only(right: 10.w),
-            child: buildEgoListItem(widget.egoProfileImage, () {
+            child: buildEgoListItem(widget.egoModel.profileImage, () {
               //TODO EGO ID로 EGO 정보 요청
 
               EgoInfoModel egoInfoModel = EgoInfoModel(
@@ -197,9 +205,9 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                 padding: EdgeInsets.symmetric(vertical: 8.h),
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
-                  final previous = index > 0 ? messages[index - 1] : null;
-                  final next =
-                      index < messages.length - 1 ? messages[index + 1] : null;
+                  final previous = index < messages.length - 1 ? messages[index + 1] : null;
+                  final next = index > 0 ? messages[index - 1] : null;
+
 
                   return ChatBubble(
                     message: messages[index],

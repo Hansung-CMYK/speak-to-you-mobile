@@ -1,11 +1,16 @@
+import '../ego_model.dart';
+
+/**
+ * ChatRoom값과 EgoModel의 값을 묶어서 관리하기 위한 Class
+ * 실제 Json 요청을 하지는 않음
+ * */
 class ChatRoomListModel {
   final int id;
   final String uid;
   final int egoId;
   final DateTime lastChatAt;
   final bool isDeleted;
-  final String? egoName;
-  final String? profileImage;
+  final EgoModel egoModel;
 
   ChatRoomListModel({
     required this.id,
@@ -13,33 +18,6 @@ class ChatRoomListModel {
     required this.egoId,
     required this.lastChatAt,
     required this.isDeleted,
-    this.egoName,
-    this.profileImage,
+    required this.egoModel
   });
-
-  /// JSON → ChatRoomModel
-  factory ChatRoomListModel.fromJson(Map<String, dynamic> json) {
-    return ChatRoomListModel(
-      id: json['id'],
-      uid: json['uid'],
-      egoId: json['ego_id'],
-      lastChatAt: DateTime.parse(json['last_chat_at']),
-      isDeleted: json['is_deleted'] as bool,
-      egoName: json['ego_name'],
-      profileImage: json['profile_image'],
-    );
-  }
-
-  /// ChatRoomModel → JSON
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'uid': uid,
-      'ego_id': egoId,
-      'last_chat_at': lastChatAt.toIso8601String(),
-      'is_deleted': isDeleted,
-      'ego_name': egoName,
-      'profile_image': profileImage,
-    };
-  }
 }

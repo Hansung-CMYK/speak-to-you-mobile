@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
+import 'package:ego/models/chat/chat_history_kafka_model.dart';
 import 'package:intl/intl.dart';
 
 class ChatHistory {
@@ -50,4 +54,23 @@ class ChatHistory {
 
   /// 보기 좋은 시간 형식
   String get formattedChatAt => DateFormat('a hh:mm', 'ko').format(chatAt);
+
+  /// Hash값 생성 알고리즘
+  static String generateSHA256(String input) {
+    final bytes = utf8.encode(input);
+    final digest = sha256.convert(bytes);
+    return digest.toString();
+  }
+
+  static ChatHistoryKafka convertToKafka(ChatHistory chat, {required String to, bool mcpEnabled = false}) {
+    return ChatHistoryKafka(
+      from: chat.uid,
+      to: to,
+      chatRoomId: chat.chatRoomId,
+      content: chat.content,
+      type: chat.type,
+      mcpEnabled: mcpEnabled,
+      messageHash: chat.messageHash!,
+    );
+  }
 }
