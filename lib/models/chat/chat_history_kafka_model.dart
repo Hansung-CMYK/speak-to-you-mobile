@@ -5,6 +5,7 @@ class ChatHistoryKafka {
   final String content;
   final String type;
   final bool mcpEnabled;
+  final String messageHash;
 
   ChatHistoryKafka({
     required this.from,
@@ -13,6 +14,7 @@ class ChatHistoryKafka {
     required this.content,
     required this.type,
     required this.mcpEnabled,
+    required this.messageHash
   });
 
   factory ChatHistoryKafka.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class ChatHistoryKafka {
       content: json['content'] as String,
       type: json['type'] as String,
       mcpEnabled: json['mcpEnabled'] as bool,
+      messageHash: json['messageHash'] as String
     );
   }
 
@@ -34,6 +37,7 @@ class ChatHistoryKafka {
       'content': content,
       'type': type,
       'mcpEnabled': mcpEnabled,
+      'messageHash' : messageHash
     };
   }
 }
