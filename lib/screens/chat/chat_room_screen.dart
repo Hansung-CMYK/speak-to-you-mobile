@@ -117,6 +117,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     if (_controller.text.isNotEmpty) {
       setState(() {
         messages.add(
+
+          // TODO hash값 만들기
           ChatHistory(
             id: messages.length + 1,
             uid: widget.uid,
