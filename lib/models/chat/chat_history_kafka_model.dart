@@ -53,15 +53,4 @@ class ChatHistoryKafka {
       chatAt: DateTime.now(),
     );
   }
-
-  static ChatHistory convertToChatHistory(ChatHistoryKafka kafkaMessage) {
-    return ChatHistory(
-      uid: kafkaMessage.from,
-      chatRoomId: kafkaMessage.chatRoomId,
-      content: kafkaMessage.content,
-      type: "ego",
-      messageHash: kafkaMessage.messageHash,
-      chatAt: DateTime.now(),
-    );
-  }
 }

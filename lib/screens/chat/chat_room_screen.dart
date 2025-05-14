@@ -80,6 +80,16 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       }
     });
 
+    _socketService.connect(
+      onMessageReceived: (message) {
+        setState(() {
+          messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
+        });
+      },
+      //uid는 시스템에 존재한다 가정
+      uid: widget.uid,
+    );
+
     // ✅ 연결 시 메시지 수신 처리
     _socketService.onMessageReceived((message) {
       setState(() {
