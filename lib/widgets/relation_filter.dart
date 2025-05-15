@@ -9,27 +9,25 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 // 필터 선택 정보를 담는 클래스
 class FilterSelection {
   final int index;
-  final int count;
-  FilterSelection({required this.index, required this.count});
+
+  FilterSelection({required this.index});
 }
 
-class EmotionFilter extends StatefulWidget {
+class RelationFilter extends StatefulWidget {
   final ValueChanged<FilterSelection> onFilterSelected;
-  const EmotionFilter({super.key, required this.onFilterSelected});
+
+  const RelationFilter({super.key, required this.onFilterSelected});
 
   @override
-  State<EmotionFilter> createState() => _EmotionFilterState();
+  State<RelationFilter> createState() => _RelationFilterState();
 }
 
-class _EmotionFilterState extends State<EmotionFilter> {
+class _RelationFilterState extends State<RelationFilter> {
   int selectedIndex = -1;
-  late final List<int> fixedDataCounts; // 각 버튼에 고정될 숫자 목록
 
   @override
   void initState() {
     super.initState();
-    // 5개의 버튼에 대해 0~14 사이의 랜덤 숫자 생성
-    fixedDataCounts = List.generate(5, (_) => Random().nextInt(15));
   }
 
   Widget emotionButton(String activePath, String text, int index) {
@@ -38,9 +36,6 @@ class _EmotionFilterState extends State<EmotionFilter> {
         isSelected
             ? activePath
             : activePath.replaceFirst('.svg', '_inactive.svg');
-
-    // 미리 생성한 fixedDataCounts의 값을 사용
-    int dataCount = fixedDataCounts[index];
 
     return SizedBox(
       width: 54.w,
@@ -62,41 +57,10 @@ class _EmotionFilterState extends State<EmotionFilter> {
                   widget.onFilterSelected(
                     FilterSelection(
                       index: selectedIndex,
-                      count:
-                          selectedIndex == -1
-                              ? 0
-                              : fixedDataCounts[selectedIndex],
                     ),
                   );
                 },
               ),
-              // 데이터 개수가 0이 아닐 때만 라벨 출력
-              if (dataCount > 0)
-                Positioned(
-                  right: -2.5.w,
-                  top: -6.h,
-                  child: Container(
-                    width: 22.w,
-                    height: 13.h,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 1.r, color: AppColors.gray100),
-                      color: const Color(0xFFFF4D4F),
-                      borderRadius: BorderRadius.circular(100.r),
-                    ),
-                    child: Center(
-                      child: Text(
-                        dataCount.toString(),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          height: 1.1.h,
-                          color: AppColors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
             ],
           ),
           SizedBox(height: 8.h),
@@ -128,19 +92,23 @@ class _EmotionFilterState extends State<EmotionFilter> {
           children: [
             Row(
               children: [
-                emotionButton('assets/icon/emotion/anger.svg', '분노', 0),
+                emotionButton('assets/icon/emotion/anger.svg', '배드민턴', 0),
                 SizedBox(width: 12.w),
-                emotionButton('assets/icon/emotion/sadness.svg', '슬픔', 1),
+                emotionButton('assets/icon/emotion/sadness.svg', '활발한', 1),
                 SizedBox(width: 12.w),
-                emotionButton('assets/icon/emotion/happiness.svg', '기쁨', 2),
+                emotionButton('assets/icon/emotion/happiness.svg', '영화중독', 2),
                 SizedBox(width: 12.w),
                 emotionButton(
                   'assets/icon/emotion/disappointment.svg',
-                  '실망',
+                  '게이머',
                   3,
                 ),
                 SizedBox(width: 12.w),
-                emotionButton('assets/icon/emotion/embarrassment.svg', '황당', 4),
+                emotionButton(
+                  'assets/icon/emotion/embarrassment.svg',
+                  '맛집러버',
+                  4,
+                ),
               ],
             ),
             SizedBox(height: 14.h),

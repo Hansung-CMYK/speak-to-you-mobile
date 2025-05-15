@@ -1,22 +1,18 @@
 import 'package:ego/theme/color.dart';
-import 'package:ego/widgets/calendar_indicator.dart';
-import 'package:ego/widgets/diary_section.dart';
-import 'package:ego/widgets/emotion_chart.dart';
-import 'package:ego/widgets/emotion_filter.dart';
+import 'package:ego/widgets/relation_filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-import '../relation/ego_relation_screen.dart';
+import '../../../widgets/relation/ego_relation_widget.dart';
 
-class ChartScreen extends StatefulWidget {
-  const ChartScreen({super.key});
+class RelationScreen extends StatefulWidget {
+  const RelationScreen({super.key});
 
   @override
-  State<ChartScreen> createState() => _ChartScreenState();
+  State<RelationScreen> createState() => _RelationScreenState();
 }
 
-class _ChartScreenState extends State<ChartScreen> {
+class _RelationScreenState extends State<RelationScreen> {
   FilterSelection? selectedFilter;
 
   @override
@@ -33,8 +29,8 @@ class _ChartScreenState extends State<ChartScreen> {
                 padding: EdgeInsets.only(bottom: 17.h, left: 20.w, right: 20.w),
                 child: SizedBox(
                   height: 300.h,  // 적절한 높이로 제한
-                  child: GraphWidget(
-                    filterSelection: selectedFilter ?? FilterSelection(index: 0, count: 5),
+                  child: EgoRelationWidget(
+                    filterSelection: selectedFilter ?? FilterSelection(index: -1),
                   ),
                 ),
               ),
@@ -45,19 +41,13 @@ class _ChartScreenState extends State<ChartScreen> {
               child: Column(
                 children: [
                   // Filter 부분
-                  EmotionFilter(
+                  RelationFilter(
                     onFilterSelected: (FilterSelection selection) {
                       setState(() {
                         selectedFilter = selection;
                       });
                     },
                   ),
-                  // 일기 부분
-                  if (selectedFilter != null && selectedFilter!.index != -1)
-                    DiarySection(
-                      filterIndex: selectedFilter!.index,
-                      diaryCount: selectedFilter!.count,
-                    ),
                 ],
               ),
             ),
