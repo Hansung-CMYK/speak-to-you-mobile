@@ -5,6 +5,7 @@ import 'package:ego/models/chat/chat_history_kafka_model.dart';
 
 class SocketService {
   late StompClient _stompClient;
+  bool isConnected = false;
 
   void connect({required Function(ChatHistoryKafka) onMessageReceived, required String uid}) {
     // TODO 현재 밀버스 구현중이므로 uid = 1로 고정하여 전송
@@ -28,6 +29,7 @@ class SocketService {
 
   void _onConnect(
       StompFrame frame, Function(ChatHistoryKafka) onMessageReceived, String uid) {
+    isConnected = true;
     print('✅ STOMP 연결 성공');
 
     _stompClient.subscribe(
@@ -42,7 +44,9 @@ class SocketService {
     );
   }
 
-  void sendMessage(ChatHistoryKafka message) {
+  Future<void> sendMessage(ChatHistoryKafka message) async {
+    await waitForConnection();
+
     // TODO 현재 밀버스 구현중이므로 from, to 를 1로 고정하여 전송
     message.from = "1";
     message.to = "1";
@@ -55,6 +59,18 @@ class SocketService {
     );
 
     print('메시지 전송 완료');
+  }
+
+  Future<void> waitForConnection() async {
+    const maxWait = 10; // 최대 10초 대기
+    int waited = 0;
+    while (!isConnected && waited < maxWait) {
+      await Future.delayed(Duration(seconds: 1));
+      waited++;
+    }
+    if (!isConnected) {
+      print("❌ 연결 실패");
+    }
   }
 
   void disconnect() {
