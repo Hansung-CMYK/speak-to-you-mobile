@@ -90,15 +90,14 @@ class SocketService {
     _isConnected = false;
   }
 
-  Future<void> _waitForConnection() async {
-    const maxWait = 10;
+  Future<void> waitForConnection() async {
+    const maxWait = 10; // 최대 10초 대기
     int waited = 0;
-    while (!_isConnected && waited < maxWait) {
+    while (!isConnected && waited < maxWait) {
       await Future.delayed(Duration(seconds: 1));
       waited++;
     }
-
-    if (!_isConnected) {
+    if (!isConnected) {
       print("❌ 연결 실패");
     }
   }
