@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
 import 'chat_bubble.dart';
 
+// 개인 채팅방
 // 초기 데이터 fetch
 // spring에서 불러온 채팅 내용은 ChatHistory의 형식을 따른다.
 // 송신
