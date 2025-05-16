@@ -15,8 +15,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
-import 'chat_bubble.dart';
+import '../../widgets/chat/chat_bubble.dart';
 
+// 개인 채팅방
 // 초기 데이터 fetch
 // spring에서 불러온 채팅 내용은 ChatHistory의 형식을 따른다.
 // 송신
@@ -27,12 +28,12 @@ import 'chat_bubble.dart';
 // 수신
 // kafka에서 받은 ChatHistoryKafka 데이터를 ChatHistory로 바꾼다.
 // 리스트에 추가한다.
-class ChatRoomScreen extends StatefulWidget {
+class EgoChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
   final EgoModel egoModel;
 
-  const ChatRoomScreen({
+  const EgoChatRoomScreen({
     Key? key,
     required this.chatRoomId,
     required this.uid,
@@ -40,10 +41,10 @@ class ChatRoomScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChatRoomScreenState createState() => _ChatRoomScreenState();
+  _EgoChatRoomScreenState createState() => _EgoChatRoomScreenState();
 }
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
+class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
   final TextEditingController _controller = TextEditingController();
   final SocketService _socketService = SocketService();
 
@@ -78,6 +79,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       if (_scrollController.position.pixels <= 200 && !_isLoading && _hasMore) {
         _fetchMoreData();
       }
+    });
+
+    // ✅ 연결 시 메시지 수신 처리
+    _socketService.onMessageReceived((message) {
+      setState(() {
+        messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
+      });
     });
 
     // ✅ 연결 시 메시지 수신 처리
@@ -130,6 +138,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     }
     setState(() => _isLoading = false);
   }
+
 
   @override
   void dispose() {

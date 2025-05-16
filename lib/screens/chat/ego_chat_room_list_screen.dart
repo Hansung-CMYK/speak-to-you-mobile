@@ -11,19 +11,19 @@ import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
 import '../../services/chat/chat_room_service.dart';
 import '../../services/ego/ego_service.dart';
-import 'chat_room_screen.dart';
+import 'ego_chat_room_screen.dart';
 
 /**
- * 채팅방 리스트를 확인하는 화면
+ * 개인 채팅방 리스트를 확인하는 화면
  * */
-class ChatListScreen extends ConsumerStatefulWidget  {
-  const ChatListScreen({super.key});
+class PersonalChatListScreen extends ConsumerStatefulWidget  {
+  const PersonalChatListScreen({super.key});
 
   @override
-  _ChatListScreenState createState() => _ChatListScreenState();
+  _PersonalChatListScreenState createState() => _PersonalChatListScreenState();
 }
 
-class _ChatListScreenState extends ConsumerState<ChatListScreen>
+class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<ChatRoomListModel> _chatRoomList = [];
@@ -124,7 +124,7 @@ class _ChatListScreenState extends ConsumerState<ChatListScreen>
                   context,
                   MaterialPageRoute(
                     builder:
-                        (context) => ChatRoomScreen(
+                        (context) => EgoChatRoomScreen(
                           chatRoomId: chat.id,
                           uid: chat.uid,
                           egoModel: chat.egoModel,

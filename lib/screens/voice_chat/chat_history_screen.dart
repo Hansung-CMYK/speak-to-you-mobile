@@ -1,6 +1,6 @@
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
-import 'package:ego/screens/chat/chat_bubble.dart';
+import 'package:ego/widgets/chat/chat_bubble.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
