@@ -1,5 +1,7 @@
+import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
 import 'package:ego/widgets/chat/emoji_send_btn.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 
@@ -38,7 +40,15 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   final ScrollController _scrollController = ScrollController();
 
-  late List<ChatHistory> messages = [];
+  late List<ChatHistory> messages = [
+    ChatHistory(
+      uid: 'apple',
+      chatRoomId: 1,
+      content: "assets/icon/emotion/anger.svg",
+      type: 'group',
+      chatAt: DateTime.now(),
+    ),
+  ];
   bool _isEmojiVisible = false;
 
   int _pageNum = 0;
@@ -134,16 +144,12 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                     padding: EdgeInsets.symmetric(vertical: 8.h),
                     itemCount: messages.length,
                     itemBuilder: (context, index) {
-                      final previous =
-                          index < messages.length - 1
-                              ? messages[index + 1]
-                              : null;
-                      final next = index > 0 ? messages[index - 1] : null;
-
+                      // Group Chat Bubble이 그려짐
                       return GroupChatBubble(
-                        message: messages[index],
+                        chatHistory: messages[index],
                         onDelete: () async {
                           try {
+                            //TODO 삭제 API
                             setState(() {
                               messages.removeAt(index);
                             });
@@ -152,6 +158,25 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                             customToast.init(fToast);
                             customToast.showTopToast();
                           }
+                        },
+                        onProfileTap: () {
+                          // 프로필 이미지 클릭시
+                          var tmp = EgoInfoModel(
+                            id: "123",
+                            egoIcon: "assets/image/ego_icon.png",
+                            egoName: '호호',
+                            egoBirth: '2020/01/01',
+                            egoPersonality: '활발함',
+                            egoSelfIntro: "사과좋아",
+                          );
+
+                          showTodayEgoIntroSheet(
+                            context,
+                            tmp,
+                            canChatWithHuman: true,
+                            isOtherEgo: true,
+                            relationTag: "게임중독",
+                          );
                         },
                       );
                     },
@@ -222,7 +247,7 @@ Widget _showEmojiList(void Function(String) onPressed) {
   ];
 
   return Container(
-    height: 200,
+    height: 240,
     margin: EdgeInsets.only(right: 12, left: 12, top: 12),
     decoration: BoxDecoration(
       color: Colors.transparent,
