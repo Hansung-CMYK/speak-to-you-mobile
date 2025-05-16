@@ -176,6 +176,7 @@ flutter:
     - assets/image/movie_chat_room.png
     - assets/image/music_chat_room.png
     - assets/image/anime_chat_room.png
+    - assets/icon/emoji_send_btn.svg
 
 
 

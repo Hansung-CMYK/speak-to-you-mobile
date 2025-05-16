@@ -1,20 +1,12 @@
-import 'package:ego/models/chat/chat_history_kafka_model.dart';
-import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/models/ego_model.dart';
-import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
-import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
+import 'package:ego/widgets/chat/emoji_send_btn.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
-import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:intl/intl.dart';
-
-import '../../services/websocket/chat_kafka_socket_service.dart';
 import 'chat_bubble.dart';
 
 class GroupChatRoomScreen extends StatefulWidget {
@@ -46,6 +38,8 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   final ScrollController _scrollController = ScrollController();
 
   late List<ChatHistory> messages = [];
+  bool _isEmojiVisible = false;
+  final Duration _emojiAnimationDuration = Duration(milliseconds: 300);
 
   int _pageNum = 0;
   bool _isLoading = false;
@@ -71,9 +65,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
     // 그룹채팅 리스트 불러오기
   }
 
-  Future<void> _fetchMoreData() async {
-
-  }
+  Future<void> _fetchMoreData() async {}
 
   @override
   void dispose() {
@@ -83,7 +75,28 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   }
 
   // 이미지 경로 전송 로직
-  void _sendMessage() {}
+  void _sendMessage(String content) {
+    //uid는 시스템에 존재
+    ChatHistory chatHistory = ChatHistory(
+      uid: 'test',
+      chatRoomId: widget.chatRoomId,
+      content: content,
+      type: 'U',
+      chatAt: DateTime.now(),
+    );
+
+    messages.add(chatHistory);
+
+    //TODO 전송 로직
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.minScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,79 +115,152 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
         surfaceTintColor: AppColors.white,
         centerTitle: true,
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Expanded(
-            child: RawScrollbar(
-              thumbVisibility: true,
-              thickness: 3,
-              thumbColor: AppColors.gray700,
-              radius: Radius.circular(10.r),
-              controller: _scrollController,
-              child: ListView.builder(
-                reverse: true,
-                controller: _scrollController,
-                padding: EdgeInsets.symmetric(vertical: 8.h),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final previous =
-                      index < messages.length - 1 ? messages[index + 1] : null;
-                  final next = index > 0 ? messages[index - 1] : null;
+          Column(
+            children: [
+              Expanded(
+                child: RawScrollbar(
+                  thumbVisibility: true,
+                  thickness: 3,
+                  thumbColor: AppColors.gray700,
+                  radius: Radius.circular(10.r),
+                  controller: _scrollController,
+                  child: ListView.builder(
+                    reverse: true,
+                    controller: _scrollController,
+                    padding: EdgeInsets.symmetric(vertical: 8.h),
+                    itemCount: messages.length,
+                    itemBuilder: (context, index) {
+                      final previous =
+                          index < messages.length - 1
+                              ? messages[index + 1]
+                              : null;
+                      final next = index > 0 ? messages[index - 1] : null;
 
-                  return ChatBubble(
-                    message: messages[index],
-                    previousMessage: previous,
-                    nextMessage: next,
-                    onDelete: () async {
-                      // uid는 시스템에 존재한다 가정
-                      try {
-                        // 메시지 삭제 요청
-
-                        setState(() {
-                          messages.removeAt(index);
-                        });
-                        _focusNode.unfocus();
-                      } catch (e) {
-                        // 삭제 오류시 ToastMSG 생성
-                        customToast.init(fToast);
-                        customToast.showTopToast();
-                      }
+                      return ChatBubble(
+                        message: messages[index],
+                        previousMessage: previous,
+                        nextMessage: next,
+                        onDelete: () async {
+                          try {
+                            setState(() {
+                              messages.removeAt(index);
+                            });
+                            _focusNode.unfocus();
+                          } catch (e) {
+                            customToast.init(fToast);
+                            customToast.showTopToast();
+                          }
+                        },
+                      );
                     },
-                  );
-                },
-              ),
-            ),
-          ),
-
-          // 입력 필드 부분
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(10),
-            child: SafeArea(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: AppColors.gray200, width: 2.w),
+                  ),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: AppColors.accent,
-                      child: IconButton(
-                        icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
-                        onPressed: _sendMessage,
+              ),
+
+              // 이모지 패널
+              if (_isEmojiVisible)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: AnimatedSlide(
+                    offset: _isEmojiVisible ? Offset(0, 0) : Offset(0, 1),
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    child: AnimatedOpacity(
+                      opacity: _isEmojiVisible ? 1.0 : 0.0,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 15),
+                        decoration: BoxDecoration(
+                          color: Color(0x99414141),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(30),
+                            topRight: Radius.circular(30),
+                          ),
+                        ),
+                        child: _showEmojiList(_sendMessage),
                       ),
                     ),
-                  ],
+                  ),
                 ),
+
+              // 이모지 보이기 버튼
+              buildEmojiSendBtn(
+                isPressed: _isEmojiVisible,
+                onPressed: () {
+                  setState(() {
+                    _isEmojiVisible = !_isEmojiVisible;
+                  });
+                },
+              ),
+            ],
+          ),
+
+          // 뒤 배경 클릭시 이모지 패널 닫기 위한 반투명 영역
+          if (_isEmojiVisible)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              // 이모지 패널 높이만큼 위에서 끝남 (예: 200 + margin/padding 고려해서 220)
+              bottom: 280,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isEmojiVisible = false;
+                  });
+                },
+                child: Container(color: Colors.transparent),
               ),
             ),
-          ),
         ],
       ),
     );
   }
+}
+
+Widget _showEmojiList(void Function(String) onPressed) {
+  List<String> emojiList = [
+    'assets/icon/emotion/anger.svg',
+    'assets/icon/emotion/happiness.svg',
+    'assets/icon/emotion/sadness.svg',
+    'assets/icon/emotion/embarrassment.svg',
+    'assets/icon/emotion/disappointment.svg',
+  ];
+
+  return Container(
+    height: 200,
+    margin: EdgeInsets.only(right: 12, left: 12, top: 12),
+    decoration: BoxDecoration(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.only(
+        topRight: Radius.circular(40),
+        topLeft: Radius.circular(40),
+      ),
+    ),
+    child: GridView.builder(
+      shrinkWrap: true,
+      physics: AlwaysScrollableScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+        childAspectRatio: 1,
+      ),
+      itemCount: emojiList.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            print(index);
+            //uid는 시스템에 존재
+
+            onPressed(emojiList[index]);
+          },
+          child: SvgPicture.asset(emojiList[index], width: 40, height: 40),
+        );
+      },
+    ),
+  );
 }
