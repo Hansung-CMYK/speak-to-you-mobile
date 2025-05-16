@@ -30,7 +30,7 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isUser = message.type == "U";
+    final isUser = message.type == "user";
 
     final bool sameAsPrevious = previousMessage?.type == message.type;
     final bool sameAsNext = nextMessage?.type == message.type;

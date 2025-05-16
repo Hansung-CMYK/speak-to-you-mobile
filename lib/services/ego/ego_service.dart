@@ -50,7 +50,7 @@ class EgoService {
   /**
    * 전달된 ChatRoomModel들을 바탕으로 EGO정보를 조회합니다.
    * */
-  static Future<List<EgoModel>> fetchEgoModelsForChatRooms(List<ChatRoomModel> chatRoomList, WidgetRef ref) async {
+  static Future<List<EgoModel>> fetchEgoModelsForChatRooms(List<ChatRoomModel> chatRoomList, WidgetRef  ref) async {
     // 각 chatRoom에 대한 egoId를 기반으로 egoModel Future 리스트 생성
     final futures = chatRoomList.map(
           (chatRoom) => ref.watch(egoByIdProvider(chatRoom.egoId).future), // egoId로 EgoModel 가져오기

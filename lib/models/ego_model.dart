@@ -23,7 +23,7 @@ class EgoModel {
       id: json['id'],
       name: json['name'],
       introduction: json['introduction'],
-      profileImage: json['profileImage'] == "" ? 'assets/image/ego_icon.png' : json['profileImage'],
+      profileImage: json['profileImage'] ?? 'assets/image/ego_icon.png',
       mbti: json['mbti'],
       personality: json['personality'],
       createdAt: DateTime.parse(json['createdAt']),  // String -> DateTime 변환
