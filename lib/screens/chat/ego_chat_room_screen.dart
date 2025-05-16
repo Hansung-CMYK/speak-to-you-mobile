@@ -15,7 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
-import 'chat_bubble.dart';
+import '../../widgets/chat/chat_bubble.dart';
 
 // 개인 채팅방
 // 초기 데이터 fetch

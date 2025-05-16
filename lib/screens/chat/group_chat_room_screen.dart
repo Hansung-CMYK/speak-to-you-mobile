@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'chat_bubble.dart';
+import '../../widgets/chat/chat_bubble.dart';
+import '../../widgets/chat/group_chat_bubble.dart';
 
 class GroupChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
@@ -80,7 +81,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
       uid: 'test',
       chatRoomId: widget.chatRoomId,
       content: content,
-      type: 'U',
+      type: 'user',
       chatAt: DateTime.now(),
     );
 
@@ -139,10 +140,8 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                               : null;
                       final next = index > 0 ? messages[index - 1] : null;
 
-                      return ChatBubble(
+                      return GroupChatBubble(
                         message: messages[index],
-                        previousMessage: previous,
-                        nextMessage: next,
                         onDelete: () async {
                           try {
                             setState(() {
