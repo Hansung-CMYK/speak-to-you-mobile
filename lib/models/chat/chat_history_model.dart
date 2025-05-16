@@ -9,7 +9,7 @@ class ChatHistory {
   final String uid; // 사용자 UID
   final int chatRoomId; // 채팅방 ID
   final String content; // 사용자가 보낸 메시지
-  final String type; // 대화 유형 (U - User, E - Ego)
+  final String type; // 대화 유형 (user, ego, group)
   final DateTime chatAt; // 대화 발생 시간
   final bool isDeleted; // 삭제 여부
   final String? messageHash; // 메시지 해시 (nullable)

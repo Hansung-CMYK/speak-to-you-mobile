@@ -155,7 +155,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       uid: "user_account_001",
       chatRoomId: widget.chatRoomId,
       content: text,
-      type: "U",
+      type: "user",
       chatAt: now,
       isDeleted: false,
       messageHash: messageHash,
