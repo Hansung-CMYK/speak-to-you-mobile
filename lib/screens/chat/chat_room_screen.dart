@@ -14,7 +14,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
-import '../../services/websocket/chat_kafka_socket_service.dart';
+import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
 import 'chat_bubble.dart';
 
 // 초기 데이터 fetch
@@ -67,9 +67,12 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   void initState() {
     super.initState();
+
     fToast = FToast();
     fToast.init(context);
     _fetchInitialData();
+
+    _focusNode = FocusNode();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels <= 200 && !_isLoading && _hasMore) {
@@ -77,18 +80,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       }
     });
 
-    _socketService.connect(
-      onMessageReceived: (message) {
-        setState(() {
-          messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
-        });
-      },
-      //uid는 시스템에 존재한다 가정
-      uid: widget.uid,
-    );
+    // ✅ 연결 시 메시지 수신 처리
+    _socketService.onMessageReceived((message) {
+      setState(() {
+        messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
+      });
+    });
 
-    _focusNode = FocusNode();
+    // ✅ 실제 연결
+    //uid는 시스템에 존재
+    _socketService.connect(uid:"user_account_001");
   }
+
 
   Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
@@ -138,46 +141,48 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   void _sendMessage() {
-    if (_controller.text.isNotEmpty) {
-      setState(() {
-        final now = DateTime.now();
-        final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+    final text = _controller.text.trim();
+    if (text.isEmpty) return;
 
-        final hashInput = "${widget.uid}|$formattedDate|${_controller.text}";
-        final messageHash = ChatHistory.generateSHA256(hashInput);
+    final now = DateTime.now();
+    final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
 
-        ChatHistory inputMessage = ChatHistory(
-          uid: widget.uid,
-          chatRoomId: widget.chatRoomId,
-          content: _controller.text,
-          type: "U",
-          chatAt: DateTime.now(),
-          isDeleted: false,
-          messageHash: messageHash,
-        );
+    final hashInput = "${widget.uid}|$formattedDate|$text";
+    final messageHash = ChatHistory.generateSHA256(hashInput);
 
-        ChatHistoryKafka kafkaReqMessage = ChatHistory.convertToKafka(
-          to: widget.egoModel.id.toString(),
-          inputMessage,
-          type: "TEXT"
-        );
+    final inputMessage = ChatHistory(
+      //uid는 시스템에 존재
+      uid: "user_account_001",
+      chatRoomId: widget.chatRoomId,
+      content: text,
+      type: "U",
+      chatAt: now,
+      isDeleted: false,
+      messageHash: messageHash,
+    );
 
-        _socketService.sendMessage(kafkaReqMessage);
+    final kafkaReqMessage = ChatHistory.convertToKafka(
+      inputMessage,
+      to: "1",// TODO 이후 수정 widget.egoModel.id.toString(),
+      type: "TEXT",
+    );
 
-        messages.insert(0, inputMessage);
+    _socketService.sendMessage(kafkaReqMessage);
 
-        _controller.clear();
-      });
+    setState(() {
+      messages.insert(0, inputMessage);
+      _controller.clear();
+    });
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _scrollController.animateTo(
-          _scrollController.position.minScrollExtent,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.minScrollExtent,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    });
   }
+
 
   @override
   Widget build(BuildContext context) {

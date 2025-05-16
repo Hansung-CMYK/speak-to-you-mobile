@@ -23,11 +23,11 @@ class ChatHistoryKafka {
     return ChatHistoryKafka(
       from: json['from'] as String,
       to: json['to'] as String,
-      chatRoomId: json['chat_room_id'] as int,
+      chatRoomId: json['chatRoomId'] as int,
       content: json['content'] as String,
       type: json['type'] as String,
       mcpEnabled: json['mcpEnabled'] as bool,
-      messageHash: json['messageHash'] as String
+      messageHash: (json['hash'] as String?) ?? 'TEMP_HASH'
     );
   }
 
@@ -35,11 +35,11 @@ class ChatHistoryKafka {
     return {
       'from': from,
       'to': to,
-      'chat_room_id': chatRoomId,
+      'chatRoomId': chatRoomId,
       'content': content,
       'type': type,
       'mcpEnabled': mcpEnabled,
-      'messageHash' : messageHash
+      'hash' : messageHash
     };
   }
 

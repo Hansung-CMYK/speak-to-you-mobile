@@ -1,79 +1,105 @@
 import 'dart:convert';
+import 'dart:async';
+import 'package:ego/models/chat/chat_history_kafka_model.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
-import 'package:ego/models/chat/chat_history_kafka_model.dart';
 
 class SocketService {
-  late StompClient _stompClient;
-  bool isConnected = false;
+  late StompClient _client;
+  bool _isConnected = false;
 
-  void connect({required Function(ChatHistoryKafka) onMessageReceived, required String uid}) {
-    // TODO 현재 밀버스 구현중이므로 uid = 1로 고정하여 전송
-    uid = "1";
+  String _subscribeDestination = '/topic/messages/';
+  final String _sendDestination = '/app/chat.send';
 
-    _stompClient = StompClient(
+  Function(ChatHistoryKafka message)? _onMessage;
+
+  bool get isConnected => _isConnected;
+
+  // 메시지 수신 콜백 등록 메서드
+  void onMessageReceived(Function(ChatHistoryKafka message) handler) {
+    _onMessage = handler;
+  }
+
+  // 실제 연결 수행
+  Future<void> connect({required String uid}) async {
+    _client = StompClient(
       config: StompConfig(
         url: webSocketUrl,
-        onConnect: (StompFrame frame) => _onConnect(frame, onMessageReceived, uid),
-        onWebSocketError: (error) => print('WebSocket 오류: $error'),
-        onStompError: (frame) => print('STOMP 오류: ${frame.body}'),
-        onDisconnect: (frame) => print('연결 종료됨'),
-        onDebugMessage: (msg) => print('DEBUG: $msg'),
-        heartbeatOutgoing: Duration(seconds: 10),
-        heartbeatIncoming: Duration(seconds: 10),
+        onConnect: (frame) => _onConnect(frame, uid),
+        onWebSocketError: (dynamic error) {
+          print('❌ WebSocket 에러: $error');
+        },
+        onStompError: (frame) {
+          print('⚠️ STOMP 에러: ${frame.body}');
+        },
+        onDisconnect: (frame) {
+          _isConnected = false;
+          print('📴 연결 종료');
+        },
       ),
     );
 
-    _stompClient.activate();
+    print("🔌 서버 연결 시도 중...");
+    _client.activate();
+
+    await _waitForConnection();
   }
 
-  void _onConnect(
-      StompFrame frame, Function(ChatHistoryKafka) onMessageReceived, String uid) {
-    isConnected = true;
-    print('✅ STOMP 연결 성공');
+  void _onConnect(StompFrame frame, String uid) {
+    _isConnected = true;
+    print("✅ 서버 연결 성공");
 
-    _stompClient.subscribe(
-      destination: '/topic/messages/${uid}',
-      callback: (StompFrame frame) {
+    _subscribeDestination += uid;
+
+    _client.subscribe(
+      destination: _subscribeDestination,
+      callback: (frame) {
         if (frame.body != null) {
-          final data = jsonDecode(frame.body!);
-          final message = ChatHistoryKafka.fromJson(data);
-          onMessageReceived(message);
+          print("📩 서버 메시지 수신: ${frame.body}");
+          final Map<String, dynamic> jsonMap = jsonDecode(frame.body!);
+          final chatMessage = ChatHistoryKafka.fromJson(jsonMap);
+
+          print("채팅 메시지: ${chatMessage.content}");
+          _onMessage?.call(chatMessage);
         }
       },
     );
+
+    print("📡 구독 시작: $_subscribeDestination");
   }
 
-  Future<void> sendMessage(ChatHistoryKafka message) async {
-    await waitForConnection();
+  void sendMessage(ChatHistoryKafka message) {
+    if (!_isConnected) {
+      print("🚫 연결되지 않아 메시지 전송 불가");
+      return;
+    }
 
-    // TODO 현재 밀버스 구현중이므로 from, to 를 1로 고정하여 전송
-    message.from = "1";
-    message.to = "1";
+    String body = jsonEncode(message.toJson());
 
-    final String jsonBody = jsonEncode(message.toJson());
+    print("📤 메시지 전송: $body");
 
-    _stompClient.send(
-      destination: '/app/chat.send',
-      body: jsonBody,
+    _client.send(
+      destination: _sendDestination,
+      body: body,
     );
-
-    print('메시지 전송 완료');
   }
 
-  Future<void> waitForConnection() async {
-    const maxWait = 10; // 최대 10초 대기
+  Future<void> disconnect() async {
+    print("🧹 연결 종료 중...");
+    _client.deactivate();
+    _isConnected = false;
+  }
+
+  Future<void> _waitForConnection() async {
+    const maxWait = 10;
     int waited = 0;
-    while (!isConnected && waited < maxWait) {
+    while (!_isConnected && waited < maxWait) {
       await Future.delayed(Duration(seconds: 1));
       waited++;
     }
-    if (!isConnected) {
+
+    if (!_isConnected) {
       print("❌ 연결 실패");
     }
-  }
-
-  void disconnect() {
-    _stompClient.deactivate();
   }
 }
