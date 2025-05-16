@@ -39,7 +39,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   late List<ChatHistory> messages = [];
   bool _isEmojiVisible = false;
-  final Duration _emojiAnimationDuration = Duration(milliseconds: 300);
 
   int _pageNum = 0;
   bool _isLoading = false;
@@ -85,9 +84,11 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
       chatAt: DateTime.now(),
     );
 
-    messages.add(chatHistory);
-
     //TODO 전송 로직
+
+    setState(() {
+      messages.insert(0, chatHistory);
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
@@ -159,33 +160,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                 ),
               ),
 
-              // 이모지 패널
-              if (_isEmojiVisible)
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: AnimatedSlide(
-                    offset: _isEmojiVisible ? Offset(0, 0) : Offset(0, 1),
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeInOut,
-                    child: AnimatedOpacity(
-                      opacity: _isEmojiVisible ? 1.0 : 0.0,
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 15),
-                        decoration: BoxDecoration(
-                          color: Color(0x99414141),
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(30),
-                            topRight: Radius.circular(30),
-                          ),
-                        ),
-                        child: _showEmojiList(_sendMessage),
-                      ),
-                    ),
-                  ),
-                ),
-
               // 이모지 보이기 버튼
               buildEmojiSendBtn(
                 isPressed: _isEmojiVisible,
@@ -196,6 +170,25 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                 },
               ),
             ],
+          ),
+
+          // 이모지 패널
+          Align(
+            alignment: Alignment.bottomCenter,
+            child:
+                _isEmojiVisible
+                    ? Container(
+                      margin: EdgeInsets.only(left: 15, right: 15, bottom: 67),
+                      decoration: BoxDecoration(
+                        color: Color(0x99414141),
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(30),
+                          topRight: Radius.circular(30),
+                        ),
+                      ),
+                      child: _showEmojiList(_sendMessage),
+                    )
+                    : SizedBox.shrink(),
           ),
 
           // 뒤 배경 클릭시 이모지 패널 닫기 위한 반투명 영역
@@ -212,7 +205,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                     _isEmojiVisible = false;
                   });
                 },
-                child: Container(color: Colors.transparent),
               ),
             ),
         ],
