@@ -171,6 +171,11 @@ flutter:
     - assets/icon/chat_history.svg
     - assets/icon/pencil.svg
     - assets/icon/fcm_pencil.svg
+    - assets/image/anime_chat_room.png
+    - assets/image/game_chat_room.png
+    - assets/image/movie_chat_room.png
+    - assets/image/music_chat_room.png
+    - assets/image/anime_chat_room.png
 
 
 

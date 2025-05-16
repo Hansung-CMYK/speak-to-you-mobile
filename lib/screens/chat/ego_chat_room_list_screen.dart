@@ -11,7 +11,7 @@ import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
 import '../../services/chat/chat_room_service.dart';
 import '../../services/ego/ego_service.dart';
-import 'personal_chat_room_screen.dart';
+import 'ego_chat_room_screen.dart';
 
 /**
  * 개인 채팅방 리스트를 확인하는 화면
@@ -124,7 +124,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
                   context,
                   MaterialPageRoute(
                     builder:
-                        (context) => ChatRoomScreen(
+                        (context) => EgoChatRoomScreen(
                           chatRoomId: chat.id,
                           uid: chat.uid,
                           egoModel: chat.egoModel,

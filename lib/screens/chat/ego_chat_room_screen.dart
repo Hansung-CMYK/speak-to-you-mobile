@@ -28,12 +28,12 @@ import 'chat_bubble.dart';
 // 수신
 // kafka에서 받은 ChatHistoryKafka 데이터를 ChatHistory로 바꾼다.
 // 리스트에 추가한다.
-class ChatRoomScreen extends StatefulWidget {
+class EgoChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
   final EgoModel egoModel;
 
-  const ChatRoomScreen({
+  const EgoChatRoomScreen({
     Key? key,
     required this.chatRoomId,
     required this.uid,
@@ -41,10 +41,10 @@ class ChatRoomScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ChatRoomScreenState createState() => _ChatRoomScreenState();
+  _EgoChatRoomScreenState createState() => _EgoChatRoomScreenState();
 }
 
-class _ChatRoomScreenState extends State<ChatRoomScreen> {
+class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
   final TextEditingController _controller = TextEditingController();
   final SocketService _socketService = SocketService();
 

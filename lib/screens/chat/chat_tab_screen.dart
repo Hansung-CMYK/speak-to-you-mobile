@@ -1,4 +1,4 @@
-import 'package:ego/screens/chat/personal_chat_room_list_screen.dart';
+import 'package:ego/screens/chat/ego_chat_room_list_screen.dart';
 import 'package:ego/screens/chat/group_chat_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
