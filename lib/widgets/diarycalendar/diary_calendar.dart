@@ -1,109 +1,131 @@
 import 'package:ego/theme/color.dart';
-import 'package:ego/utils/constants.dart';
-import 'package:ego/utils/util_function.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+import 'package:ego/models/diary/monthly_diary.dart';
+import 'package:ego/providers/diary/monthly_diary_provider.dart';
 
 /// 일기보기(캘린더)에서 이용하는 캘린더 위젯이다.
 ///
 /// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
 /// TODO: 다른 달인데, 감정 아이콘이 있는 경우 (색상이 옅어져야 함.)
-class DiaryCalendar extends StatefulWidget {
+class DiaryCalendar extends ConsumerStatefulWidget {
   final void Function(DateTime) onClickDate;
 
   const DiaryCalendar({super.key, required this.onClickDate});
 
   @override
-  State<DiaryCalendar> createState() => _DiaryCalendarState();
+  ConsumerState<DiaryCalendar> createState() => _DiaryCalendarState();
 }
 
-class _DiaryCalendarState extends State<DiaryCalendar> {
+class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
   /// [_focusedDay] 화면에 띄워지는 날짜. 기본적으로 DateTime.now()이다.
   DateTime _focusedDay = DateTime.now(); // 현재
   DateTime? _selectedDay;
 
   /// [_emotions] 사용자가 일기를 작성한 날짜와 당시의 감정(대표 감정 1개)을 담은 Map 컨테이너
-  final Map<DateTime, Emotion> _emotions = {
-    DateTime(2025, 2, 10): Emotion.happiness, // ex) 2025-02-10, 행복
-    DateTime(2025, 2, 15): Emotion.disappointment,
-    DateTime(2025, 2, 20): Emotion.sadness,
-    DateTime(2025, 2, 25): Emotion.happiness,
-    DateTime(2025, 2, 26): Emotion.embarrassment,
-    DateTime(2025, 3, 1): Emotion.happiness,
-  };
+  final Map<DateTime, String> _emotions = {};
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      // 캘린더 Padding 지정
-      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
-      child: TableCalendar(
-        /// 기본 캘린더 속성 정보들
-        locale: 'ko_KR',
-        // 한국어 타입으로 변경, 기념일 등 정보를 전달하는 것으로 추정
-        firstDay: DateTime(2000, 1, 1),
-        // 캘린더 시작 날짜, 2000-01-01, 변경 가능하다.
-        lastDay: DateTime(DateTime.now().year, DateTime.now().month, 42),
-        // 이번 달이 일요일인 기준 6주 (7*6=42)
-        focusedDay: _focusedDay,
-        // 조회할 날짜(객체) 고정
-        pageAnimationEnabled: false,
-        // 페이지 애니메이션 제거. 어차피 현재 날짜 고정이라 없어도 됨
+    final diariesAsync = ref.watch(
+      monthlyDiaryProvider((
+        userId: "test", // uid는 시스템에 존재
+        year: _focusedDay.year,
+        month: _focusedDay.month,
+      )),
+    );
 
-        /// 캘린더의 상단부 정보들
-        headerStyle: _headerStyle(),
-        // 캘린더의 날짜(월)을 조정하는 영역
+    return diariesAsync.when(
+      data: (diaries) {
+        // 날짜 + emotion 매핑
+        updateEmotionsFromDiaries(diaries);
 
-        /// 캘린더 요일 부분 정보들
-        ///
-        /// `daysOfWeekHeight`에 + 8.h가 추가되는 이유는 `_headerStyle()` 주석 참고
-        daysOfWeekStyle: _daysOfWeekStyle(),
-        // 캘린더의 요일이 나타나는 영역
-        daysOfWeekHeight: 20.h + 8.h,
-        // 캘린더의 요일이 나타나는 영역 높이
+        return Padding(
+          // 캘린더 Padding 지정
+          padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 20.w),
+          child: TableCalendar(
+            /// 기본 캘린더 속성 정보들
+            locale: 'ko_KR',
+            // 한국어 타입으로 변경, 기념일 등 정보를 전달하는 것으로 추정
+            firstDay: DateTime(2000, 1, 1),
+            // 캘린더 시작 날짜, 2000-01-01, 변경 가능하다.
+            lastDay: DateTime(DateTime.now().year, DateTime.now().month, 42),
+            // 이번 달이 일요일인 기준 6주 (7*6=42)
+            focusedDay: _focusedDay,
+            // 조회할 날짜(객체) 고정
+            pageAnimationEnabled: false,
+            // 페이지 애니메이션 제거. 어차피 현재 날짜 고정이라 없어도 됨
 
-        /// 캘린더 핵심부 정보들
-        calendarStyle: _calendarStyle(),
-        // 날짜를 보여주는 영역
-        calendarBuilders: _calendarBuilders(),
-        // 캘린더의 동적 정보를 명시하는 영역
-        rowHeight: 60.h,
-        // 날짜를 보여주는 영역 높이
-        sixWeekMonthsEnforced: true,
-        // 6주 보기
+            /// 캘린더의 상단부 정보들
+            headerStyle: _headerStyle(),
+            // 캘린더의 날짜(월)을 조정하는 영역
 
-        /// 상단부 조작 관련 정보
-        onPageChanged: (focusedDay) {
-          // 사용자가 다음 달로 이동하는 것을 방지하는 내용
-          DateTime now = DateTime.now();
-          // 다음 달로 넘어갔을 때,
-          if (focusedDay.year > now.year ||
-              (focusedDay.year == now.year && focusedDay.month > now.month)) {
-            setState(() {
-              _focusedDay = now; // 다시 현재 달로 고정
-            });
-          } else {
-            setState(() {
-              _focusedDay = focusedDay;
-            });
-          }
-        },
+            /// 캘린더 요일 부분 정보들
+            ///
+            /// `daysOfWeekHeight`에 + 8.h가 추가되는 이유는 `_headerStyle()` 주석 참고
+            daysOfWeekStyle: _daysOfWeekStyle(),
+            // 캘린더의 요일이 나타나는 영역
+            daysOfWeekHeight: 20.h + 8.h,
+            // 캘린더의 요일이 나타나는 영역 높이
 
-        /// 캘린더 마커(사용자 일기 감정)를 표시하는 영역
-        eventLoader: (day) => _loadEvents(day),
+            /// 캘린더 핵심부 정보들
+            calendarStyle: _calendarStyle(),
+            // 날짜를 보여주는 영역
+            calendarBuilders: _calendarBuilders(),
+            // 캘린더의 동적 정보를 명시하는 영역
+            rowHeight: 60.h,
+            // 날짜를 보여주는 영역 높이
+            sixWeekMonthsEnforced: true,
+            // 6주 보기
 
-        selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+            /// 상단부 조작 관련 정보
+            onPageChanged: (focusedDay) {
+              // 사용자가 다음 달로 이동하는 것을 방지하는 내용
+              DateTime now = DateTime.now();
+              // 다음 달로 넘어갔을 때,
+              if (focusedDay.year > now.year ||
+                  (focusedDay.year == now.year &&
+                      focusedDay.month > now.month)) {
+                setState(() {
+                  _focusedDay = now; // 다시 현재 달로 고정
+                });
+              } else {
+                setState(() {
+                  _focusedDay = focusedDay;
+                });
+              }
+            },
 
-        onDaySelected: (selectedDay, focusedDay) {
-          setState(() {
-            _selectedDay = selectedDay;
-          });
+            /// 캘린더 마커(사용자 일기 감정)를 표시하는 영역
+            eventLoader: (day) => _loadEvents(day),
 
-          widget.onClickDate(selectedDay);
-        },
-      ),
+            selectedDayPredicate: (day) => isSameDay(day, _selectedDay),
+
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+              });
+
+              widget.onClickDate(selectedDay);
+            },
+          ),
+        );
+      },
+      error: (error, stack) {
+        print('에러 발생: $error');
+        print('스택트레이스: $stack');
+        return Center(child: Text('에러가 발생했습니다: $error'));
+      },
+      loading: () => Center(child: CircularProgressIndicator()),
     );
   }
 
@@ -118,9 +140,23 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
     DateTime date = DateTime(day.year, day.month, day.day);
     if (_emotions.containsKey(date)) {
       // enum Emotion의 아이콘 경로를 리스트로 반환
-      return [UtilFunction.emotionTypeToPath(_emotions[date]!)];
+      return [_emotions[date]!];
     }
     return []; // 빈 리스트는 `_calendarBuilder()/markerBuilders`에서 공백으로 렌더링 한다.
+  }
+
+  void updateEmotionsFromDiaries(List<MonthlyDiary> diaries) {
+    _emotions.clear(); // 기존 맵 초기화 (원한다면 생략 가능)
+
+    for (final diary in diaries) {
+      // 날짜만 있는 DateTime 생성
+      final date = DateTime(
+        diary.createdAt.year,
+        diary.createdAt.month,
+        diary.createdAt.day,
+      );
+      _emotions[date] = diary.path;
+    }
   }
 
   /// 캘린더의 상단부를 디자인하는 함수이다.
@@ -164,10 +200,6 @@ class _DiaryCalendarState extends State<DiaryCalendar> {
       ),
 
       // 각 화살표의 padding과 margin을 제거
-      // rightChevronPadding: EdgeInsets.symmetric(horizontal: 12.w),
-      // rightChevronMargin: EdgeInsets.symmetric(horizontal: 8.w),
-      // leftChevronPadding: EdgeInsets.symmetric(horizontal: 12.w),
-      // leftChevronMargin: EdgeInsets.symmetric(horizontal: 8.w),
       rightChevronPadding: EdgeInsets.zero,
       rightChevronMargin: EdgeInsets.zero,
       leftChevronPadding: EdgeInsets.zero,

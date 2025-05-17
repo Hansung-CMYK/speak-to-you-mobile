@@ -1,8 +1,5 @@
 import 'package:ego/screens/diary/diary_view_for_bottom_sheet.dart';
-import 'package:ego/screens/diary/diary_view_screen.dart';
 import 'package:ego/theme/color.dart';
-import 'package:ego/utils/constants.dart';
-import 'package:ego/widgets/diarycard/diary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
