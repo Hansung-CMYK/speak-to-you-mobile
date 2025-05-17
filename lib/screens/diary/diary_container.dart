@@ -14,7 +14,8 @@ class DiaryContainer extends StatefulWidget {
   final Diary diary;
   final int containerId;
 
-  DiaryContainer({Key? key, required this.diary, required this.containerId}) : super(key: key);
+  DiaryContainer({Key? key, required this.diary, required this.containerId})
+    : super(key: key);
 
   @override
   _DiaryContainerState createState() => _DiaryContainerState();
@@ -160,6 +161,7 @@ class _DiaryContainerState extends State<DiaryContainer> {
 
           // 내용
           Container(
+            width: double.infinity,
             margin: EdgeInsets.only(bottom: 20.h),
             padding: EdgeInsets.only(bottom: 40.h),
             decoration: BoxDecoration(

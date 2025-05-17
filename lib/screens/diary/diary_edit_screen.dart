@@ -11,9 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'diary_view_screen.dart';
 
 class DiaryEditScreen extends StatefulWidget {
-  final Diary diary;
+  final List<Diary> diaries;
 
-  const DiaryEditScreen({super.key, required this.diary});
+  const DiaryEditScreen({super.key, required this.diaries});
 
   @override
   State<DiaryEditScreen> createState() => _DiaryEditScreenState();
@@ -22,7 +22,7 @@ class DiaryEditScreen extends StatefulWidget {
 class _DiaryEditScreenState extends State<DiaryEditScreen> {
   @override
   Widget build(BuildContext context) {
-    final diary = widget.diary;
+    final diaries = widget.diaries;
 
     return Scaffold(
       appBar: StackAppBar(title: '일기수정'),
@@ -44,7 +44,7 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 8.h, top: 12.h),
                         child: Text(
-                          diary.date,
+                          diaries[0].date,
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: AppColors.strongOrange,
@@ -53,11 +53,12 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                         ),
                       ),
                     ),
-
-                    _DiaryEditContainer(
-                      context,
-                      diary.title,
-                      diary.content,
+                    ...diaries.map(
+                          (diary) => _DiaryEditContainer(
+                        context,
+                        diary.title,
+                        diary.content,
+                      ),
                     ),
                   ],
                 ),
@@ -126,7 +127,7 @@ Widget _DiaryEditContainer(
         // 내용
         Container(
           margin: EdgeInsets.only(bottom: 12.h),
-          height: 150.h,
+          height: 96.h,
           child: RawScrollbar(
             thumbVisibility: true,
             thickness: 4.w,

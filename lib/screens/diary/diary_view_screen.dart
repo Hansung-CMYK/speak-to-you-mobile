@@ -42,14 +42,23 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
   // 임시 감정
   final List<String> emotions = ['기쁨', '재미'];
 
-  // 임시 주제 일기 (하나만 받도록 수정)
-  final Diary diary = Diary(
-    date: '2025/02/28',
-    title: '친구랑 밥',
-    content:
-        '오늘은 친구랑 맛있는 음식을 먹으러 갔다. 오랜만에 만나서 그런지 더욱 맛있게 느껴졌고, 웃음꽃을 피우며 즐거운 시간을 보냈다. 음식도 맛있었고, 대화도 흥미로워서 시간 가는 줄 몰랐다. 너무 행복한 하루였다.',
-    image: 'assets/image/first_diary_sample_image.png',
-  );
+  // 임시 주제 일기
+  final List<Diary> diaries = [
+    Diary(
+      date: '2025/02/28',
+      title: '친구랑 밥',
+      content:
+          '오늘은 친구랑 맛있는 음식을 먹으러 갔다. 오랜만에 만나서 그런지 더욱 맛있게 느껴졌고, 웃음꽃을 피우며 즐거운 시간을 보냈다. 음식도 맛있었고, 대화도 흥미로워서 시간 가는 줄 몰랐다. 너무 행복한 하루였다.',
+      image: 'assets/image/first_diary_sample_image.png',
+    ),
+    Diary(
+      date: '2025/02/28',
+      title: '친구랑 축구',
+      content:
+          '오늘 친구랑 축구를 하러 갔다. 날씨도 맑고 기분도 좋았다. 열심히 뛰고, 서로 패스하며 팀워크를 발휘했는데, 결국 멋진 골도 넣었다. 피곤했지만 즐겁고 시원한 하루였다. 같이 운동하니까 더 가까워진 느낌!',
+      image: 'assets/image/second_diary_sample_image.png',
+    ),
+  ];
 
   // 임시 EGO 정보
   final EgoInfoModel egoInfoModel = EgoInfoModel(
@@ -87,8 +96,8 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // edit(전체수정), share(전체공유) 버튼
                   Container(
+                    margin: EdgeInsets.only(right: 20.w),
                     color: AppColors.white,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -122,7 +131,8 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) => DiaryEditScreen(diary: diary),
+                                    (context) =>
+                                        DiaryEditScreen(diaries: diaries),
                               ),
                             );
                           },
@@ -131,12 +141,11 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                     ),
                   ),
 
-                  // 감정 Container
+                  //감정 Container
                   TodayEmotionContainer(emotions),
 
                   // 날짜
                   Container(
-                    color: AppColors.white,
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: EdgeInsets.only(
@@ -146,7 +155,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                         right: 20.w,
                       ),
                       child: Text(
-                        diary.date,
+                        diaries[0].date,
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: AppColors.gray600,
@@ -157,7 +166,12 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                   ),
 
                   // 일기 정보 제공
-                  DiaryContainer(diary: diary, containerId: 0),
+                  ...diaries.asMap().map((index, diary) {
+                    return MapEntry(
+                      index,
+                      DiaryContainer(diary: diary, containerId: index),
+                    );
+                  }).values,
 
                   // 일기 작성해준 EGO 정보
                   HelpedEgoInfoContainer(context, egoInfoModel),
@@ -172,8 +186,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                   // 일기 저장 버튼
                   Container(
                     width: double.infinity,
-                    color: AppColors.white,
-                    padding: EdgeInsets.only(
+                    margin: EdgeInsets.only(
                       bottom: 40.h,
                       left: 20.w,
                       right: 20.w,
