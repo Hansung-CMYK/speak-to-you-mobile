@@ -16,7 +16,7 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
   void _onClickValue(int value) {
     ref.read(selectedValueProvider.notifier).state = value;
-    setState(() {}); // 필요하다면 setState 사용 가능
+    setState(() {});
   }
 
   @override
