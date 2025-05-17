@@ -10,6 +10,7 @@ import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/button/svg_button.dart';
+import 'package:http/http.dart';
 
 import 'diary_view_screen.dart';
 import 'helped_ego_info_container.dart';
@@ -176,46 +177,7 @@ class _DiaryViewForBottomSheetState extends State<DiaryViewForBottomSheet> {
                   "홍길동 에고와 가장 많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이많이 대화하고, 의성어를 주로 사용해 배드민턴 이야기를 했어요.",
                 ),
 
-                // 일기 저장 버튼
-                Container(
-                  width: double.infinity,
-                  margin: EdgeInsets.only(bottom: 40.h,left: 20.w,right: 20.w),
-                  child: TextButton(
-                    onPressed: () {
-                      final customBottomToast = CustomToast(
-                        toastMsg: '일기가 저장되었습니다.',
-                        iconPath: 'assets/icon/complete.svg',
-                        backgroundColor: AppColors.accent,
-                        fontColor: AppColors.white,
-                      );
-                      customBottomToast.init(fToast);
-
-                      final position = 107.0.h;
-
-                      customBottomToast.showBottomPositionedToast(
-                        bottom: position,
-                      );
-                    },
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 20.w,
-                        vertical: 15.h,
-                      ),
-                      backgroundColor: AppColors.strongOrange,
-                    ),
-                    child: Text(
-                      "일기저장",
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ),
+                SizedBox(height : 35.h)
               ],
             ),
           ),
