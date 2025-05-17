@@ -1,5 +1,5 @@
 import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/models/ego_model.dart';
+import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/screens/home_callNmsg_func.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import '../../firebase_options.dart';

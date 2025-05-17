@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:ego/models/chat/chat_room_model.dart';
-import 'package:ego/models/ego_model.dart';
+import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
