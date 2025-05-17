@@ -21,8 +21,9 @@ import 'one_sentence_review.dart';
 
 class DiaryViewForBottomSheet extends StatefulWidget {
   final ScrollController scrollController;
+  final int diaryId;
 
-  const DiaryViewForBottomSheet({super.key, required this.scrollController});
+  const DiaryViewForBottomSheet({super.key, required this.scrollController, required this.diaryId});
 
   @override
   State<DiaryViewForBottomSheet> createState() =>

@@ -13,9 +13,9 @@ import 'package:ego/providers/diary/monthly_diary_provider.dart';
 /// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
 /// TODO: 다른 달인데, 감정 아이콘이 있는 경우 (색상이 옅어져야 함.)
 class DiaryCalendar extends ConsumerStatefulWidget {
-  final void Function(DateTime) onClickDate;
+  final void Function(int) onClickedValue;
 
-  const DiaryCalendar({super.key, required this.onClickDate});
+  const DiaryCalendar({super.key, required this.onClickedValue});
 
   @override
   ConsumerState<DiaryCalendar> createState() => _DiaryCalendarState();
@@ -26,8 +26,8 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
   DateTime _focusedDay = DateTime.now(); // 현재
   DateTime? _selectedDay;
 
-  /// [_emotions] 사용자가 일기를 작성한 날짜와 당시의 감정(대표 감정 1개)을 담은 Map 컨테이너
-  final Map<DateTime, String> _emotions = {};
+  /// [_emotions] 사용자가 일기를 작성한 날짜와 해당 날짜의 MonthlyDiary를 매핑
+  final Map<DateTime, MonthlyDiary> _emotions = {};
 
   @override
   void initState() {
@@ -115,7 +115,11 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
                 _selectedDay = selectedDay;
               });
 
-              widget.onClickDate(selectedDay);
+              final normalizedDay = DateTime(_selectedDay!.year, _selectedDay!.month, _selectedDay!.day);
+
+              // 현재 클릭된 날짜의 Diary ID를 전달
+
+              widget.onClickedValue(_emotions[normalizedDay]?.id ?? 0);
             },
           ),
         );
@@ -131,22 +135,19 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
 
   /// 이벤트(사건)를 불러오는 함수이다.
   ///
-  /// 실질적인 동작은 `_calendarBuilder()/markerBuilders`에서 진행되며
-  /// 해당 영역에서는 감정에 알맞는 EmotionIcon의 경로를 불러온다.
+  /// 해당 영역에서는 감정에 알맞는 EmotionIcon의 경로를 전달
   ///
   /// (2025-02-27) 어떤 이윤진 모르겠는데, 서비스 내적으로 `enum Emotion`을 `String`으로
   /// 인식하고 있다. 현재 임시 방편으로 아이콘의 경로(String)을 전달하게 만들었다.
   List<String> _loadEvents(DateTime day) {
     DateTime date = DateTime(day.year, day.month, day.day);
     if (_emotions.containsKey(date)) {
-      // enum Emotion의 아이콘 경로를 리스트로 반환
-      return [_emotions[date]!];
+      return [_emotions[date]!.path];
     }
     return []; // 빈 리스트는 `_calendarBuilder()/markerBuilders`에서 공백으로 렌더링 한다.
   }
 
   void updateEmotionsFromDiaries(List<MonthlyDiary> diaries) {
-    _emotions.clear(); // 기존 맵 초기화 (원한다면 생략 가능)
 
     for (final diary in diaries) {
       // 날짜만 있는 DateTime 생성
@@ -155,7 +156,7 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
         diary.createdAt.month,
         diary.createdAt.day,
       );
-      _emotions[date] = diary.path;
+      _emotions[date] = diary;
     }
   }
 
