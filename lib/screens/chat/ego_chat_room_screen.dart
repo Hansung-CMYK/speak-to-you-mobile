@@ -1,6 +1,6 @@
 import 'package:ego/models/chat/chat_history_kafka_model.dart';
 import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/models/ego_model.dart';
+import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';

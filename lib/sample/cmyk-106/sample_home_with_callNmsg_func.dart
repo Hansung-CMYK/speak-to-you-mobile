@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import '../../models/ego_model.dart';
+import '../../models/ego_model_v1.dart';
 import '../../providers/ego_provider.dart';
 import '../../theme/theme.dart';
 

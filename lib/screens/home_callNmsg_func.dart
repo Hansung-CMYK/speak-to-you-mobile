@@ -1,4 +1,4 @@
-import 'package:ego/models/ego_model.dart';
+import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/screens/voice_chat/voice_chat_screen.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:ego/theme/color.dart';

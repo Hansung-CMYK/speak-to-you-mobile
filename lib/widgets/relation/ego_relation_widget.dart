@@ -1,6 +1,9 @@
 import 'dart:math';
 
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
+import 'package:ego/widgets/bottomsheet/ego_model_bottom_sheet.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/relation_filter.dart';
 import 'package:flutter/material.dart';
@@ -23,24 +26,13 @@ class _EgoRelationWidgetState extends State<EgoRelationWidget> {
   late FilterSelection _currentFilter;
   late String _selectedRelation;
 
-  late FToast fToast;
   late String selectedVertex;
-
-  // 간선 색상 매핑
-  final Map<String, Color> edgeColorMap = {
-    '배드민턴': Colors.red,
-    '활발한': Colors.green,
-    '영화중독': Colors.blue,
-    '게이머': Colors.purple,
-    '맛집러버': Colors.orange,
-    '전체': Colors.grey,
-  };
 
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
+
+    //EGO 정보 get 필요
 
     _currentFilter = widget.filterSelection;
     _fetchGraphData();
@@ -155,27 +147,28 @@ class _EgoRelationWidgetState extends State<EgoRelationWidget> {
                                 ])
                           ..onVertexTapDown = (vertex, details) {
                             if (vertex.id == '나') return;
-                            final connectedEdges = _graphData['edges']
-                                .where(
-                                  (edge) =>
-                                      edge['srcId'] == vertex.id ||
-                                      edge['dstId'] == vertex.id,
-                                )
-                                .map((e) => e['edgeName'])
-                                .toSet()
-                                .join(', ');
 
-                            final customToast = CustomToast(
-                              toastMsg: connectedEdges,
+                            final personalityList = ['게임중독', '맛집탐방'];
+
+                            //EgoId에 따라 EgoInfoModel 제작
+                            var tmpEgo = EgoModelV2(
+                              introduction: '나는 사과가 좋아',
+                              mbti: 'INTJ',
+                              name: '사과짱',
+                              createdAt: DateTime.now(),
+                              likes: 12,
+                              personalityList: personalityList,
+                              profileImage: null,
                             );
-                            customToast.init(fToast);
 
-                            customToast.showTopToast();
+                            showTodayEgoModelIntroSheet(context, tmpEgo, relationTag: '친절함');
                           }
                           ..useLegend = false
                           ..edgePanelBuilder = edgePanelBuilder
                           ..vertexPanelBuilder = vertexPanelBuilder
-                          ..edgeShape = EdgeLineShape(decorators: [TextEdgeDecorator()])
+                          ..edgeShape = EdgeLineShape(
+                            decorators: [TextEdgeDecorator()],
+                          )
                           ..vertexShape = VertexCircleShape(),
                   ),
                 ),
@@ -241,12 +234,12 @@ Widget vertexPanelBuilder(Vertex<dynamic> hoverVertex, Viewfinder viewfinder) {
 class TextEdgeDecorator extends EdgeDecorator {
   @override
   void decorate(
-      Edge edge,
-      Canvas canvas,
-      Paint paint,
-      double distance,
-      int edgeCount,
-      ) {
+    Edge edge,
+    Canvas canvas,
+    Paint paint,
+    double distance,
+    int edgeCount,
+  ) {
     if (edge.path == null) return;
 
     // 경로의 중간 지점 계산
@@ -258,10 +251,7 @@ class TextEdgeDecorator extends EdgeDecorator {
     // 표시할 텍스트
     final textSpan = TextSpan(
       text: edge.data?['edgeName'] ?? '',
-      style: TextStyle(
-        fontSize: 12,
-        color: Colors.white,
-      ),
+      style: TextStyle(fontSize: 12, color: Colors.white),
     );
 
     final textPainter = TextPainter(
