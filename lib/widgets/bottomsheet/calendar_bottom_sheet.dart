@@ -1,3 +1,5 @@
+import 'package:ego/screens/diary/diary_view_for_bottom_sheet.dart';
+import 'package:ego/screens/diary/diary_view_screen.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:ego/widgets/diarycard/diary_card.dart';
@@ -25,37 +27,7 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       maxChildSize: 1.0, // 최대 값 설정 (부모 컴포넌트 기준 비율)
       /// BottomSheet에 나타날 컴포넌트
       builder: (BuildContext context, ScrollController scrollController) {
-        return Container(
-          decoration: BoxDecoration( // BottomSheet의 형태를 디자인한다.
-            color: AppColors.gray100, // 배경 색
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(12.r), // 상단 우측 모서리 굴곡
-              topLeft: Radius.circular(12.r), // 상단 좌측 모서리 굴곡
-            ),
-            /// BottomSheet에 그림자 지정
-            boxShadow: [
-              BoxShadow(
-                // 255 * 8% = 20.4 (피그마에서 black의 투명도 8%로 설정)
-                color: AppColors.black.withAlpha(21),
-                blurRadius: 10.r,
-                spreadRadius: 4.r,
-                offset: Offset(0, 4.h),
-              )
-            ],
-          ),
-          // 일기 카드의 너비를 지정하기 위한 패딩이다.
-          padding: EdgeInsets.symmetric(horizontal: 20.w),
-
-          /// 바텀시트 실질적인 body
-          child: CustomScrollView(
-            // 스크롤을 관리하는 컨트롤러 주입(scrollController는 DraggableScrollableSheet.builder의 매개 변수이다.)
-            controller: scrollController,
-            slivers: [
-              _sliverToBoxAdapter(), // 바텀 시트 크기를 조정할 수 있는 handler 컴포넌트
-              _sliverList(), // 일기 카드가 나타나는 ListView 컴포넌트
-            ],
-          ),
-        );
+        return DiaryViewForBottomSheet(scrollController: scrollController);
       }
     );
   }
@@ -78,24 +50,6 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
           height: 4.h, // 컨테이너(handler) 높이 지정
         ),
       )
-    );
-  }
-
-  /// 일기 카드 리스트가 나타날 ListView 컴포넌트
-  ///
-  /// TODO: 현재는 샘플 리스트를 index로 구분한다.
-  SliverList _sliverList() {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-              (context, index) {
-            return DiaryCard( // TODO: DiaryCard 샘플
-              date: DateTime.now(),
-              emotions: const [Emotion.happiness],
-              egoName: 'Ego 이름: $index',
-              story: '요약된 일기 내용을 보여줍니다.이날은 무슨일이 있었고, 어쩌고 저쩌고. 이러쿵 저러쿵. 이야기를 작성하게 됩니다. 마지막은 점점점',
-            );
-          }
-      ),
     );
   }
 }
