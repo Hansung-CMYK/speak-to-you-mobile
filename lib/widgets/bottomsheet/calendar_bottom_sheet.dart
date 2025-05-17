@@ -1,8 +1,5 @@
 import 'package:ego/screens/diary/diary_view_for_bottom_sheet.dart';
-import 'package:ego/screens/diary/diary_view_screen.dart';
 import 'package:ego/theme/color.dart';
-import 'package:ego/utils/constants.dart';
-import 'package:ego/widgets/diarycard/diary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,13 +8,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 /// 사용자의 일간 일기 카드 리스트가 나타난다.
 /// TODO: 일기 카드에 길이가 적용되지 않는 문제있음. 일단 자체 Padding으로 해결
 class CalendarBottomSheet extends StatefulWidget {
-  const CalendarBottomSheet({super.key});
+  final int diaryId;
+
+  const CalendarBottomSheet({super.key, required this.diaryId});
 
   @override
   State<StatefulWidget> createState() => _CalendarBottomSheetState();
 }
 
 class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
+
+  late int diaryId;
+
+  @override
+  void initState() {
+    super.initState();
+    this.diaryId = widget.diaryId;
+  }
+
   @override
   Widget build(BuildContext context) {
     return DraggableScrollableSheet( /// 스크롤 되는 BottomSheet이다.
@@ -27,7 +35,7 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       maxChildSize: 1.0, // 최대 값 설정 (부모 컴포넌트 기준 비율)
       /// BottomSheet에 나타날 컴포넌트
       builder: (BuildContext context, ScrollController scrollController) {
-        return DiaryViewForBottomSheet(scrollController: scrollController);
+        return DiaryViewForBottomSheet(scrollController: scrollController, diaryId: diaryId);
       }
     );
   }

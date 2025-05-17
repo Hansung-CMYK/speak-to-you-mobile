@@ -4,24 +4,32 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CalendarScreen extends ConsumerWidget {
-  CalendarScreen({super.key});
+class CalendarScreen extends ConsumerStatefulWidget {
+  const CalendarScreen({super.key});
 
-  // 날짜 감지 TODO 날짜를 전달 받는 것이 아니라 일별 Diday객체를 감지할 것임 + 거기서 diaryid로 ValendarBottomSheet에서 일기 원본 조회
-  final selectedDateProvider = StateProvider<DateTime?>((ref) => null);
+  @override
+  ConsumerState<CalendarScreen> createState() => _CalendarScreenState();
+}
 
-  void _onClickDate(WidgetRef ref, DateTime date) {
-    ref.read(selectedDateProvider.notifier).state = date;
+class _CalendarScreenState extends ConsumerState<CalendarScreen> {
+  final selectedValueProvider = StateProvider<int>((ref) => 0);
+
+  void _onClickValue(int value) {
+    ref.read(selectedValueProvider.notifier).state = value;
+    setState(() {});
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    final selectedValue = ref.watch(selectedValueProvider);
+
     return Stack(
       children: [
         DiaryCalendar(
-          onClickDate: (date) => _onClickDate(ref, date),
+          onClickedValue: _onClickValue,
         ),
-        CalendarBottomSheet(),
+        if (selectedValue != 0)
+          CalendarBottomSheet(diaryId: selectedValue),
       ],
     );
   }

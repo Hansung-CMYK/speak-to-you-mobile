@@ -5,12 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/diary/diary_container.dart';
 import 'package:ego/screens/diary/diary_edit_screen.dart';
-import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/button/svg_button.dart';
-import 'package:http/http.dart';
 
 import 'diary_view_screen.dart';
 import 'helped_ego_info_container.dart';
@@ -21,8 +19,9 @@ import 'one_sentence_review.dart';
 
 class DiaryViewForBottomSheet extends StatefulWidget {
   final ScrollController scrollController;
+  final int diaryId;
 
-  const DiaryViewForBottomSheet({super.key, required this.scrollController});
+  const DiaryViewForBottomSheet({super.key, required this.scrollController, required this.diaryId});
 
   @override
   State<DiaryViewForBottomSheet> createState() =>
