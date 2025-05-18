@@ -1,3 +1,4 @@
+import 'package:ego/models/diary/diary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -8,12 +9,11 @@ import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:ego/theme/color.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'diary_view_screen.dart';
 
 class DiaryEditScreen extends StatefulWidget {
-  final List<Diary> diaries;
+  final Diary diary;
 
-  const DiaryEditScreen({super.key, required this.diaries});
+  const DiaryEditScreen({super.key, required this.diary});
 
   @override
   State<DiaryEditScreen> createState() => _DiaryEditScreenState();
@@ -22,7 +22,7 @@ class DiaryEditScreen extends StatefulWidget {
 class _DiaryEditScreenState extends State<DiaryEditScreen> {
   @override
   Widget build(BuildContext context) {
-    final diaries = widget.diaries;
+    final diary = widget.diary;
 
     return Scaffold(
       appBar: StackAppBar(title: '일기수정'),
@@ -44,7 +44,7 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                       child: Padding(
                         padding: EdgeInsets.only(bottom: 8.h, top: 12.h),
                         child: Text(
-                          diaries[0].date,
+                          diary.createdAt,
                           style: TextStyle(
                             fontSize: 16.sp,
                             color: AppColors.strongOrange,
@@ -53,11 +53,11 @@ class _DiaryEditScreenState extends State<DiaryEditScreen> {
                         ),
                       ),
                     ),
-                    ...diaries.map(
-                          (diary) => _DiaryEditContainer(
+                    ...diary.topics.map(
+                          (topic) => _DiaryEditContainer(
                         context,
-                        diary.title,
-                        diary.content,
+                        topic.title,
+                        topic.content,
                       ),
                     ),
                   ],

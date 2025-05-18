@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 class EgoModelV2 {
+  int? id;
   final String name;
   final String introduction;
   final Uint8List? profileImage; // base64 인코딩된 이미지
@@ -11,6 +12,7 @@ class EgoModelV2 {
   final List<String>? personalityList;
 
   EgoModelV2({
+    this.id,
     required this.name,
     required this.introduction,
     this.profileImage,
@@ -23,9 +25,12 @@ class EgoModelV2 {
   /// JSON → Ego 객체
   factory EgoModelV2.fromJson(Map<String, dynamic> json) {
     return EgoModelV2(
+      id: json['id'] as int,
       name: json['name'] as String,
       introduction: json['introduction'] as String,
-      profileImage: base64Decode(json['profileImage']),
+      profileImage: json['profileImage'] != null
+          ? base64Decode(json['profileImage'])
+          : null,
       mbti: json['mbti'] as String,
       createdAt:
       json['createdAt'] != null ? DateTime.parse(json['createdAt']) : DateTime.now(),

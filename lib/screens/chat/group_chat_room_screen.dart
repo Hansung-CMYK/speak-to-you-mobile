@@ -1,7 +1,6 @@
-import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
-import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
 import 'package:ego/widgets/chat/emoji_send_btn.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 
@@ -9,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../../widgets/chat/chat_bubble.dart';
-import '../../widgets/chat/group_chat_bubble.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
+import 'package:ego/widgets/chat/group_chat_bubble.dart';
 
 class GroupChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
@@ -161,18 +160,17 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                         },
                         onProfileTap: () {
                           // 프로필 이미지 클릭시
-                          var tmp = EgoInfoModel(
-                            id: "123",
-                            egoIcon: "assets/image/ego_icon.png",
-                            egoName: '호호',
-                            egoBirth: '2020/01/01',
-                            egoPersonality: '활발함',
-                            egoSelfIntro: "사과좋아",
+                          // 임시 객체 실제로는 EGO 요청해야함
+                          EgoModelV2 egoModelV2 = EgoModelV2(
+                            name: '사과짱',
+                            introduction: '사과 좋아',
+                            mbti: 'INFJ',
+                            createdAt: DateTime(2025, 5, 6),
                           );
 
-                          showTodayEgoIntroSheet(
+                          showTodayEgoIntroSheetV2(
                             context,
-                            tmp,
+                            egoModelV2,
                             canChatWithHuman: true,
                             isOtherEgo: true,
                             relationTag: "게임중독",

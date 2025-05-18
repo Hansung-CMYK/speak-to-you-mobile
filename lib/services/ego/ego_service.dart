@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:ego/models/chat/chat_room_model.dart';
 import 'package:ego/models/ego_model_v1.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -58,5 +59,25 @@ class EgoService {
 
     // 여러 개의 future를 기다리기 위해 Future.wait 사용
     return await Future.wait(futures);
+  }
+
+  /**
+   * EgoModelV2의 Provider 이후 확정된 모델로 변경
+   * */
+  static Future<EgoModelV2> fetchEgoByIdV2(int egoId) async {
+    final response = await http.get(Uri.parse('$baseUrl/ego/$egoId'));
+
+    if (response.statusCode == 200) {
+      // response.body 대신 bodyBytes 사용하여 UTF-8로 디코딩
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final egoData = decodedJson['data'];
+
+      // 데이터를 EgoModel로 변환하여 반환
+      return EgoModelV2.fromJson(egoData);
+    } else {
+      throw Exception('Ego 정보 불러오기 실패: ${response.statusCode}');
+    }
   }
 }

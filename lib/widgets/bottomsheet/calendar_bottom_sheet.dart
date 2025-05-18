@@ -3,10 +3,9 @@ import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// 일기보기(캘린더)에서 이용하는 BottomSheet이다.
-///
-/// 사용자의 일간 일기 카드 리스트가 나타난다.
-/// TODO: 일기 카드에 길이가 적용되지 않는 문제있음. 일단 자체 Padding으로 해결
+/**
+ * 캘린더화면에서 일자 클릭시 하단에 보여질 일기 BottomSheet입니다.
+ * */
 class CalendarBottomSheet extends StatefulWidget {
   final int diaryId;
 
@@ -33,7 +32,7 @@ class _CalendarBottomSheetState extends State<CalendarBottomSheet> {
       initialChildSize: 0.33, // 초기 값 설정 (부모 컴포넌트 기준 비율)
       minChildSize: 0.33, // 최소 값 설정 (부모 컴포넌트 기준 비율)
       maxChildSize: 1.0, // 최대 값 설정 (부모 컴포넌트 기준 비율)
-      /// BottomSheet에 나타날 컴포넌트
+      /// BottomSheet에 나타날 컴포넌트 (일기 조회 화면)
       builder: (BuildContext context, ScrollController scrollController) {
         return DiaryViewForBottomSheet(scrollController: scrollController, diaryId: diaryId);
       }

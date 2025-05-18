@@ -1,3 +1,4 @@
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/screens/egoreview/ego_review.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,10 +10,10 @@ import 'package:ego/theme/color.dart';
 
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
 /// context : 띄워질 부모의 context \[BuildContext]
-/// egoInfoModel : 띄울 EGO의 정보 \[EgoInfoModel]
-void showTodayEgoIntroSheet(
+/// EgoModelV2 : 띄울 EGO의 정보 \[EgoModelV2]
+void showTodayEgoIntroSheetV2(
   BuildContext context,
-  EgoInfoModel egoInfoModel, {
+  EgoModelV2 egoModelV2, {
   bool isOtherEgo = false,
   VoidCallback? onChatWithEgo,
   VoidCallback? onChatWithHuman,
@@ -42,7 +43,7 @@ void showTodayEgoIntroSheet(
               _header(context),
               _body(
                 context,
-                egoInfoModel,
+                egoModelV2,
                 isOtherEgo,
                 onChatWithEgo,
                 onChatWithHuman,
@@ -88,11 +89,11 @@ Widget _header(BuildContext context) {
 
 /// BottomSheet의 Body부분 EGO의 정보들을 보여줍니다.
 ///
-/// \[egoInfoModel] : EGO의 정보를 가지고 있는 model입니다. \[EgoInfoModel]
+/// \[egoModelV2] : EGO의 정보를 가지고 있는 model입니다. \[EgoInfoModel]
 /// \[context] : BottomSheet를 닫기 위해 context를 전달해 줍니다. \[BuildContext]
 Widget _body(
   BuildContext context,
-  EgoInfoModel egoInfoModel,
+  EgoModelV2 egoModelV2,
   bool isOtherEgo,
   VoidCallback? onChatWithEgo,
   VoidCallback? onChatWithHuman,
@@ -103,11 +104,11 @@ Widget _body(
   return Column(
     children: [
       EgoInfoCard(
-        egoInfoModel: egoInfoModel,
+        egoModelV2: egoModelV2,
         isOtherEgo: isOtherEgo,
         relationTag: relationTag,
       ),
-      _egoSpecificInfo(egoInfoModel),
+      _egoSpecificInfo(egoModelV2),
       _footerButtons(
         context,
         isOtherEgo,
@@ -122,15 +123,15 @@ Widget _body(
 
 /// Ego의 프로필이미지, 이름, 생일을 보여줍니다.
 ///
-/// \[egoInfoModel] : EGO의 정보를 가지고 있습니다. \[EgoInfoModel]
+/// \[egoModelV2] : EGO의 정보를 가지고 있습니다. \[EgoInfoModel]
 /// Ego의 프로필이미지, 이름, 생일을 보여줍니다.
 class EgoInfoCard extends StatefulWidget {
-  final EgoInfoModel egoInfoModel;
+  final EgoModelV2 egoModelV2;
   final bool isOtherEgo;
   final String relationTag;
 
   EgoInfoCard({
-    required this.egoInfoModel,
+    required this.egoModelV2,
     required this.isOtherEgo,
     required this.relationTag,
   });
@@ -141,7 +142,7 @@ class EgoInfoCard extends StatefulWidget {
 
 class _EgoInfoCardState extends State<EgoInfoCard> {
   bool isFavorite = false;
-  int heartCount = 1200;
+  int heartCount = 0;
 
   @override
   void initState() {
@@ -150,6 +151,8 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
     if (!widget.isOtherEgo) {
       isFavorite = true;
     }
+
+    heartCount = widget.egoModelV2.likes?? 0;
 
     //TODO heartCount 불러오는 로직 필요
     //TODO isFavorite 불러오는 로직 필요
@@ -165,7 +168,19 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
           height: 80.h,
           decoration: BoxDecoration(shape: BoxShape.circle),
           child: ClipOval(
-            child: Image.asset(widget.egoInfoModel.egoIcon, fit: BoxFit.cover),
+            child:
+                widget.egoModelV2.profileImage != null
+                    ? Image.memory(
+                      widget.egoModelV2.profileImage!,
+                      fit: BoxFit.cover,
+                    )
+                    : Center(
+                      child: Icon(
+                        Icons.person,
+                        size: 48.sp,
+                        color: AppColors.gray400,
+                      ),
+                    ),
           ),
         ),
         Padding(
@@ -181,6 +196,7 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                     child: Row(
                       children: [
                         if (widget.relationTag.isNotEmpty) ...[
+                          // EGO 평가 화면 이동
                           Padding(
                             padding: EdgeInsets.only(right: 4.w),
                             child: _sizableTagWidget(
@@ -198,7 +214,7 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                                   MaterialPageRoute(
                                     builder:
                                         (context) => EgoReviewScreen(
-                                          egoInfoModel: widget.egoInfoModel,
+                                          egoModelV2: widget.egoModelV2,
                                         ),
                                   ),
                                 );
@@ -207,7 +223,7 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                           ),
                         ],
                         Text(
-                          widget.egoInfoModel.egoName,
+                          widget.egoModelV2.name,
                           style: TextStyle(
                             fontSize: 18.sp,
                             fontWeight: FontWeight.w700,
@@ -230,7 +246,9 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                       Padding(
                         padding: EdgeInsets.only(left: 8.w, right: 4.w),
                         child: Text(
-                          widget.egoInfoModel.egoBirth,
+                          DateFormat(
+                            'yyyy.MM.dd',
+                          ).format(widget.egoModelV2.createdAt!),
                           style: TextStyle(
                             height: 1.5.h,
                             fontSize: 14.sp,
@@ -244,7 +262,7 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                         AppColors.gray200,
                         AppColors.gray400,
                         100,
-                        "D-${widget.egoInfoModel.calcRemainingDays()}",
+                        "D-${widget.egoModelV2.calcRemainingDays()}",
                         10,
                         FontWeight.w500,
                       ),
@@ -299,8 +317,8 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
 
 /// Today EGO의 세부 내용 (성격, 자기소개)
 ///
-/// \[egoInfoModel] : EGO 정보
-Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
+/// \[egoModelV2] : EGO 정보
+Widget _egoSpecificInfo(EgoModelV2 egoModelV2) {
   return Container(
     width: 353.w,
     height: 230.h,
@@ -327,7 +345,7 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
                 FontWeight.w700,
               ),
               Text(
-                egoInfoModel.egoPersonality,
+                egoModelV2.genPersonalityListToString(),
                 style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
               ),
             ],
@@ -348,7 +366,7 @@ Widget _egoSpecificInfo(EgoInfoModel egoInfoModel) {
             radius: Radius.circular(10.r),
             child: SingleChildScrollView(
               child: Text(
-                egoInfoModel.egoSelfIntro,
+                egoModelV2.introduction,
                 style: TextStyle(
                   fontSize: 16.sp,
                   color: AppColors.black,
@@ -553,7 +571,7 @@ Widget _sizableTagWidget(
         children: [
           if (iconPath != "") ...[
             Padding(
-              padding: EdgeInsets.only(left: 2.w,right: 5.w),
+              padding: EdgeInsets.only(left: 2.w, right: 5.w),
               child: SvgPicture.asset(iconPath, width: size, height: size),
             ),
           ],

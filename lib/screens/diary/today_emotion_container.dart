@@ -5,7 +5,8 @@ import 'package:ego/theme/color.dart';
 
 /// 감정을 보여주는 그라데이션 Container
 /// 감정은 최소 1개 최대 3개로 전달 받음
-Widget TodayEmotionContainer(List<String> emotions) {
+/// emotions는 문자열로 전달 받습니다. "활발함, 친절함"
+Widget TodayEmotionContainer(String emotions) {
   return Container(
     color: AppColors.white,
     child: Container(
@@ -39,7 +40,7 @@ Widget TodayEmotionContainer(List<String> emotions) {
           SizedBox(width: 8.w),
           Expanded(
             child: Text(
-              emotions.join(', '),
+              emotions,
               textAlign: TextAlign.right,
               style: TextStyle(
                 color: AppColors.white,

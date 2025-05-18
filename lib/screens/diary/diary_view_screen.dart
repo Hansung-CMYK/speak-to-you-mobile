@@ -1,10 +1,10 @@
+import 'package:ego/models/diary/diary.dart';
 import 'package:ego/screens/diary/share_all_diary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/screens/diary/diary_container.dart';
-import 'package:ego/screens/diary/diary_edit_screen.dart';
+import 'package:ego/screens/diary/topic_container.dart';
+import 'package:ego/screens/diary/topic_edit_screen.dart';
 import 'package:ego/widgets/appbar/stack_app_bar.dart';
 import 'package:ego/screens/diary/today_emotion_container.dart';
 import 'package:ego/theme/color.dart';
@@ -17,61 +17,23 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'one_sentence_review.dart';
 
-// 임시 객체
-class Diary {
-  final String date;
-  final String title;
-  final String content;
-  final String image;
-
-  Diary({
-    required this.date,
-    required this.content,
-    required this.image,
-    required this.title,
-  });
-}
-
+/**
+ * AI로 부터 받은 일기의 내용을 보여줍니다.
+ * 즉, 일기를 받아서 보여주기 때문에 일기 Model을 전달받습니다.
+ * */
 class DiaryViewScreen extends StatefulWidget {
+  final Diary diary;
+
+  DiaryViewScreen({required this.diary});
+
   @override
   State<DiaryViewScreen> createState() => _DiaryViewScreenState();
 }
 
 class _DiaryViewScreenState extends State<DiaryViewScreen> {
-  // TODO 일기 + 감정 + EGO 정보 API 요청 필요
-  // 임시 감정
-  final List<String> emotions = ['기쁨', '재미'];
-
-  // 임시 주제 일기
-  final List<Diary> diaries = [
-    Diary(
-      date: '2025/02/28',
-      title: '친구랑 밥',
-      content:
-          '오늘은 친구랑 맛있는 음식을 먹으러 갔다. 오랜만에 만나서 그런지 더욱 맛있게 느껴졌고, 웃음꽃을 피우며 즐거운 시간을 보냈다. 음식도 맛있었고, 대화도 흥미로워서 시간 가는 줄 몰랐다. 너무 행복한 하루였다.',
-      image: 'assets/image/first_diary_sample_image.png',
-    ),
-    Diary(
-      date: '2025/02/28',
-      title: '친구랑 축구',
-      content:
-          '오늘 친구랑 축구를 하러 갔다. 날씨도 맑고 기분도 좋았다. 열심히 뛰고, 서로 패스하며 팀워크를 발휘했는데, 결국 멋진 골도 넣었다. 피곤했지만 즐겁고 시원한 하루였다. 같이 운동하니까 더 가까워진 느낌!',
-      image: 'assets/image/second_diary_sample_image.png',
-    ),
-  ];
-
-  // 임시 EGO 정보
-  final EgoInfoModel egoInfoModel = EgoInfoModel(
-    id: '1',
-    egoIcon: 'assets/image/ego_icon.png',
-    egoName: 'Power',
-    egoBirth: '2002/02/03',
-    egoPersonality: '단순함, 바보, 멍청',
-    egoSelfIntro:
-        '크하하! 나는 최고로 귀엽고, 강하고, 멋진 피의 마녀, Power다! 인간 따위보다 우월한 악마다! 내 피를 다루는 능력으로 어떤 적이든 박살 내 줄 수 있지! 덴지 녀석이랑 계약해서 일하고 있긴 하지만, 솔직히 내가 없으면 아무것도 못 해! 머리도 좋고, 싸움도 잘하고, 심지어 미모까지 완벽하니까! 피 냄새 나는 전쟁터가 딱 나한테 어울리지! 하지만 배고프면 기운이 없으니까, 고기랑 피를 실컷 먹게 해준다면 너도 내 충성심을 얻을 수 있을지도 모르지! 크하하하!',
-  );
-
   late FToast fToast;
+
+  late final diary = widget.diary;
 
   @override
   void initState() {
@@ -131,8 +93,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                               context,
                               MaterialPageRoute(
                                 builder:
-                                    (context) =>
-                                        DiaryEditScreen(diaries: diaries),
+                                    (context) => DiaryEditScreen(diary: diary),
                               ),
                             );
                           },
@@ -142,7 +103,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                   ),
 
                   //감정 Container
-                  TodayEmotionContainer(emotions),
+                  TodayEmotionContainer(diary.feeling),
 
                   // 날짜
                   Container(
@@ -155,7 +116,7 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                         right: 20.w,
                       ),
                       child: Text(
-                        diaries[0].date,
+                        diary.createdAt,
                         style: TextStyle(
                           fontSize: 16.sp,
                           color: AppColors.gray600,
@@ -166,15 +127,15 @@ class _DiaryViewScreenState extends State<DiaryViewScreen> {
                   ),
 
                   // 일기 정보 제공
-                  ...diaries.asMap().map((index, diary) {
+                  ...diary.topics.asMap().map((index, diary) {
                     return MapEntry(
                       index,
-                      DiaryContainer(diary: diary, containerId: index),
+                      TopicContainer(topic: diary, containerId: index),
                     );
                   }).values,
 
                   // 일기 작성해준 EGO 정보
-                  HelpedEgoInfoContainer(context, egoInfoModel),
+                  HelpedEgoInfoContainer(egoId: diary.egoId),
 
                   SizedBox(height: 14.h),
 
