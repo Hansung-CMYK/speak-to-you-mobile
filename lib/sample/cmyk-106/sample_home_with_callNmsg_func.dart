@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import '../../models/ego_model.dart';
+import '../../models/ego_model_v1.dart';
 import '../../providers/ego_provider.dart';
 import '../../theme/theme.dart';
 
@@ -49,7 +49,7 @@ class HomeScreenCallnMsgWrapper extends ConsumerWidget {
         ).toList();
 
         // 여러 개의 future를 기다리기 위해 Future.wait 사용
-        return FutureBuilder<List<EgoModel>>(
+        return FutureBuilder<List<EgoModelV1>>(
           future: Future.wait(futures),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
