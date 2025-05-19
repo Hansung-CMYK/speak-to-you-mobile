@@ -1,10 +1,12 @@
 import 'package:ego/models/diary/diary.dart';
+import 'package:ego/providers/diary/diary_image_provider.dart';
 import 'package:ego/screens/diary/share_one_diary.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 /**
  * 일기 한 화면에 보여지는 TopicContainer
  * */
-class TopicContainer extends StatefulWidget {
+class TopicContainer extends ConsumerStatefulWidget {
   final Topic topic;
   final int containerId;
 
@@ -24,7 +26,7 @@ class TopicContainer extends StatefulWidget {
   _TopicContainerState createState() => _TopicContainerState();
 }
 
-class _TopicContainerState extends State<TopicContainer> {
+class _TopicContainerState extends ConsumerState<TopicContainer> {
   int cnt = 4; // 이미지 재생성 횟수
 
   late FToast fToast;
@@ -40,6 +42,8 @@ class _TopicContainerState extends State<TopicContainer> {
   Widget build(BuildContext context) {
     Topic topic = widget.topic;
     int containerId = widget.containerId;
+
+    final imageAsync = ref.watch(diaryImageProvider((prompt: topic.content)));
 
     return Container(
       key: Key('DiaryContainer_${containerId}'),
@@ -57,16 +61,21 @@ class _TopicContainerState extends State<TopicContainer> {
                 margin: EdgeInsets.only(bottom: 10.h),
                 width: size,
                 height: size,
-                child: topic.url == null
-                    ? const Center(child: CircularProgressIndicator())
-                    : Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: NetworkImage(topic.url!),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
+                child: imageAsync.when(
+                  data: (imageUrl) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(imageUrl),
+                          fit: BoxFit.cover,
+                        ),
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                    );
+                  },
+                  loading:
+                      () => const Center(child: CircularProgressIndicator()),
+                  error: (err, stack) => Center(child: Text('이미지 생성 실패')),
                 ),
               );
             },
