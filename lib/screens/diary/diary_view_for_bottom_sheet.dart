@@ -40,12 +40,19 @@ class _DiaryViewForBottomSheetState
     extends ConsumerState<DiaryViewForBottomSheet> {
 
   late FToast fToast;
+  final Map<int, int> regenerateKeys = {};
 
   @override
   void initState() {
     super.initState();
     fToast = FToast();
     fToast.init(context);
+  }
+
+  void increaseKey(int containerId) {
+    setState(() {
+      regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+    });
   }
 
   @override
@@ -154,12 +161,21 @@ class _DiaryViewForBottomSheetState
                     ),
 
                     // 일기 정보 제공
-                    ...diary.topics.asMap().map((index, topic) {
-                      return MapEntry(
-                        index,
-                        TopicContainer(topic: topic, containerId: index),
+                    ...diary.topics
+                        .asMap()
+                        .entries
+                        .where((entry) => entry.value.isDeleted != true)
+                        .map((entry) {
+                      final index = entry.key;
+                      final topic = entry.value;
+
+                      return TopicContainer(
+                        topic: topic,
+                        containerId: index,
+                        regenerateKey: regenerateKeys[index] ?? 0,
+                        onRegenerateKeyChanged: () => increaseKey(index),
                       );
-                    }).values,
+                    }),
 
                     // 일기 작성해준 EGO 정보
                     HelpedEgoInfoContainer(egoId: diary.egoId),
@@ -169,7 +185,46 @@ class _DiaryViewForBottomSheetState
                     // 오늘의 한 줄 요약
                     OneSentenceReview(diary.dailyComment),
 
-                    SizedBox(height: 35.h),
+                    // 일기 저장 버튼
+                    Container(
+                      width: double.infinity,
+                      margin: EdgeInsets.only(bottom: 40.h,left: 20.w,right: 20.w),
+                      child: TextButton(
+                        onPressed: () {
+                          final customBottomToast = CustomToast(
+                            toastMsg: '일기가 저장되었습니다.',
+                            iconPath: 'assets/icon/complete.svg',
+                            backgroundColor: AppColors.accent,
+                            fontColor: AppColors.white,
+                          );
+                          customBottomToast.init(fToast);
+
+                          final position = 107.0.h;
+
+                          customBottomToast.showBottomPositionedToast(
+                            bottom: position,
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                            vertical: 15.h,
+                          ),
+                          backgroundColor: AppColors.strongOrange,
+                        ),
+                        child: Text(
+                          "일기저장",
+                          style: TextStyle(
+                            color: AppColors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
