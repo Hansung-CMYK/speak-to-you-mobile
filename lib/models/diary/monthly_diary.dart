@@ -1,7 +1,7 @@
 class MonthlyDiary {
-  final int id;
+  final int id; // 일기 ID와 동일
   final DateTime createdAt;
-  final String path;
+  final String path; // 달력에 보여질 이미지 IconPath전달
 
   MonthlyDiary({
     required this.id,

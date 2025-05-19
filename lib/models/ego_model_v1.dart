@@ -1,4 +1,4 @@
-class EgoModel {
+class EgoModelV1 {
   final int id;
   final String name;
   final String introduction;
@@ -7,7 +7,7 @@ class EgoModel {
   final String personality;
   final DateTime createdAt;
 
-  EgoModel({
+  EgoModelV1({
     required this.id,
     required this.name,
     required this.introduction,
@@ -18,8 +18,8 @@ class EgoModel {
   });
 
   // JSON -> EgoModel
-  factory EgoModel.fromJson(Map<String, dynamic> json) {
-    return EgoModel(
+  factory EgoModelV1.fromJson(Map<String, dynamic> json) {
+    return EgoModelV1(
       id: json['id'],
       name: json['name'],
       introduction: json['introduction'],

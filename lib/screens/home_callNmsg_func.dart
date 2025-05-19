@@ -1,4 +1,4 @@
-import 'package:ego/models/ego_model.dart';
+import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/screens/voice_chat/voice_chat_screen.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:ego/theme/color.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'egolistview/ego_list_blurred_screen.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
-  final List<EgoModel> egoList;
+  final List<EgoModelV1> egoList;
 
   const HomeScreenCallnMsg({super.key, required this.egoList});
 
@@ -25,8 +25,8 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
     with SingleTickerProviderStateMixin {
   /// 선택한 Tab과 Body를 매핑하는 Controller이다.
   late TabController _tabController;
-  late final List<EgoModel> egoList;
-  late EgoModel selectedEgo; // 선택된 EGO의 정보
+  late final List<EgoModelV1> egoList;
+  late EgoModelV1 selectedEgo; // 선택된 EGO의 정보
 
   /// _tabCntroller 초기화
   @override

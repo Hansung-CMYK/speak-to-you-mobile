@@ -1,4 +1,6 @@
-import 'package:ego/models/ego_info_model.dart';
+import 'dart:typed_data';
+
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
@@ -11,16 +13,16 @@ import 'emoji_rate_bar.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class EgoReviewScreen extends StatefulWidget {
-  final EgoInfoModel egoInfoModel; // 평가할 EGO
+  final EgoModelV2 egoModelV2; // 평가할 EGO
 
-  const EgoReviewScreen({super.key, required this.egoInfoModel});
+  const EgoReviewScreen({super.key, required this.egoModelV2});
 
   @override
   State<EgoReviewScreen> createState() => _EgoReviewScreenState();
 }
 
 class _EgoReviewScreenState extends State<EgoReviewScreen> {
-  late final EgoInfoModel egoInfoModel;
+  late final EgoModelV2 egoModelV2;
   int totalRate = 0;
   int solvingProblemRate = -1; // 대화의 흐름(문제해결능력) 점수 저장
   int empathyRate = -1; // 대화의 온도(공감능력) 점수 저장
@@ -28,7 +30,7 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
   @override
   void initState() {
     super.initState();
-    this.egoInfoModel = widget.egoInfoModel;
+    this.egoModelV2 = widget.egoModelV2;
   }
 
   // 클릭된 아이콘(점수)를 가져오기 위한 함수 (1~3점)
@@ -76,8 +78,8 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
         children: [
           // EGO 정보를 보여주는 부분 + 건너뛰기 버튼
           EgoInfoProfile(
-            egoName: egoInfoModel.egoName,
-            egoIconPath: egoInfoModel.egoIcon,
+            egoName: egoModelV2.name,
+            profileImage: egoModelV2.profileImage,
           ),
 
           Container(
@@ -173,7 +175,10 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
 ///
 /// egoName : EGO 이름 [egoName]
 /// egoIconPath : EGO 아이콘 [egoIconPath]
-Widget EgoInfoProfile({required String egoName, required String egoIconPath}) {
+Widget EgoInfoProfile({
+  required String egoName,
+  required Uint8List? profileImage,
+}) {
   return Stack(
     alignment: Alignment.topCenter,
     children: [
@@ -183,16 +188,27 @@ Widget EgoInfoProfile({required String egoName, required String egoIconPath}) {
           Container(color: AppColors.white, height: 80.h), // 하단 배경 색상
         ],
       ),
-
       Positioned(
         top: 24.h,
         child: Column(
           children: [
-            // EGO 프로필
+            // EGO 프로필 이미지
             CircleAvatar(
               radius: 50.w,
               backgroundColor: AppColors.transparent,
-              child: Image.asset(egoIconPath, width: 100.w, height: 100.h),
+              child:
+                  profileImage != null
+                      ? Image.memory(
+                        profileImage,
+                        width: 100.w,
+                        height: 100.h,
+                        fit: BoxFit.cover,
+                      )
+                      : Icon(
+                        Icons.person,
+                        size: 100.w,
+                        color: AppColors.gray300,
+                      ), // 대체 이미지
             ),
 
             SizedBox(height: 8.h),

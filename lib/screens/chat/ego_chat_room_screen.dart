@@ -1,10 +1,9 @@
 import 'package:ego/models/chat/chat_history_kafka_model.dart';
-import 'package:ego/models/ego_info_model.dart';
-import 'package:ego/models/ego_model.dart';
+import 'package:ego/models/ego_model_v1.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
-import 'package:ego/widgets/bottomsheet/today_ego_intro.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
@@ -15,7 +14,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 
 import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
-import '../../widgets/chat/chat_bubble.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
+import 'package:ego/widgets/chat/chat_bubble.dart';
 
 // 개인 채팅방
 // 초기 데이터 fetch
@@ -31,7 +31,7 @@ import '../../widgets/chat/chat_bubble.dart';
 class EgoChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
-  final EgoModel egoModel;
+  final EgoModelV1 egoModel;
 
   const EgoChatRoomScreen({
     Key? key,
@@ -97,9 +97,8 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
 
     // ✅ 실제 연결
     //uid는 시스템에 존재
-    _socketService.connect(uid:"user_account_001");
+    _socketService.connect(uid: "user_account_001");
   }
-
 
   Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
@@ -139,7 +138,6 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
     setState(() => _isLoading = false);
   }
 
-
   @override
   void dispose() {
     _controller.dispose();
@@ -172,7 +170,7 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
 
     final kafkaReqMessage = ChatHistory.convertToKafka(
       inputMessage,
-      to: "1",// TODO 이후 수정 widget.egoModel.id.toString(),
+      to: "1", // TODO 이후 수정 widget.egoModel.id.toString(),
       type: "TEXT",
     );
 
@@ -191,7 +189,6 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
       );
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -213,18 +210,15 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
           Padding(
             padding: EdgeInsets.only(right: 10.w),
             child: buildEgoListItem(widget.egoModel.profileImage, () {
-              //TODO showTodayEgoIntroSheet의 매개변수를 EgoModel로 변경
-
-              EgoInfoModel egoInfoModel = EgoInfoModel(
-                id: "a",
-                egoIcon: "assets/image/ego_icon.png",
-                egoName: "사과",
-                egoBirth: "2005/05/05",
-                egoPersonality: "활발함",
-                egoSelfIntro: "히히 사과 좋아",
+              // 임시 객체 실제로는 EGO 요청해야함
+              EgoModelV2 egoModelV2 = EgoModelV2(
+                name: '사과짱',
+                introduction: '사과가 좋아',
+                mbti: "infj",
+                createdAt: DateTime(2025, 5, 6),
               );
 
-              showTodayEgoIntroSheet(this.context, egoInfoModel);
+              showTodayEgoIntroSheetV2(this.context, egoModelV2);
             }, radius: 17),
           ),
         ],

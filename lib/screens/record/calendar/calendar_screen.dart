@@ -25,11 +25,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     return Stack(
       children: [
-        DiaryCalendar(
-          onClickedValue: _onClickValue,
-        ),
+        DiaryCalendar(onClickedValue: _onClickValue),
         if (selectedValue != 0)
-          CalendarBottomSheet(diaryId: selectedValue),
+          CalendarBottomSheet(key: UniqueKey(), diaryId: selectedValue),
       ],
     );
   }
