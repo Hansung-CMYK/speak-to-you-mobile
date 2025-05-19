@@ -144,6 +144,8 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     Topic topic = widget.topic;
     int containerId = widget.containerId;
 
+    final imageAsync = ref.watch(diaryImageProvider((prompt: topic.content)));
+
     return Container(
       key: Key('DiaryContainer_${containerId}'),
       color: AppColors.white,
