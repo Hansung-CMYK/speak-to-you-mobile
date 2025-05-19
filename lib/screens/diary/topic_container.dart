@@ -18,9 +18,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 class TopicContainer extends ConsumerStatefulWidget {
   final Topic topic;
   final int containerId;
+  final int regenerateKey;
+  final VoidCallback onRegenerateKeyChanged;
 
-  TopicContainer({Key? key, required this.topic, required this.containerId})
-    : super(key: key);
+  TopicContainer({
+    Key? key,
+    required this.topic,
+    required this.containerId,
+    required this.regenerateKey,
+    required this.onRegenerateKeyChanged,
+  }) : super(key: key);
 
   @override
   _TopicContainerState createState() => _TopicContainerState();
@@ -28,6 +35,7 @@ class TopicContainer extends ConsumerStatefulWidget {
 
 class _TopicContainerState extends ConsumerState<TopicContainer> {
   int cnt = 4; // 이미지 재생성 횟수
+  late String fixedPrompt;
 
   late FToast fToast;
 
@@ -36,6 +44,7 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     super.initState();
     fToast = FToast();
     fToast.init(context);
+    fixedPrompt = widget.topic.content;
   }
 
   @override
@@ -43,7 +52,9 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     Topic topic = widget.topic;
     int containerId = widget.containerId;
 
-    final imageAsync = ref.watch(diaryImageProvider((prompt: topic.content)));
+    final imageAsync = ref.watch(
+      diaryImageProvider((prompt: fixedPrompt, regenerateKey: widget.regenerateKey)),
+    );
 
     return Container(
       key: Key('DiaryContainer_${containerId}'),
@@ -111,7 +122,10 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
                   onPressed: () {
                     if (cnt > 0) {
                       cnt--;
-                      setState(() {});
+                      setState(() {
+                        fixedPrompt = widget.topic.content; // topic.content가 바뀌었을 때를 감지
+                        widget.onRegenerateKeyChanged(); // topic.contetn는 바뀌지 않았지만 이미지를 재생성할 경우를 감지
+                      });
                     } else {
                       // TODO 횟수 다 사용했을 때 처리 (필요시 메시지 등 추가)
                     }

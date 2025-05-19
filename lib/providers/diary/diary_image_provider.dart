@@ -3,7 +3,7 @@ import 'package:ego/services/diary/image_create_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final diaryImageProvider = FutureProvider.family
-    .autoDispose<String, ({String prompt})>((ref, param) async {
+    <String, ({String prompt, int regenerateKey})>((ref, param) async {
   return await ImageCreateService.sendGenImageRequest(
       prompt: param.prompt
   );

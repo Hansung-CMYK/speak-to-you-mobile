@@ -32,12 +32,19 @@ class DiaryViewScreen extends ConsumerStatefulWidget {
 
 class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
   late FToast fToast;
+  final Map<int, int> regenerateKeys = {};
 
   @override
   void initState() {
     super.initState();
     fToast = FToast();
     fToast.init(context);
+  }
+
+  void increaseKey(int containerId) {
+    setState(() {
+      regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+    });
   }
 
   @override
@@ -96,6 +103,8 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                               },
                             ),
                             SizedBox(width: 12.w),
+
+                            // 일기 수정화면 이동
                             SvgButton(
                               svgPath: 'assets/icon/edit_icon.svg',
                               width: 20.w,
@@ -152,12 +161,17 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                           .asMap()
                           .entries
                           .where((entry) => entry.value.isDeleted != true)
-                          .map(
-                            (entry) => TopicContainer(
-                              topic: entry.value,
-                              containerId: entry.key,
-                            ),
-                          ),
+                          .map((entry) {
+                        final index = entry.key;
+                        final topic = entry.value;
+
+                        return TopicContainer(
+                          topic: topic,
+                          containerId: index,
+                          regenerateKey: regenerateKeys[index] ?? 0,
+                          onRegenerateKeyChanged: () => increaseKey(index),
+                        );
+                      }),
 
                       // 일기 작성해준 EGO 정보
                       HelpedEgoInfoContainer(egoId: diary.egoId),
