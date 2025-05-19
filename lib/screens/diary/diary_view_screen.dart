@@ -12,7 +12,8 @@ import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/button/svg_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../providers/diary/diary_provider.dart';
+import 'package:ego/models/diary/diary.dart';
+import 'package:ego/providers/diary/diary_provider.dart';
 import 'helped_ego_info_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,14 +42,12 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO 이후 uid에 따라 egoId를 조회합니다.
 
-    final now = DateTime.now();
-    final targetTime = DateTime(2025, 5, 17); // TODO이후에 현재 시간으로 변경
+    final targetTime = DateTime(2025, 5, 19); // TODO이후에 현재 시간으로 변경
     //uid는 시스템에 존재
     final request = DiaryRequestModel(
-      userId: "user_account_001",
-      egoId: 1,
+      userId: "user_id_001",
+      egoId: 1, // TODO 이후 uid에 따라 egoId를 조회합니다.
       date: targetTime,
     );
 
@@ -57,7 +56,9 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
     return Scaffold(
       appBar: StackAppBar(title: '일기보기'),
       body: asyncDiary.when(
-        data: (diary) {
+        data: (fetchedDiary) {
+          Diary diary = fetchedDiary;
+
           return Padding(
             padding: EdgeInsets.only(right: 2.w),
             child: RawScrollbar(
@@ -100,15 +101,22 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                               width: 20.w,
                               height: 20.h,
                               radius: 16.r,
-                              onTab: () {
-                                Navigator.push(
+                              onTab: () async {
+                                final updatedDiary = await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder:
                                         (context) =>
-                                            DiaryEditScreen(diary: diary),
+                                            TopicEditScreen(diary: diary),
                                   ),
                                 );
+
+                                if (updatedDiary != null &&
+                                    updatedDiary is Diary) {
+                                  setState(() {
+                                    diary = updatedDiary;
+                                  });
+                                }
                               },
                             ),
                           ],
@@ -139,13 +147,17 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                         ),
                       ),
 
-                      // 일기 정보 제공
-                      ...diary.topics.asMap().map((index, topic) {
-                        return MapEntry(
-                          index,
-                          TopicContainer(topic: topic, containerId: index),
-                        );
-                      }).values,
+                      // topic 정보 제공
+                      ...diary.topics
+                          .asMap()
+                          .entries
+                          .where((entry) => entry.value.isDeleted != true)
+                          .map(
+                            (entry) => TopicContainer(
+                              topic: entry.value,
+                              containerId: entry.key,
+                            ),
+                          ),
 
                       // 일기 작성해준 EGO 정보
                       HelpedEgoInfoContainer(egoId: diary.egoId),

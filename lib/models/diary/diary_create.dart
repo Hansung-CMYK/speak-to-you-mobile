@@ -1,7 +1,7 @@
 // 일기 생성을 위한 model
 class DiaryRequestModel {
   final String userId;
-  final int egoId; // 전달할 때는 String으로 변환해서 전달해야 함
+  final int egoId;
   final DateTime date;
 
   DiaryRequestModel({
@@ -14,7 +14,7 @@ class DiaryRequestModel {
     return {
       'user_id': userId,
       'ego_id': egoId,
-      'target_time': date.toIso8601String(),
+      'target_date': date.toIso8601String(),
     };
   }
 

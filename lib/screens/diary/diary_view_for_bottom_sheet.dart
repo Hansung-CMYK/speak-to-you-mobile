@@ -121,7 +121,7 @@ class _DiaryViewForBottomSheetState
                                 MaterialPageRoute(
                                   builder:
                                       (context) =>
-                                          DiaryEditScreen(diary: diary),
+                                          TopicEditScreen(diary: diary),
                                 ),
                               );
                             },

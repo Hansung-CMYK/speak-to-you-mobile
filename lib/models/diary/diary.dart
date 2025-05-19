@@ -52,9 +52,9 @@ class Topic {
   final int? topicId;
   final int? diaryId;
   final String title;
-  final String content;
+  String content;
   final String? url;
-  final bool? isDeleted;
+  bool? isDeleted;
 
   Topic({
     this.topicId,
@@ -72,7 +72,7 @@ class Topic {
       title: json['title'],
       content: json['content'],
       url: json['url'],
-      isDeleted: json['isDeleted'],
+      isDeleted: json['isDeleted'] ?? false,
     );
   }
 
