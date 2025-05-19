@@ -77,42 +77,8 @@ void showFlushBarFromForegroundFirebase(
                 context,
                 MaterialPageRoute(
                   // EGO 일기 수정 화면으로 이동
-                  // 여기서 AI에게 일기 요청 보내기
                   builder: (context) {
-                    final dummyDiary = Diary(
-                      diaryId: 1,
-                      uid: 'test',
-                      egoId: 1,
-                      feeling: '활기찬, 뿌듯한',
-                      dailyComment: '오늘은 아주 활발한 하루였어요! 특히 냥 체를 많이 사용하셨네요!',
-                      createdAt: '2025-05-06',
-                      keywords: ['엥', '진짜?', '아니', '근데'],
-                      topics: [
-                        Topic(
-                          topicId: 1,
-                          diaryId: 1,
-                          title: '웃음이 가득한 아침 식사',
-                          content:
-                              '오늘은 가족들과 웃음이 가득한 아침 식사를 했어요. 맛있는 퐁듀를 2그릇이나 먹었어요.',
-                          url:
-                              'https://fal.media/files/penguin/vX86khImmFa6A8JgBpD0g_66de42358e1146a8a4b689d1e0e96e1d.jpg',
-                          isDeleted: false,
-                        ),
-                        Topic(
-                          topicId: 2,
-                          diaryId: 1,
-                          title: '나른한 오후의 만난 삼색 고양이',
-                          content: '노을이 질 때 즈음에 삼색 고양이를 봤어요. 참치를 간식으로 주었어요.',
-                          url:
-                              'https://fal.media/files/penguin/vX86khImmFa6A8JgBpD0g_66de42358e1146a8a4b689d1e0e96e1d.jpg',
-                          isDeleted: false,
-                        ),
-                      ],
-                    );
-
-                    // 사용자 Id 기반 TodayEgo get 수행
-                    // egoId + uid로 일기생성 요청
-                    return DiaryViewScreen(diary: dummyDiary);
+                    return DiaryViewScreen();
                   },
                 ),
               );
@@ -194,42 +160,8 @@ void showFlushBarFromForegroundLocal() {
                 context,
                 MaterialPageRoute(
                   // EGO 일기 수정 화면으로 이동
-                  // 여기서 AI에게 일기 요청 보내기
                   builder: (context) {
-                    final dummyDiary = Diary(
-                      diaryId: 1,
-                      uid: 'test',
-                      egoId: 1,
-                      feeling: '활기찬, 뿌듯한',
-                      dailyComment: '오늘은 아주 활발한 하루였어요! 특히 냥 체를 많이 사용하셨네요!',
-                      createdAt: '2025-05-06',
-                      keywords: ['엥', '진짜?', '아니', '근데'],
-                      topics: [
-                        Topic(
-                          topicId: 1,
-                          diaryId: 1,
-                          title: '웃음이 가득한 아침 식사',
-                          content:
-                          '오늘은 가족들과 웃음이 가득한 아침 식사를 했어요. 맛있는 퐁듀를 2그릇이나 먹었어요.',
-                          url:
-                          'https://fal.media/files/penguin/vX86khImmFa6A8JgBpD0g_66de42358e1146a8a4b689d1e0e96e1d.jpg',
-                          isDeleted: false,
-                        ),
-                        Topic(
-                          topicId: 2,
-                          diaryId: 1,
-                          title: '나른한 오후의 만난 삼색 고양이',
-                          content: '노을이 질 때 즈음에 삼색 고양이를 봤어요. 참치를 간식으로 주었어요.',
-                          url:
-                          'https://fal.media/files/penguin/vX86khImmFa6A8JgBpD0g_66de42358e1146a8a4b689d1e0e96e1d.jpg',
-                          isDeleted: false,
-                        ),
-                      ],
-                    );
-
-                    // 사용자 Id 기반 TodayEgo get 수행
-                    // egoId + uid로 일기생성 요청
-                    return DiaryViewScreen(diary: dummyDiary);
+                    return DiaryViewScreen();
                   },
                 ),
               );

@@ -55,12 +55,14 @@ class _TopicContainerState extends State<TopicContainer> {
 
               return Container(
                 margin: EdgeInsets.only(bottom: 10.h),
-                child: Container(
-                  width: size,
-                  height: size,
+                width: size,
+                height: size,
+                child: topic.url == null
+                    ? const Center(child: CircularProgressIndicator())
+                    : Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image: NetworkImage(topic.url), // 이미지 보이기
+                      image: NetworkImage(topic.url!),
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(8.r),

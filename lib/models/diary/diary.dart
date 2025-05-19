@@ -1,5 +1,5 @@
 class Diary {
-  final int diaryId;
+  final int? diaryId;
   final String uid;
   final int egoId;
   final String feeling;
@@ -9,7 +9,7 @@ class Diary {
   final List<Topic> topics;
 
   Diary({
-    required this.diaryId,
+    this.diaryId,
     required this.uid,
     required this.egoId,
     required this.feeling,
@@ -49,20 +49,20 @@ class Diary {
 }
 
 class Topic {
-  final int topicId;
-  final int diaryId;
+  final int? topicId;
+  final int? diaryId;
   final String title;
   final String content;
-  final String url;
-  final bool isDeleted;
+  final String? url;
+  final bool? isDeleted;
 
   Topic({
-    required this.topicId,
-    required this.diaryId,
+    this.topicId,
+    this.diaryId,
     required this.title,
     required this.content,
-    required this.url,
-    required this.isDeleted,
+    this.url,
+    this.isDeleted,
   });
 
   factory Topic.fromJson(Map<String, dynamic> json) {
