@@ -21,6 +21,7 @@ class TopicContainer extends ConsumerStatefulWidget {
   final int regenerateKey;
   final VoidCallback onRegenerateKeyChanged;
 
+
   TopicContainer({
     Key? key,
     required this.topic,
@@ -37,6 +38,9 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
   int cnt = 4; // 이미지 재생성 횟수
   late String fixedPrompt;
 
+  late PageController _pageController;
+  List<String> imageUrls = [];
+  int currentPage = 0;
   late FToast fToast;
 
   @override
@@ -45,16 +49,59 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     fToast = FToast();
     fToast.init(context);
     fixedPrompt = widget.topic.content;
+
+    _pageController = PageController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadInitialImage();
+    });
+  }
+
+  Future<void> _loadInitialImage() async {
+    final imageUrl = await ref.read(
+      diaryImageProvider((
+        prompt: fixedPrompt,
+        regenerateKey: widget.regenerateKey,
+      )).future,
+    );
+    setState(() {
+      imageUrls.add(imageUrl);
+    });
+  }
+
+  void _regenerateImage() async {
+    if (cnt > 0) {
+      setState(() {
+        cnt--;
+      });
+      fixedPrompt = widget.topic.content;
+      widget.onRegenerateKeyChanged();
+      final imageUrl = await ref.read(
+        diaryImageProvider((
+          prompt: fixedPrompt,
+          regenerateKey: widget.regenerateKey,
+        )).future,
+      );
+      setState(() {
+        imageUrls.add(imageUrl);
+        currentPage = imageUrls.length - 1;
+        _pageController.jumpToPage(currentPage);
+      });
+    } else {
+      // TODO: 재생성 횟수 초과 처리
+    }
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Topic topic = widget.topic;
     int containerId = widget.containerId;
-
-    final imageAsync = ref.watch(
-      diaryImageProvider((prompt: fixedPrompt, regenerateKey: widget.regenerateKey)),
-    );
 
     return Container(
       key: Key('DiaryContainer_${containerId}'),
@@ -72,22 +119,29 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
                 margin: EdgeInsets.only(bottom: 10.h),
                 width: size,
                 height: size,
-                child: imageAsync.when(
-                  data: (imageUrl) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(imageUrl),
-                          fit: BoxFit.cover,
+                child:
+                    imageUrls.isEmpty
+                        ? const Center(child: CircularProgressIndicator())
+                        : PageView.builder(
+                          controller: _pageController,
+                          itemCount: imageUrls.length,
+                          onPageChanged: (index) {
+                            setState(() {
+                              currentPage = index;
+                            });
+                          },
+                          itemBuilder: (context, index) {
+                            return Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(imageUrls[index]),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(8.r),
+                              ),
+                            );
+                          },
                         ),
-                        borderRadius: BorderRadius.circular(8.r),
-                      ),
-                    );
-                  },
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
-                  error: (err, stack) => Center(child: Text('이미지 생성 실패')),
-                ),
               );
             },
           ),
@@ -119,17 +173,7 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
                 child: IconButton(
                   key: Key('RegenImgBtn_${containerId}'),
                   padding: EdgeInsets.zero,
-                  onPressed: () {
-                    if (cnt > 0) {
-                      cnt--;
-                      setState(() {
-                        fixedPrompt = widget.topic.content; // topic.content가 바뀌었을 때를 감지
-                        widget.onRegenerateKeyChanged(); // topic.contetn는 바뀌지 않았지만 이미지를 재생성할 경우를 감지
-                      });
-                    } else {
-                      // TODO 횟수 다 사용했을 때 처리 (필요시 메시지 등 추가)
-                    }
-                  },
+                  onPressed: _regenerateImage,
                   icon: SvgPicture.asset(
                     'assets/icon/image_regen.svg',
                     width: 16.w,
