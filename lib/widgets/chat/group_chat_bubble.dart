@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/models/chat/firebase_chat_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
@@ -13,33 +13,23 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 
 class GroupChatBubble extends StatelessWidget {
-  final ChatHistory chatHistory;
+  final FirebaseChatModel chatModel;
   final VoidCallback onDelete;
   final VoidCallback onProfileTap;
-  final String? profileBase64; // base64 이미지 데이터
+  final bool isMe;
 
   const GroupChatBubble({
-    required this.chatHistory,
+    required this.chatModel,
     required this.onDelete,
     required this.onProfileTap,
-    this.profileBase64,
+    required this.isMe
   });
 
   @override
   Widget build(BuildContext context) {
-    final isUser = chatHistory.type == "user";
-    final isGroup = chatHistory.type == "group";
-    final alignment = isUser ? MainAxisAlignment.end : MainAxisAlignment.start;
+    final alignment = isMe ? MainAxisAlignment.end : MainAxisAlignment.start;
 
-    Uint8List? profileImageBytes;
-    if (isGroup && profileBase64 != null) {
-      try {
-        profileImageBytes = base64Decode(profileBase64!.split(',').last); // 앞 prefix 제거
-      } catch (e) {
-        // base64 decode 실패 시 null 처리
-        profileImageBytes = null;
-      }
-    }
+    Uint8List? profileImageBytes; // 보낸 사용자의 ego profile Image
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 9.h),
@@ -47,7 +37,7 @@ class GroupChatBubble extends StatelessWidget {
         mainAxisAlignment: alignment,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (isGroup) // 왼쪽 프로필 (group일 때만)
+          if (!isMe) // 왼쪽 프로필
             GestureDetector(
               onTap: onProfileTap,
               child: Padding(
@@ -89,7 +79,7 @@ class GroupChatBubble extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: SvgPicture.asset(
-                  chatHistory.content,
+                  chatModel.text, // 그룹채팅의 이모지 경로
                   width: 120.w,
                   height: 120.h,
                   fit: BoxFit.cover,

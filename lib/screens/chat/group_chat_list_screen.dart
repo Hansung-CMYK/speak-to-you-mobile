@@ -63,28 +63,7 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
         isDeleted: false,
         lastChatAt: DateTime.parse('2025-05-16'),
         personalityTag: '게임중독',
-        uid: 'test',
-      ),
-      GroupChatRoomListModel(
-        id: 2,
-        isDeleted: false,
-        lastChatAt: DateTime.parse('2025-05-02'),
-        personalityTag: '영화중독',
-        uid: 'test',
-      ),
-      GroupChatRoomListModel(
-        id: 3,
-        isDeleted: false,
-        lastChatAt: DateTime.parse('2025-05-03'),
-        personalityTag: '음악중독',
-        uid: 'test',
-      ),
-      GroupChatRoomListModel(
-        id: 4,
-        isDeleted: false,
-        lastChatAt: DateTime.parse('2025-05-04'),
-        personalityTag: '애니중독',
-        uid: 'test',
+        uid: 'user1',
       ),
     ];
 
@@ -241,5 +220,4 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
         return 'assets/image/ego_icon.png'; // 기본 이미지 경로
     }
   }
-
 }
