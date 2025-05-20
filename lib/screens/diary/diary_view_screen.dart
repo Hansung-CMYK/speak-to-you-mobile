@@ -164,7 +164,7 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                         ),
                       ),
 
-                      // topic 정보 제공
+                      // topic 정보 Container(topic제목, topic 내용, topic 이미지)
                       ...diary.topics
                           .asMap()
                           .entries
@@ -200,9 +200,9 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                           top: 15.h,
                         ),
                         child: TextButton(
-                          onPressed: isAllUrlsNotNull
+                          onPressed: isAllUrlsNotNull // 전체 이미지의 url이 load 되었다면
                               ? () {
-                            debugPrint(diary.toString());
+                            debugPrint(diary.toString()); // 생성 또는 수정된 Diary객체 출력
 
                             // TODO 일기 저장 API
                             final customBottomToast = CustomToast(

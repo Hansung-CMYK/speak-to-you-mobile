@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 /**
  * 일기 한 화면에 보여지는 TopicContainer
@@ -21,7 +22,6 @@ class TopicContainer extends ConsumerStatefulWidget {
   final int regenerateKey;
   final VoidCallback onRegenerateKeyChanged;
   final void Function(String newUrl)? updateUrl;
-
 
   TopicContainer({
     Key? key,
@@ -44,6 +44,12 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
   List<String> imageUrls = [];
   int currentPage = 0;
   late FToast fToast;
+  final customBottomToast = CustomToast(
+    toastMsg: '이미지 재생성 횟수를 초과했습니다.',
+    iconPath: 'assets/icon/error_icon.svg',
+    backgroundColor: AppColors.red,
+    fontColor: AppColors.white,
+  );
 
   @override
   void initState() {
@@ -58,9 +64,10 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     });
   }
 
+  // 초기 이미지 생성
   Future<void> _loadInitialImage() async {
-    fixedPrompt = widget.topic.content;
-    widget.onRegenerateKeyChanged();
+    fixedPrompt = widget.topic.content; // 초기 prompt값을 유지
+    widget.onRegenerateKeyChanged(); // 현재 상태관리하는 이미지provider의 key값 (이미지 재생성 에서 사용)
     final imageUrl = await ref.read(
       diaryImageProvider((
         prompt: fixedPrompt,
@@ -68,12 +75,13 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
       )).future,
     );
     setState(() {
-      imageUrls.add(imageUrl);
+      imageUrls.add(imageUrl); // 만들어진 이미지 url 저장 (img slider에서 사용)
       widget.topic.url = imageUrl;
     });
-    widget.updateUrl?.call(imageUrl);;
+    widget.updateUrl?.call(imageUrl); // 업데이트된 url을 부모 topic(원본)에 저장
   }
 
+  // 이미지 재생성
   void _regenerateImage() async {
     if (cnt > 0) {
       setState(() {
@@ -90,14 +98,30 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
       setState(() {
         imageUrls.add(imageUrl);
         currentPage = imageUrls.length - 1;
-        _pageController.jumpToPage(currentPage);
       });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _pageController.animateToPage(
+          imageUrls.length - 1,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      });
+
+      final currentImageUrl = imageUrls[currentPage];
+      widget.updateUrl?.call(currentImageUrl);
+      
       print('containerID : $widget.containerId');
       print('📸 Prompt: $fixedPrompt');
       print('🧬 Key: ${widget.regenerateKey}');
       print('🌐 Image URL: $imageUrl');
-    } else {
-      // TODO: 재생성 횟수 초과 처리
+    } else { // 4회 이상 이미지 생성시
+      customBottomToast.init(fToast);
+      final position = 107.0.h;
+
+      customBottomToast.showBottomPositionedToast(
+        bottom: position,
+      );
     }
   }
 
@@ -124,33 +148,52 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
             builder: (context, constraints) {
               double size = constraints.maxWidth;
 
-              return Container(
-                margin: EdgeInsets.only(bottom: 10.h),
-                width: size,
-                height: size,
-                child:
-                    imageUrls.isEmpty
+              return Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.h),
+                    width: size,
+                    height: size,
+                    child: imageUrls.isEmpty
                         ? const Center(child: CircularProgressIndicator())
                         : PageView.builder(
-                          controller: _pageController,
-                          itemCount: imageUrls.length,
-                          onPageChanged: (index) {
-                            setState(() {
-                              currentPage = index;
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: NetworkImage(imageUrls[index]),
-                                  fit: BoxFit.cover,
-                                ),
-                                borderRadius: BorderRadius.circular(8.r),
-                              ),
-                            );
-                          },
+                      controller: _pageController,
+                      itemCount: imageUrls.length,
+                      onPageChanged: (index) {
+                        setState(() {
+                          currentPage = index;
+                        });
+                        final currentImageUrl = imageUrls[index];
+                        widget.updateUrl?.call(currentImageUrl);
+                      },
+                      itemBuilder: (context, index) {
+                        return Container(
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: NetworkImage(imageUrls[index]),
+                              fit: BoxFit.cover,
+                            ),
+                            borderRadius: BorderRadius.circular(8.r),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (imageUrls.isNotEmpty)
+                    Padding(
+                      padding: EdgeInsets.only(top: 8.h),
+                      child: SmoothPageIndicator(
+                        controller: _pageController,
+                        count: imageUrls.length,
+                        effect: WormEffect(
+                          dotHeight: 10,
+                          dotWidth: 10,
+                          activeDotColor: AppColors.primary,
+                          dotColor: Colors.black26,
                         ),
+                      ),
+                    ),
+                ],
               );
             },
           ),
