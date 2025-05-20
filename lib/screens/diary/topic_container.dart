@@ -20,6 +20,7 @@ class TopicContainer extends ConsumerStatefulWidget {
   final int containerId;
   final int regenerateKey;
   final VoidCallback onRegenerateKeyChanged;
+  final void Function(String newUrl)? updateUrl;
 
 
   TopicContainer({
@@ -28,6 +29,7 @@ class TopicContainer extends ConsumerStatefulWidget {
     required this.containerId,
     required this.regenerateKey,
     required this.onRegenerateKeyChanged,
+    this.updateUrl
   }) : super(key: key);
 
   @override
@@ -67,7 +69,9 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     );
     setState(() {
       imageUrls.add(imageUrl);
+      widget.topic.url = imageUrl;
     });
+    widget.updateUrl?.call(imageUrl);;
   }
 
   void _regenerateImage() async {

@@ -28,9 +28,10 @@ class Diary {
       dailyComment: json['dailyComment'],
       createdAt: json['createdAt'],
       keywords: List<String>.from(json['keywords']),
-      topics: (json['topics'] as List)
-          .map((topicJson) => Topic.fromJson(topicJson))
-          .toList(),
+      topics:
+          (json['topics'] as List)
+              .map((topicJson) => Topic.fromJson(topicJson))
+              .toList(),
     );
   }
 
@@ -46,6 +47,22 @@ class Diary {
       'topics': topics.map((t) => t.toJson()).toList(),
     };
   }
+
+  @override
+  String toString() {
+    return '''
+📓 Diary {
+  🆔 diaryId: $diaryId
+  👤 uid: $uid
+  🧠 egoId: $egoId
+  😊 feeling: $feeling
+  💬 dailyComment: $dailyComment
+  🕒 createdAt: $createdAt
+  🏷️ keywords: ${keywords.join(', ')}
+  📝 topics:
+${topics.map((t) => t.toString()).join('\n')}
+}''';
+  }
 }
 
 class Topic {
@@ -53,7 +70,7 @@ class Topic {
   final int? diaryId;
   final String title;
   String content;
-  final String? url;
+  String? url;
   bool? isDeleted;
 
   Topic({
@@ -85,5 +102,18 @@ class Topic {
       'url': url,
       'isDeleted': isDeleted,
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+    📌 Topic {
+      🆔 topicId: $topicId
+      📘 diaryId: $diaryId
+      🏷️ title: $title
+      ✍️ content: $content
+      🌐 url: $url
+      ❌ isDeleted: $isDeleted
+    }''';
   }
 }

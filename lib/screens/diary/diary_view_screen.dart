@@ -66,6 +66,14 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
         data: (fetchedDiary) {
           Diary diary = fetchedDiary;
 
+          bool isAllUrlsNotNull = diary.topics.every((topic) => topic.url != null);
+
+          void updateTopicUrl(int index, String newUrl) {
+            setState(() {
+              diary.topics[index].url = newUrl;
+            });
+          }
+
           return Padding(
             padding: EdgeInsets.only(right: 2.w),
             child: RawScrollbar(
@@ -170,6 +178,7 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                           containerId: index,
                           regenerateKey: regenerateKeys[index] ?? 0,
                           onRegenerateKeyChanged: () => increaseKey(index),
+                          updateUrl: (String newUrl) => updateTopicUrl(index,newUrl),
                         );
                       }),
 
@@ -191,7 +200,10 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                           top: 15.h,
                         ),
                         child: TextButton(
-                          onPressed: () {
+                          onPressed: isAllUrlsNotNull
+                              ? () {
+                            debugPrint(diary.toString());
+
                             // TODO 일기 저장 API
                             final customBottomToast = CustomToast(
                               toastMsg: '일기가 저장되었습니다.',
@@ -206,7 +218,8 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                             customBottomToast.showBottomPositionedToast(
                               bottom: position,
                             );
-                          },
+                          }
+                              : null,
                           style: TextButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.r),
@@ -215,7 +228,7 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                               horizontal: 20.w,
                               vertical: 15.h,
                             ),
-                            backgroundColor: AppColors.strongOrange,
+                              backgroundColor: isAllUrlsNotNull ? AppColors.strongOrange : AppColors.gray400,
                           ),
                           child: Text(
                             "일기저장",
