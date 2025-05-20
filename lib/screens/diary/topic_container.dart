@@ -77,8 +77,8 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
 
   // 초기 이미지 생성
   Future<void> _loadInitialImage() async {
-    fixedPrompt = widget.topic.content;
-    widget.onRegenerateKeyChanged();
+    fixedPrompt = widget.topic.content; // 초기 prompt값을 유지
+    widget.onRegenerateKeyChanged(); // 현재 상태관리하는 이미지provider의 key값 (이미지 재생성 에서 사용)
     final imageUrl = await ref.read(
       diaryImageProvider((
       prompt: fixedPrompt,
