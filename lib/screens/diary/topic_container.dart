@@ -48,7 +48,6 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
     super.initState();
     fToast = FToast();
     fToast.init(context);
-    fixedPrompt = widget.topic.content;
 
     _pageController = PageController();
 
@@ -58,6 +57,8 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
   }
 
   Future<void> _loadInitialImage() async {
+    fixedPrompt = widget.topic.content;
+    widget.onRegenerateKeyChanged();
     final imageUrl = await ref.read(
       diaryImageProvider((
         prompt: fixedPrompt,
@@ -87,6 +88,10 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
         currentPage = imageUrls.length - 1;
         _pageController.jumpToPage(currentPage);
       });
+      print('containerID : $widget.containerId');
+      print('📸 Prompt: $fixedPrompt');
+      print('🧬 Key: ${widget.regenerateKey}');
+      print('🌐 Image URL: $imageUrl');
     } else {
       // TODO: 재생성 횟수 초과 처리
     }

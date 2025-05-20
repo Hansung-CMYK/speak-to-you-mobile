@@ -13,6 +13,7 @@ class ImageCreateService {
     );
 
     if (response.statusCode == 200) {
+      print(response.body.trim().replaceAll('"', ''));
       return response.body.trim().replaceAll('"', '');
     } else {
       throw Exception('일기 이미지 생성 실패: ${response.body}');
