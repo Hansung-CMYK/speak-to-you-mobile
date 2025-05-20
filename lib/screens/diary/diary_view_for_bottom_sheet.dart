@@ -10,7 +10,7 @@ import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/button/svg_button.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
+import '../../models/diary/diary.dart';
 import '../../providers/diary/diary_provider.dart';
 import 'helped_ego_info_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -38,7 +38,6 @@ class DiaryViewForBottomSheet extends ConsumerStatefulWidget {
 
 class _DiaryViewForBottomSheetState
     extends ConsumerState<DiaryViewForBottomSheet> {
-
   late FToast fToast;
   final Map<int, int> regenerateKeys = {};
 
@@ -50,8 +49,11 @@ class _DiaryViewForBottomSheetState
   }
 
   void increaseKey(int containerId) {
-    setState(() {
-      regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+      });
     });
   }
 
@@ -65,7 +67,9 @@ class _DiaryViewForBottomSheetState
     );
 
     return diaryAsync.when(
-      data: (diary) {
+      data: (fetchedDiary) {
+        Diary diary = fetchedDiary;
+
         return Padding(
           padding: EdgeInsets.only(right: 2.w),
           child: Container(
@@ -95,7 +99,8 @@ class _DiaryViewForBottomSheetState
                     Container(
                       padding: EdgeInsets.only(right: 20.w),
                       color: AppColors.white,
-                      child: Row( // 일기 수정 및 일기 공유 버튼
+                      child: Row(
+                        // 일기 수정 및 일기 공유 버튼
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SvgButton(
@@ -117,13 +122,15 @@ class _DiaryViewForBottomSheetState
                             },
                           ),
                           SizedBox(width: 12.w),
+
+                          // 일기 수정화면 이동
                           SvgButton(
                             svgPath: 'assets/icon/edit_icon.svg',
                             width: 20.w,
                             height: 20.h,
                             radius: 16.r,
-                            onTab: () {
-                              Navigator.push(
+                            onTab: () async {
+                              final updatedDiary = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder:
@@ -131,6 +138,13 @@ class _DiaryViewForBottomSheetState
                                           TopicEditScreen(diary: diary),
                                 ),
                               );
+
+                              if (updatedDiary != null &&
+                                  updatedDiary is Diary) {
+                                setState(() {
+                                  diary = updatedDiary;
+                                });
+                              }
                             },
                           ),
                         ],
@@ -160,22 +174,23 @@ class _DiaryViewForBottomSheetState
                       ),
                     ),
 
-                    // 일기 정보 제공
-                    ...diary.topics
-                        .asMap()
-                        .entries
-                        .where((entry) => entry.value.isDeleted != true)
-                        .map((entry) {
-                      final index = entry.key;
-                      final topic = entry.value;
+                    // topic 정보 Container(topic제목, topic 내용, topic 이미지)
+                      ...diary.topics
+                          .asMap()
+                          .entries
+                          .where((entry) => entry.value.isDeleted != true)
+                          .map((entry) {
+                            final index = entry.key;
+                            final topic = entry.value;
 
-                      return TopicContainer(
-                        topic: topic,
-                        containerId: index,
-                        regenerateKey: regenerateKeys[index] ?? 0,
-                        onRegenerateKeyChanged: () => increaseKey(index),
-                      );
-                    }),
+                            return TopicContainer(
+                              topic: topic,
+                              containerId: index,
+                              regenerateKey: regenerateKeys[index] ?? 0,
+                              onRegenerateKeyChanged: () => increaseKey(index),
+                              isNewDiary: false,
+                            );
+                          }),
 
                     // 일기 작성해준 EGO 정보
                     HelpedEgoInfoContainer(egoId: diary.egoId),
@@ -188,9 +203,15 @@ class _DiaryViewForBottomSheetState
                     // 일기 저장 버튼
                     Container(
                       width: double.infinity,
-                      margin: EdgeInsets.only(bottom: 40.h,left: 20.w,right: 20.w),
+                      margin: EdgeInsets.only(
+                        bottom: 40.h,
+                        left: 20.w,
+                        right: 20.w,
+                      ),
                       child: TextButton(
                         onPressed: () {
+                          // TODO 일기 저장 API
+
                           final customBottomToast = CustomToast(
                             toastMsg: '일기가 저장되었습니다.',
                             iconPath: 'assets/icon/complete.svg',
@@ -204,6 +225,7 @@ class _DiaryViewForBottomSheetState
                           customBottomToast.showBottomPositionedToast(
                             bottom: position,
                           );
+                          debugPrint(diary.toString());
                         },
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -233,11 +255,21 @@ class _DiaryViewForBottomSheetState
         );
       },
       error: (error, stack) {
-        print('에러 발생: $error');
-        print('스택트레이스: $stack');
-        return Center(child: Text('에러가 발생했습니다: $error'));
+        return Center(
+          child: ElevatedButton(
+            onPressed: () {
+              ref.refresh(
+                dailyDiaryProvider((
+                  diaryId: widget.diaryId,
+                  userId: "test", // userId 그대로 유지
+                )),
+              );
+            },
+            child: Text('다시 시도'),
+          ),
+        );
       },
-      loading: () => SizedBox.shrink(),
+      loading: () => Center(child: Text('불러오는 중...')),
     );
   }
 }

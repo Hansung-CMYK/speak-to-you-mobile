@@ -49,7 +49,6 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     final targetTime = DateTime(2025, 5, 19); // TODO이후에 현재 시간으로 변경
     //uid는 시스템에 존재
     final request = DiaryRequestModel(
@@ -66,8 +65,13 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
         data: (fetchedDiary) {
           Diary diary = fetchedDiary;
 
-          bool isAllUrlsNotNull = diary.topics.every((topic) => topic.url != null);
+          bool isAllUrlsNotNull = diary.topics.every(
+            (topic) => topic.url != null,
+          );
 
+          // 해당 함수를 호출함 으로써 setState가 호출되고 이는 현재 화면을 reBuild시킨다.
+          // 이에따라 isAllUrlsNotNull이 재검증하게 되고
+          // 저장버튼의 활성화 여부를 판단한다. 즉, topic의 url이 채워지면 null값을 확인하여 모든 이미가 load되도록 함
           void updateTopicUrl(int index, String newUrl) {
             setState(() {
               diary.topics[index].url = newUrl;
@@ -170,17 +174,20 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                           .entries
                           .where((entry) => entry.value.isDeleted != true)
                           .map((entry) {
-                        final index = entry.key;
-                        final topic = entry.value;
+                            final index = entry.key;
+                            final topic = entry.value;
 
-                        return TopicContainer(
-                          topic: topic,
-                          containerId: index,
-                          regenerateKey: regenerateKeys[index] ?? 0,
-                          onRegenerateKeyChanged: () => increaseKey(index),
-                          updateUrl: (String newUrl) => updateTopicUrl(index,newUrl),
-                        );
-                      }),
+                            return TopicContainer(
+                              topic: topic,
+                              containerId: index,
+                              regenerateKey: regenerateKeys[index] ?? 0,
+                              onRegenerateKeyChanged: () => increaseKey(index),
+                              isNewDiary: true,
+                              updateUrl:
+                                  (String newUrl) =>
+                                      updateTopicUrl(index, newUrl),
+                            );
+                          }),
 
                       // 일기 작성해준 EGO 정보
                       HelpedEgoInfoContainer(egoId: diary.egoId),
@@ -200,26 +207,29 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                           top: 15.h,
                         ),
                         child: TextButton(
-                          onPressed: isAllUrlsNotNull // 전체 이미지의 url이 load 되었다면
-                              ? () {
-                            debugPrint(diary.toString()); // 생성 또는 수정된 Diary객체 출력
+                          onPressed:
+                              isAllUrlsNotNull // 전체 이미지의 url이 load 되었다면
+                                  ? () {
+                                    debugPrint(
+                                      diary.toString(),
+                                    ); // 생성 또는 수정된 Diary객체 출력
 
-                            // TODO 일기 저장 API
-                            final customBottomToast = CustomToast(
-                              toastMsg: '일기가 저장되었습니다.',
-                              iconPath: 'assets/icon/complete.svg',
-                              backgroundColor: AppColors.accent,
-                              fontColor: AppColors.white,
-                            );
-                            customBottomToast.init(fToast);
+                                    // TODO 일기 저장 API
+                                    final customBottomToast = CustomToast(
+                                      toastMsg: '일기가 저장되었습니다.',
+                                      iconPath: 'assets/icon/complete.svg',
+                                      backgroundColor: AppColors.accent,
+                                      fontColor: AppColors.white,
+                                    );
+                                    customBottomToast.init(fToast);
 
-                            final position = 107.0.h;
+                                    final position = 107.0.h;
 
-                            customBottomToast.showBottomPositionedToast(
-                              bottom: position,
-                            );
-                          }
-                              : null,
+                                    customBottomToast.showBottomPositionedToast(
+                                      bottom: position,
+                                    );
+                                  }
+                                  : null,
                           style: TextButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.r),
@@ -228,7 +238,10 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                               horizontal: 20.w,
                               vertical: 15.h,
                             ),
-                              backgroundColor: isAllUrlsNotNull ? AppColors.strongOrange : AppColors.gray400,
+                            backgroundColor:
+                                isAllUrlsNotNull
+                                    ? AppColors.strongOrange
+                                    : AppColors.gray400,
                           ),
                           child: Text(
                             "일기저장",
@@ -248,9 +261,14 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
           );
         },
         error: (error, stack) {
-          print('에러 발생: $error');
-          print('스택트레이스: $stack');
-          return Center(child: Text('에러가 발생했습니다: $error'));
+          return Center(
+            child: ElevatedButton(
+              onPressed: () {
+                ref.refresh(diaryCreateFutureProvider(request));
+              },
+              child: Text('다시 시도'),
+            ),
+          );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
       ),

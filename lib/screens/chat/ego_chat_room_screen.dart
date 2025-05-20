@@ -32,7 +32,6 @@ class EgoChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
   final EgoModelV1 egoModel;
-  final EgoModelV1 egoModel;
 
   const EgoChatRoomScreen({
     Key? key,

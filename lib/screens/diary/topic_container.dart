@@ -22,6 +22,7 @@ class TopicContainer extends ConsumerStatefulWidget {
   final int regenerateKey;
   final VoidCallback onRegenerateKeyChanged;
   final void Function(String newUrl)? updateUrl;
+  final bool isNewDiary;
 
   TopicContainer({
     Key? key,
@@ -29,7 +30,8 @@ class TopicContainer extends ConsumerStatefulWidget {
     required this.containerId,
     required this.regenerateKey,
     required this.onRegenerateKeyChanged,
-    this.updateUrl
+    this.updateUrl,
+    required this.isNewDiary,
   }) : super(key: key);
 
   @override
@@ -59,19 +61,26 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
 
     _pageController = PageController();
 
+    fixedPrompt = widget.topic.content; // 초기 prompt값을 유지
+    widget
+        .onRegenerateKeyChanged(); // 현재 상태관리하는 이미지provider의 key값 (이미지 재생성 에서 사용)
+
+    // 새로운 일기 일때만 초기 이미지 생성
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _loadInitialImage();
+      if (widget.isNewDiary) {
+        _loadInitialImage();
+      } else {
+        imageUrls.add(widget.topic.url!);
+      }
     });
   }
 
   // 초기 이미지 생성
   Future<void> _loadInitialImage() async {
-    fixedPrompt = widget.topic.content; // 초기 prompt값을 유지
-    widget.onRegenerateKeyChanged(); // 현재 상태관리하는 이미지provider의 key값 (이미지 재생성 에서 사용)
     final imageUrl = await ref.read(
       diaryImageProvider((
-        prompt: fixedPrompt,
-        regenerateKey: widget.regenerateKey,
+      prompt: fixedPrompt,
+      regenerateKey: widget.regenerateKey,
       )).future,
     );
     setState(() {
@@ -91,8 +100,8 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
       widget.onRegenerateKeyChanged();
       final imageUrl = await ref.read(
         diaryImageProvider((
-          prompt: fixedPrompt,
-          regenerateKey: widget.regenerateKey,
+        prompt: fixedPrompt,
+        regenerateKey: widget.regenerateKey,
         )).future,
       );
       setState(() {
@@ -110,18 +119,17 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
 
       final currentImageUrl = imageUrls[currentPage];
       widget.updateUrl?.call(currentImageUrl);
-      
+
       print('containerID : $widget.containerId');
       print('📸 Prompt: $fixedPrompt');
       print('🧬 Key: ${widget.regenerateKey}');
       print('🌐 Image URL: $imageUrl');
-    } else { // 4회 이상 이미지 생성시
+    } else {
+      // 4회 이상 이미지 생성시
       customBottomToast.init(fToast);
       final position = 107.0.h;
 
-      customBottomToast.showBottomPositionedToast(
-        bottom: position,
-      );
+      customBottomToast.showBottomPositionedToast(bottom: position);
     }
   }
 
@@ -154,7 +162,8 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
                     margin: EdgeInsets.only(bottom: 10.h),
                     width: size,
                     height: size,
-                    child: imageUrls.isEmpty
+                    child:
+                    imageUrls.isEmpty
                         ? const Center(child: CircularProgressIndicator())
                         : PageView.builder(
                       controller: _pageController,

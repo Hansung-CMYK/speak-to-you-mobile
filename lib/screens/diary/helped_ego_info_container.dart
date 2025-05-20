@@ -34,7 +34,7 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () {
                   // 프로바이더 새로고침
-                  ref.invalidate(egoByIdProviderV2); // 또는 ref.refresh(...)
+                  ref.invalidate(egoByIdProviderV2);
                 },
                 child: Text('다시 시도'),
               ),
