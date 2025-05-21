@@ -9,7 +9,7 @@ class EgoModelV2 {
   final String mbti;
   final DateTime? createdAt;
   final int? likes;
-  List<String>? personalityList;
+  List<String>? personalityList; // 성격 리스트 (util_function에 나열되어 있음)
   int? rating; //user가 평가한 점수
 
   EgoModelV2({

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ego/theme/color.dart';
-import '../../providers/ego_provider.dart';
+import 'package:ego/providers/ego_provider.dart';
 
 /**
  * 그룹 채팅방 리스트를 확인하는 화면
@@ -41,7 +41,7 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
   @override
   Widget build(BuildContext context) {
     // uid는 시스템에 존재
-    final uid = 'uid2';
+    final uid = 'uid1';
     final userEgo = ref.watch(fullEgoByUserIdProvider(uid)); // 현 사용자의 ego 조회
 
     return userEgo.when(

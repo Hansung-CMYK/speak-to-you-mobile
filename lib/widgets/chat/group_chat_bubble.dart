@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-
+/**
+ * 그룹채팅에서 보여지는 채팅 내역
+ * */
 class GroupChatBubble extends StatelessWidget {
   final FirebaseChatModel chatModel;
   final VoidCallback onDelete;

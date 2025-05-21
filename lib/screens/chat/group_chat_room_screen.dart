@@ -3,16 +3,17 @@ import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 import 'package:ego/widgets/chat/emoji_send_btn.dart';
-import 'package:ego/widgets/customtoast/custom_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ego/widgets/chat/group_chat_bubble.dart';
 
-import '../../models/chat/firebase_chat_model.dart';
+import 'package:ego/models/chat/firebase_chat_model.dart';
 
+/**
+ * 사용자 ego의 personalityList에 따른 채팅 list 조회
+ * */
 class GroupChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
@@ -30,12 +31,6 @@ class GroupChatRoomScreen extends StatefulWidget {
 }
 
 class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
-  late FToast fToast;
-  final customToast = CustomToast(
-    toastMsg: "삭제 오류",
-    backgroundColor: AppColors.red,
-    fontColor: AppColors.white,
-  );
 
   late FocusNode _focusNode;
 
@@ -45,8 +40,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
 
     _focusNode = FocusNode();
   }
@@ -102,7 +95,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
             children: [
               Expanded(
                 child: StreamBuilder<QuerySnapshot>(
-                  stream:
+                  stream: // firebase와 연동
                       FirebaseFirestore.instance
                           .collection('chats')
                           .doc('group_chat')
