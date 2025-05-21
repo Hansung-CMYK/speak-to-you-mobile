@@ -1,5 +1,9 @@
 import 'package:ego/models/diary/diary_create.dart';
+import 'package:ego/providers/ego_provider.dart';
 import 'package:ego/screens/diary/share_all_diary.dart';
+import 'package:ego/screens/egoreview/ego_review.dart';
+import 'package:ego/services/diary/diary_service.dart';
+import 'package:ego/services/ego/ego_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -42,8 +46,11 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
   }
 
   void increaseKey(int containerId) {
-    setState(() {
-      regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      setState(() {
+        regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+      });
     });
   }
 
@@ -208,13 +215,13 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                         ),
                         child: TextButton(
                           onPressed:
-                              isAllUrlsNotNull // 전체 이미지의 url이 load 되었다면
-                                  ? () {
-                                    debugPrint(
-                                      diary.toString(),
-                                    ); // 생성 또는 수정된 Diary객체 출력
+                              isAllUrlsNotNull
+                                  ? () async {
+                                    debugPrint(diary.toString());
 
-                                    // TODO 일기 저장 API
+                                    // 일기 저장 요청
+                                    await DiaryService.saveDiary(diary);
+
                                     final customBottomToast = CustomToast(
                                       toastMsg: '일기가 저장되었습니다.',
                                       iconPath: 'assets/icon/complete.svg',
@@ -222,12 +229,38 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                                       fontColor: AppColors.white,
                                     );
                                     customBottomToast.init(fToast);
-
-                                    final position = 107.0.h;
-
                                     customBottomToast.showBottomPositionedToast(
-                                      bottom: position,
+                                      bottom: 107.0.h,
                                     );
+
+                                    try {
+                                      final ego = await ref.read(
+                                        egoByIdProviderV2(request.egoId).future,
+                                      );
+
+                                      // ✅ 성공 시 다음 화면으로 이동
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder:
+                                              (context) => EgoReviewScreen(
+                                                egoModelV2: ego,
+                                              ),
+                                        ),
+                                      );
+                                    } catch (error) {
+                                      // 일기 저장 에러 시 토스트만 띄우고 이동 안 함
+                                      final errorToast = CustomToast(
+                                        toastMsg: '일기 저장 불가',
+                                        iconPath: 'assets/icon/error_icon.svg',
+                                        backgroundColor: AppColors.red,
+                                        fontColor: AppColors.white,
+                                      );
+                                      errorToast.init(fToast);
+                                      errorToast.showBottomPositionedToast(
+                                        bottom: 107.0.h,
+                                      );
+                                    }
                                   }
                                   : null,
                           style: TextButton.styleFrom(
