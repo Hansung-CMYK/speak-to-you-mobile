@@ -9,7 +9,8 @@ class EgoModelV2 {
   final String mbti;
   final DateTime? createdAt;
   final int? likes;
-  final List<String>? personalityList;
+  List<String>? personalityList; // 성격 리스트 (util_function에 나열되어 있음)
+  int? rating; //user가 평가한 점수
 
   EgoModelV2({
     this.id,
@@ -20,6 +21,7 @@ class EgoModelV2 {
     this.createdAt,
     this.likes,
     this.personalityList,
+    this.rating
   });
 
   /// JSON → Ego 객체
@@ -39,6 +41,7 @@ class EgoModelV2 {
       json['personalityList'] != null
           ? List<String>.from(json['personalityList'])
           : [],
+      rating: json['rating']
     );
   }
 
@@ -52,6 +55,7 @@ class EgoModelV2 {
       'createdAt': createdAt?.toIso8601String(),
       'likes': likes,
       'personalityList': personalityList,
+      'rating' : rating
     };
   }
 

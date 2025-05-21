@@ -24,3 +24,21 @@ final egoByIdProvider = FutureProvider.family<EgoModelV1, int>((ref, egoId) asyn
 final egoByIdProviderV2 = FutureProvider.family<EgoModelV2, int>((ref, egoId) async {
   return await EgoService.fetchEgoByIdV2(egoId);
 });
+
+/**
+ * uid를 기반으로 ego를 조회
+ * */
+final egoByUserIdProvider = FutureProvider.family<EgoModelV2, String> ((ref, uid) async {
+  return await EgoService.fetchEgoByUserId(uid);
+});
+
+/**
+ * uid를 기반으로 ego의 전체 정보 조회 PsersonalityId를 조회하기 위함
+ * */
+final fullEgoByUserIdProvider = FutureProvider.family<EgoModelV2, String> ((ref, uid) async {
+
+  final userEgo = await EgoService.fetchEgoByUserId(uid);
+  final ego = await ref.watch(egoByIdProviderV2(userEgo.id!).future);
+
+  return ego;
+});

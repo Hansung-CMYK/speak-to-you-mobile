@@ -1,16 +1,19 @@
-import 'package:ego/models/ego_model_v2.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/theme/color.dart';
-import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 import 'package:ego/widgets/chat/emoji_send_btn.dart';
-import 'package:ego/widgets/customtoast/custom_toast.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 import 'package:ego/widgets/chat/group_chat_bubble.dart';
 
+import 'package:ego/models/chat/firebase_chat_model.dart';
+
+/**
+ * 사용자 ego의 personalityList에 따른 채팅 list 조회
+ * */
 class GroupChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
@@ -28,53 +31,18 @@ class GroupChatRoomScreen extends StatefulWidget {
 }
 
 class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
-  late FToast fToast;
-  final customToast = CustomToast(
-    toastMsg: "삭제 오류",
-    backgroundColor: AppColors.red,
-    fontColor: AppColors.white,
-  );
 
   late FocusNode _focusNode;
 
   final ScrollController _scrollController = ScrollController();
-
-  late List<ChatHistory> messages = [
-    ChatHistory(
-      uid: 'apple',
-      chatRoomId: 1,
-      content: "assets/icon/emotion/anger.svg",
-      type: 'group',
-      chatAt: DateTime.now(),
-    ),
-  ];
   bool _isEmojiVisible = false;
-
-  int _pageNum = 0;
-  bool _isLoading = false;
-  bool _hasMore = true;
 
   @override
   void initState() {
     super.initState();
-    fToast = FToast();
-    fToast.init(context);
-    _fetchInitialData();
-
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels <= 200 && !_isLoading && _hasMore) {
-        _fetchMoreData();
-      }
-    });
 
     _focusNode = FocusNode();
   }
-
-  Future<void> _fetchInitialData() async {
-    // 그룹채팅 리스트 불러오기
-  }
-
-  Future<void> _fetchMoreData() async {}
 
   @override
   void dispose() {
@@ -84,29 +52,24 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
   }
 
   // 이미지 경로 전송 로직
-  void _sendMessage(String content) {
-    //uid는 시스템에 존재
-    ChatHistory chatHistory = ChatHistory(
-      uid: 'test',
-      chatRoomId: widget.chatRoomId,
-      content: content,
-      type: 'user',
-      chatAt: DateTime.now(),
-    );
-
-    //TODO 전송 로직
-
-    setState(() {
-      messages.insert(0, chatHistory);
+  Future<void> _sendMessage(String content) async {
+    Future.delayed(Duration(milliseconds: 100), () {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          0,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.animateTo(
-        _scrollController.position.minScrollExtent,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
+    await FirebaseFirestore.instance
+        .collection('chats/group_chat/${widget.chatRoomId}/room/messages')
+        .add({
+          'text': content,
+          'senderId': widget.uid,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
   }
 
   @override
@@ -131,54 +94,59 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
           Column(
             children: [
               Expanded(
-                child: RawScrollbar(
-                  thumbVisibility: true,
-                  thickness: 3,
-                  thumbColor: AppColors.gray700,
-                  radius: Radius.circular(10.r),
-                  controller: _scrollController,
-                  child: ListView.builder(
-                    reverse: true,
-                    controller: _scrollController,
-                    padding: EdgeInsets.symmetric(vertical: 8.h),
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      // Group Chat Bubble이 그려짐
-                      return GroupChatBubble(
-                        chatHistory: messages[index],
-                        onDelete: () async {
-                          try {
-                            //TODO 삭제 API
-                            setState(() {
-                              messages.removeAt(index);
-                            });
-                            _focusNode.unfocus();
-                          } catch (e) {
-                            customToast.init(fToast);
-                            customToast.showTopToast();
-                          }
-                        },
-                        onProfileTap: () {
-                          // 프로필 이미지 클릭시
-                          // 임시 객체 실제로는 EGO 요청해야함
-                          EgoModelV2 egoModelV2 = EgoModelV2(
-                            name: '사과짱',
-                            introduction: '사과 좋아',
-                            mbti: 'INFJ',
-                            createdAt: DateTime(2025, 5, 6),
-                          );
+                child: StreamBuilder<QuerySnapshot>(
+                  stream: // firebase와 연동
+                      FirebaseFirestore.instance
+                          .collection('chats')
+                          .doc('group_chat')
+                          .collection('${widget.chatRoomId}')
+                          .doc('room')
+                          .collection('messages')
+                          .orderBy('timestamp', descending: true)
+                          .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-                          showTodayEgoIntroSheetV2(
-                            context,
-                            egoModelV2,
-                            canChatWithHuman: true,
-                            isOtherEgo: true,
-                            relationTag: "게임중독",
-                          );
-                        },
+                    if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                      return Center(
+                        child: Text(
+                          '이모지로 대화를 시작해 보세요!',
+                          style: TextStyle(color: Colors.grey),
+                        ),
                       );
-                    },
-                  ),
+                    }
+
+                    final messages = snapshot.data!.docs;
+
+                    return ListView.builder(
+                      controller: _scrollController,
+                      reverse: true, // Display latest messages at the bottom
+                      itemCount: messages.length,
+                      itemBuilder: (ctx, index) {
+                        final messageData =
+                            messages[index].data() as Map<String, dynamic>;
+                        final chatModel = FirebaseChatModel.fromMap(
+                          messageData,
+                        );
+                        final isMe = messageData['senderId'] == widget.uid;
+
+                        return GroupChatBubble(
+                          chatModel: chatModel,
+                          onDelete: () {},
+                          onProfileTap: () async {
+                            final egoData = await EgoService.fetchOtherEgoByUserIdWithRating(messageData['senderId']);
+
+                            // TODO 가져온 평가 점수로 사람과 채팅 가능하게 할것 인지 여부 필요
+                            showTodayEgoIntroSheetV2(context, egoData, isOtherEgo: true);
+
+                          },
+                          isMe: isMe,
+                        );
+                      },
+                    );
+                  },
                 ),
               ),
 
@@ -267,9 +235,6 @@ Widget _showEmojiList(void Function(String) onPressed) {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            print(index);
-            //uid는 시스템에 존재
-
             onPressed(emojiList[index]);
           },
           child: SvgPicture.asset(emojiList[index], width: 40, height: 40),

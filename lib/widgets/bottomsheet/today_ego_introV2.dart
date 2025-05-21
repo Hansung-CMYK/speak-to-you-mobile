@@ -17,7 +17,7 @@ void showTodayEgoIntroSheetV2(
   bool isOtherEgo = false,
   VoidCallback? onChatWithEgo,
   VoidCallback? onChatWithHuman,
-  String relationTag = "", // 관계 태그
+  String relationTag = "", // ego와의 친밀도 태그
   bool canChatWithHuman = false, // 사람과 채팅 가능한지 여부
   String unavailableReason = "", // 채팅 불가능한 이유
 }) {
@@ -152,7 +152,7 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
       isFavorite = true;
     }
 
-    heartCount = widget.egoModelV2.likes?? 0;
+    heartCount = widget.egoModelV2.likes ?? 0;
 
     //TODO heartCount 불러오는 로직 필요
     //TODO isFavorite 불러오는 로직 필요
@@ -344,9 +344,11 @@ Widget _egoSpecificInfo(EgoModelV2 egoModelV2) {
                 14,
                 FontWeight.w700,
               ),
-              Text(
-                egoModelV2.genPersonalityListToString(),
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 16.sp),
+              SizedBox(width: 3.w),
+              Flexible( // 💡 여기에 Flexible 추가
+                child: PersonalityText(
+                  text: egoModelV2.genPersonalityListToString(),
+                ),
               ),
             ],
           ),
@@ -587,4 +589,37 @@ Widget _sizableTagWidget(
       ),
     ),
   );
+}
+
+class PersonalityText extends StatefulWidget {
+  final String text;
+
+  const PersonalityText({super.key, required this.text});
+
+  @override
+  State<PersonalityText> createState() => _PersonalityTextState();
+}
+
+class _PersonalityTextState extends State<PersonalityText> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isExpanded = !isExpanded;
+        });
+      },
+      child: Text(
+        widget.text,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 16.sp,
+        ),
+        overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+        softWrap: true,
+      ),
+    );
+  }
 }
