@@ -30,6 +30,7 @@ class GroupChatBubble extends StatelessWidget {
   Widget build(BuildContext context) {
     final alignment = isMe ? MainAxisAlignment.end : MainAxisAlignment.start;
 
+    // TODO 매개변수로 받기
     Uint8List? profileImageBytes; // 보낸 사용자의 ego profile Image
 
     return Padding(
@@ -44,13 +45,13 @@ class GroupChatBubble extends StatelessWidget {
               child: Padding(
                 padding: EdgeInsets.only(right: 8.w),
                 child: CircleAvatar(
-                  radius: 16.r,
+                  radius: 17.r,
                   backgroundColor: Colors.grey.shade300,
                   backgroundImage: profileImageBytes != null
                       ? MemoryImage(profileImageBytes)
                       : null,
                   child: profileImageBytes == null
-                      ? Icon(Icons.person, size: 16.sp, color: Colors.white)
+                      ? Icon(Icons.person, size: 17.r, color: Colors.white)
                       : null,
                 ),
               ),
@@ -81,12 +82,12 @@ class GroupChatBubble extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 child: SvgPicture.asset(
                   chatModel.text, // 그룹채팅의 이모지 경로
-                  width: 120.w,
-                  height: 120.h,
+                  width: 110.w,
+                  height: 110.h,
                   fit: BoxFit.cover,
                   placeholderBuilder: (context) => Container(
-                    width: 120.w,
-                    height: 120.h,
+                    width: 110.w,
+                    height: 110.h,
                     color: Colors.grey.shade200,
                     child: Center(child: CircularProgressIndicator()),
                   ),

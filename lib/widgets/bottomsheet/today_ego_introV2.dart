@@ -345,14 +345,9 @@ Widget _egoSpecificInfo(EgoModelV2 egoModelV2) {
                 FontWeight.w700,
               ),
               SizedBox(width: 3.w),
-              Expanded(
-                child: Text(
-                  egoModelV2.genPersonalityListToString(),
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 16.sp,
-                  ),
-                  softWrap: true,
+              Flexible( // 💡 여기에 Flexible 추가
+                child: PersonalityText(
+                  text: egoModelV2.genPersonalityListToString(),
                 ),
               ),
             ],
@@ -594,4 +589,37 @@ Widget _sizableTagWidget(
       ),
     ),
   );
+}
+
+class PersonalityText extends StatefulWidget {
+  final String text;
+
+  const PersonalityText({super.key, required this.text});
+
+  @override
+  State<PersonalityText> createState() => _PersonalityTextState();
+}
+
+class _PersonalityTextState extends State<PersonalityText> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isExpanded = !isExpanded;
+        });
+      },
+      child: Text(
+        widget.text,
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 16.sp,
+        ),
+        overflow: isExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+        softWrap: true,
+      ),
+    );
+  }
 }

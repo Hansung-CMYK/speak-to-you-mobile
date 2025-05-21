@@ -112,7 +112,7 @@ class EgoService {
    * */
   static Future<EgoModelV2> fetchOtherEgoByUserIdWithRating(String otherUid) async {
     final otherEgoData = await fetchEgoByUserId(otherUid); // uid로 상대의 ego 조회
-    String uid = 'uid1'; //uid는 시스템에 존재
+    String uid = 'uid2'; //uid는 시스템에 존재
     final otherEgoRating = await http.get(Uri.parse('$baseUrl/ego/${otherEgoData.id}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
 
     if(otherEgoRating.statusCode == 200){

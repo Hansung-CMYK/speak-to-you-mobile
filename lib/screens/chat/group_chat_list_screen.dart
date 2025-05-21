@@ -41,7 +41,7 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
   @override
   Widget build(BuildContext context) {
     // uid는 시스템에 존재
-    final uid = 'uid1';
+    final uid = 'uid2';
     final userEgo = ref.watch(fullEgoByUserIdProvider(uid)); // 현 사용자의 ego 조회
 
     return userEgo.when(
