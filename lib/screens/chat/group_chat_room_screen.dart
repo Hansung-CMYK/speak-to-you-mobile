@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
-import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/widgets/chat/emoji_send_btn.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 
@@ -9,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 import 'package:ego/widgets/chat/group_chat_bubble.dart';
 
 import '../../models/chat/firebase_chat_model.dart';
@@ -61,7 +58,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   // 이미지 경로 전송 로직
   Future<void> _sendMessage(String content) async {
-    //uid는 시스템에 존재
 
     Future.delayed(Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
@@ -121,7 +117,7 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
                       return Center(
                         child: Text(
-                          'No messages yet. Start chatting!',
+                          '이모지로 대화를 시작해 보세요!',
                           style: TextStyle(color: Colors.grey),
                         ),
                       );
@@ -134,7 +130,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                       reverse: true, // Display latest messages at the bottom
                       itemCount: messages.length,
                       itemBuilder: (ctx, index) {
-                        final docSnapshot = messages[index];
                         final messageData =
                             messages[index].data() as Map<String, dynamic>;
                         final chatModel = FirebaseChatModel.fromMap(
@@ -152,7 +147,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
                             //     .delete();
                           },
                           onProfileTap: () {
-                            // TODO UserId로 Ego 정보 조회 및 보이기
                           },
                           isMe: isMe,
                         );
@@ -247,9 +241,6 @@ Widget _showEmojiList(void Function(String) onPressed) {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            print(index);
-            //uid는 시스템에 존재
-
             onPressed(emojiList[index]);
           },
           child: SvgPicture.asset(emojiList[index], width: 40, height: 40),

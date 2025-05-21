@@ -51,11 +51,19 @@ class EgoService {
   /**
    * 전달된 ChatRoomModel들을 바탕으로 EGO정보를 조회합니다.
    * */
-  static Future<List<EgoModelV1>> fetchEgoModelsForChatRooms(List<ChatRoomModel> chatRoomList, WidgetRef  ref) async {
+  static Future<List<EgoModelV1>> fetchEgoModelsForChatRooms(
+    List<ChatRoomModel> chatRoomList,
+    WidgetRef ref,
+  ) async {
     // 각 chatRoom에 대한 egoId를 기반으로 egoModel Future 리스트 생성
-    final futures = chatRoomList.map(
-          (chatRoom) => ref.watch(egoByIdProvider(chatRoom.egoId).future), // egoId로 EgoModel 가져오기
-    ).toList();
+    final futures =
+        chatRoomList
+            .map(
+              (chatRoom) => ref.watch(
+                egoByIdProvider(chatRoom.egoId).future,
+              ), // egoId로 EgoModel 가져오기
+            )
+            .toList();
 
     // 여러 개의 future를 기다리기 위해 Future.wait 사용
     return await Future.wait(futures);
@@ -78,6 +86,24 @@ class EgoService {
       return EgoModelV2.fromJson(egoData);
     } else {
       throw Exception('Ego 정보 불러오기 실패: ${response.statusCode}');
+    }
+  }
+
+  /**
+   * 사용자 id로 사용자의 ego조회
+   * */
+  static Future<EgoModelV2> fetchEgoByUserId(String uid) async {
+    final response = await http.get(Uri.parse('$baseUrl/ego/user/$uid'));
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final egoData = decodedJson['data'];
+
+      return EgoModelV2.fromJson(egoData);
+    } else {
+      throw throw Exception('Ego 정보 불러오기 실패: ${response.statusCode}');
     }
   }
 }
