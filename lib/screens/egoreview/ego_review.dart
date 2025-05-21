@@ -1,6 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/models/evaluation_model.dart';
+import 'package:ego/services/evaluation_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
@@ -158,13 +160,19 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
           Spacer(),
 
           // 평가완료 버튼
-          reviewCompleteBtn(
-            context,
-            () => {
-              // TODO 평가 정보 송신 및 화면 전환
-            },
-            totalRate != 0 && solvingProblemRate != -1 && empathyRate != -1,
-          ),
+          reviewCompleteBtn(context, () async {
+            // TODO 완성된 홈 화면으로 이동
+            //uid는 시스템에 존재
+            EvaluationModel evaluation = EvaluationModel(
+              uid: 'user_id_001',
+              egoId: egoModelV2.id!,
+              solvingScore: solvingProblemRate,
+              talkingScore: empathyRate,
+              overallScore: totalRate,
+            );
+
+            await EvaluationService.saveEvaluation(evaluation);
+          }, totalRate != 0 && solvingProblemRate != -1 && empathyRate != -1),
         ],
       ),
     );

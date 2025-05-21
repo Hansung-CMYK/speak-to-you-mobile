@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import '../../models/diary/diary.dart';
-import '../../models/diary/diary_create.dart';
-import '../../models/diary/monthly_diary.dart';
-import '../../utils/constants.dart';
+import 'package:ego/models/diary/diary.dart';
+import 'package:ego/models/diary/diary_create.dart';
+import 'package:ego/models/diary/monthly_diary.dart';
+import 'package:ego/utils/constants.dart';
 
 class DiaryService {
   /**

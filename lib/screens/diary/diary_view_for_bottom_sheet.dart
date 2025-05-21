@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../models/diary/diary.dart';
 import '../../providers/diary/diary_provider.dart';
+import '../../services/diary/diary_service.dart';
 import 'helped_ego_info_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -48,11 +49,14 @@ class _DiaryViewForBottomSheetState
     fToast.init(context);
   }
 
+  // 같은 prompt로 이미지생성이 가능하도록
+  // provider에 key값을 추가해 provider의 고유값 판단
   void increaseKey(int containerId) {
+    final newKey = DateTime.now().millisecondsSinceEpoch;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        regenerateKeys[containerId] = (regenerateKeys[containerId] ?? 0) + 1;
+        regenerateKeys[containerId] = newKey;
       });
     });
   }
@@ -62,13 +66,19 @@ class _DiaryViewForBottomSheetState
     final diaryAsync = ref.watch(
       dailyDiaryProvider((
         diaryId: widget.diaryId,
-        userId: "test", // uid는 시스템에 존재
+        userId: "user_id_001", // uid는 시스템에 존재
       )),
     );
 
     return diaryAsync.when(
       data: (fetchedDiary) {
         Diary diary = fetchedDiary;
+
+        void updateTopicUrl(int index, String newUrl) {
+          setState(() {
+            diary.topics[index].url = newUrl;
+          });
+        }
 
         return Padding(
           padding: EdgeInsets.only(right: 2.w),
@@ -175,22 +185,24 @@ class _DiaryViewForBottomSheetState
                     ),
 
                     // topic 정보 Container(topic제목, topic 내용, topic 이미지)
-                      ...diary.topics
-                          .asMap()
-                          .entries
-                          .where((entry) => entry.value.isDeleted != true)
-                          .map((entry) {
-                            final index = entry.key;
-                            final topic = entry.value;
+                    ...diary.topics
+                        .asMap()
+                        .entries
+                        .where((entry) => entry.value.isDeleted != true)
+                        .map((entry) {
+                          final index = entry.key;
+                          final topic = entry.value;
 
-                            return TopicContainer(
-                              topic: topic,
-                              containerId: index,
-                              regenerateKey: regenerateKeys[index] ?? 0,
-                              onRegenerateKeyChanged: () => increaseKey(index),
-                              isNewDiary: false,
-                            );
-                          }),
+                          return TopicContainer(
+                            topic: topic,
+                            containerId: index,
+                            regenerateKey: regenerateKeys[index] ?? 0,
+                            onRegenerateKeyChanged: () => increaseKey(index),
+                            isNewDiary: false,
+                            updateUrl: (String newUrl) =>
+                                updateTopicUrl(index, newUrl),
+                          );
+                        }),
 
                     // 일기 작성해준 EGO 정보
                     HelpedEgoInfoContainer(egoId: diary.egoId),
@@ -209,23 +221,35 @@ class _DiaryViewForBottomSheetState
                         right: 20.w,
                       ),
                       child: TextButton(
-                        onPressed: () {
-                          // TODO 일기 저장 API
-
-                          final customBottomToast = CustomToast(
-                            toastMsg: '일기가 저장되었습니다.',
-                            iconPath: 'assets/icon/complete.svg',
-                            backgroundColor: AppColors.accent,
-                            fontColor: AppColors.white,
-                          );
-                          customBottomToast.init(fToast);
-
-                          final position = 107.0.h;
-
-                          customBottomToast.showBottomPositionedToast(
-                            bottom: position,
-                          );
+                        onPressed: () async {
                           debugPrint(diary.toString());
+
+                          try {
+                            await DiaryService.saveDiary(diary);
+
+                            final customBottomToast = CustomToast(
+                              toastMsg: '일기가 저장되었습니다.',
+                              iconPath: 'assets/icon/complete.svg',
+                              backgroundColor: AppColors.accent,
+                              fontColor: AppColors.white,
+                            );
+                            customBottomToast.init(fToast);
+                            customBottomToast.showBottomPositionedToast(
+                              bottom: 107.0.h,
+                            );
+                          } catch (error) {
+                            // 일기 저장 에러 시 토스트만 띄우고 이동 안 함
+                            final errorToast = CustomToast(
+                              toastMsg: '일기 저장 불가',
+                              iconPath: 'assets/icon/error_icon.svg',
+                              backgroundColor: AppColors.red,
+                              fontColor: AppColors.white,
+                            );
+                            errorToast.init(fToast);
+                            errorToast.showBottomPositionedToast(
+                              bottom: 107.0.h,
+                            );
+                          }
                         },
                         style: TextButton.styleFrom(
                           shape: RoundedRectangleBorder(

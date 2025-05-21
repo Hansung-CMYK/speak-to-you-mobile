@@ -45,6 +45,8 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
     fToast.init(context);
   }
 
+  // 같은 prompt로 이미지생성이 가능하도록
+  // provider에 key값을 추가해 provider의 고유값 판단
   void increaseKey(int containerId) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
@@ -60,7 +62,7 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
     //uid는 시스템에 존재
     final request = DiaryRequestModel(
       userId: "user_id_001",
-      egoId: 1, // TODO 이후 uid에 따라 egoId를 조회합니다.
+      egoId: 1, // TODO 이후 uid에 따라 오늘의 egoid를 전달 합니다.
       date: targetTime,
     );
 
@@ -219,26 +221,27 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                                   ? () async {
                                     debugPrint(diary.toString());
 
-                                    // 일기 저장 요청
-                                    await DiaryService.saveDiary(diary);
-
-                                    final customBottomToast = CustomToast(
-                                      toastMsg: '일기가 저장되었습니다.',
-                                      iconPath: 'assets/icon/complete.svg',
-                                      backgroundColor: AppColors.accent,
-                                      fontColor: AppColors.white,
-                                    );
-                                    customBottomToast.init(fToast);
-                                    customBottomToast.showBottomPositionedToast(
-                                      bottom: 107.0.h,
-                                    );
-
                                     try {
+                                      // 일기 저장 요청
+                                      await DiaryService.saveDiary(diary);
+
+                                      final customBottomToast = CustomToast(
+                                        toastMsg: '일기가 저장되었습니다.',
+                                        iconPath: 'assets/icon/complete.svg',
+                                        backgroundColor: AppColors.accent,
+                                        fontColor: AppColors.white,
+                                      );
+                                      customBottomToast.init(fToast);
+                                      customBottomToast
+                                          .showBottomPositionedToast(
+                                            bottom: 107.0.h,
+                                          );
+
                                       final ego = await ref.read(
                                         egoByIdProviderV2(request.egoId).future,
                                       );
 
-                                      // ✅ 성공 시 다음 화면으로 이동
+                                      // ✅ 성공 시 ego 평가 화면으로 이동
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
