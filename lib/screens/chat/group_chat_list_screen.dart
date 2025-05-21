@@ -41,7 +41,7 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
   @override
   Widget build(BuildContext context) {
     // uid는 시스템에 존재
-    final uid = 'uid1';
+    final uid = 'uid2';
     final userEgo = ref.watch(fullEgoByUserIdProvider(uid)); // 현 사용자의 ego 조회
 
     return userEgo.when(
@@ -156,16 +156,16 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
     );
   }
 
-  // TODO 이미지 제적 필요
+  // TODO 이미지 제작 필요
   String _convertPersonalityToImagePath(String personality) {
     switch (personality) {
-      case '게임중독':
+      case '늘정주나':
         return 'assets/image/game_chat_room.png';
-      case '영화중독':
+      case '시간마술사':
         return 'assets/image/movie_chat_room.png';
-      case '음악중독':
+      case '존댓말자동완성':
         return 'assets/image/music_chat_room.png';
-      case '애니중독':
+      case '식사개근상':
         return 'assets/image/anime_chat_room.png';
       default:
         return 'assets/image/ego_icon.png'; // 기본 이미지 경로

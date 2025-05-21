@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/theme/color.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 import 'package:ego/widgets/chat/emoji_send_btn.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 
@@ -58,7 +60,6 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
   // 이미지 경로 전송 로직
   Future<void> _sendMessage(String content) async {
-
     Future.delayed(Duration(milliseconds: 100), () {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
@@ -69,12 +70,13 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
       }
     });
 
-    await FirebaseFirestore.instance.collection('chats/group_chat/${widget.chatRoomId}/room/messages').add({
-      'text': content,
-      'senderId': widget.uid,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
+    await FirebaseFirestore.instance
+        .collection('chats/group_chat/${widget.chatRoomId}/room/messages')
+        .add({
+          'text': content,
+          'senderId': widget.uid,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
   }
 
   @override
@@ -139,14 +141,13 @@ class _GroupChatRoomScreenState extends State<GroupChatRoomScreen> {
 
                         return GroupChatBubble(
                           chatModel: chatModel,
-                          onDelete: () async {
-                            // TODO firebase로 삭제 요청
-                            // await FirebaseFirestore.instance
-                            //     .collection('chats/group_chat/${widget.chatRoomId}/messages')
-                            //     .doc(docSnapshot.id)
-                            //     .delete();
-                          },
-                          onProfileTap: () {
+                          onDelete: () {},
+                          onProfileTap: () async {
+                            final egoData = await EgoService.fetchOtherEgoByUserIdWithRating(messageData['senderId']);
+
+                            // TODO 가져온 평가 점수로 사람과 채팅 가능하게 할것 인지 여부 필요
+                            showTodayEgoIntroSheetV2(context, egoData, isOtherEgo: true);
+
                           },
                           isMe: isMe,
                         );
