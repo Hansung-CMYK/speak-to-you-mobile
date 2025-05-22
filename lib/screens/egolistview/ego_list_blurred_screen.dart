@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_room_model.dart';
-import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/services/chat/chat_room_service.dart';
 import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';

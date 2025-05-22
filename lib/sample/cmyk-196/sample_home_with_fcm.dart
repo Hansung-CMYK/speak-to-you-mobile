@@ -1,4 +1,3 @@
-import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/screens/home_callNmsg_func.dart';
 // import 'package:firebase_core/firebase_core.dart';

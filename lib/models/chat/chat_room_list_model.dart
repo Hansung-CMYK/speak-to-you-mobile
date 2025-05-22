@@ -1,6 +1,5 @@
 import 'package:ego/models/ego_model_v2.dart';
 
-import '../ego_model_v1.dart';
 
 /**
  * ChatRoom값과 EgoModel의 값을 묶어서 관리하기 위한 Class

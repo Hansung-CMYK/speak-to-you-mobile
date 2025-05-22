@@ -51,6 +51,7 @@ class ChatHistoryKafka {
       type: "e",
       messageHash: kafkaMessage.messageHash,
       chatAt: DateTime.now(),
+      contentType: kafkaMessage.contentType,
     );
   }
 }
