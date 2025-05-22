@@ -1,5 +1,4 @@
 import 'package:ego/models/chat/chat_history_kafka_model.dart';
-import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
@@ -31,7 +30,7 @@ import 'package:ego/widgets/chat/ego_chat_bubble.dart';
 class EgoChatRoomScreen extends StatefulWidget {
   final int chatRoomId;
   final String uid;
-  final EgoModelV1 egoModel;
+  final EgoModelV2 egoModel;
 
   const EgoChatRoomScreen({
     Key? key,
@@ -88,16 +87,9 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
       });
     });
 
-    // ✅ 연결 시 메시지 수신 처리
-    _socketService.onMessageReceived((message) {
-      setState(() {
-        messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
-      });
-    });
-
     // ✅ 실제 연결
     //uid는 시스템에 존재
-    _socketService.connect(uid: "user_account_001");
+    _socketService.connect(uid: "user_id_001");
   }
 
   Future<void> _fetchInitialData() async {
@@ -159,19 +151,20 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
 
     final inputMessage = ChatHistory(
       //uid는 시스템에 존재
-      uid: "user_account_001",
+      uid: "user_id_001",
       chatRoomId: widget.chatRoomId,
       content: text,
-      type: "user",
+      type: "u",
       chatAt: now,
       isDeleted: false,
       messageHash: messageHash,
+      contentType: 'TEXT', // 일단 이미지 없이 text 채팅만 가능하도록 가정
     );
 
     final kafkaReqMessage = ChatHistory.convertToKafka(
       inputMessage,
       to: "1", // TODO 이후 수정 widget.egoModel.id.toString(),
-      type: "TEXT",
+      contentType: "TEXT",
     );
 
     _socketService.sendMessage(kafkaReqMessage);
@@ -207,6 +200,7 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
         surfaceTintColor: AppColors.white,
         centerTitle: true,
         actions: [
+          // 우상단 ego profile 이미지
           Padding(
             padding: EdgeInsets.only(right: 10.w),
             child: buildEgoListItem(widget.egoModel.profileImage, () {
@@ -251,7 +245,7 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
                       try {
                         // 메시지 삭제 요청
                         await ChatHistoryService.deleteChatMessage(
-                          uid: "test",
+                          uid: "user_id_001",
                           messageHash: messages[index].messageHash!,
                         );
 
