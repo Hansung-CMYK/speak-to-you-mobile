@@ -11,12 +11,6 @@ final egoListProvider = FutureProvider<List<EgoModelV1>>((ref) async {
   return await EgoService.fetchAllEgoList();
 });
 
-/**
- * EgoModelV1의 Provider 이후 확정된 모델로 변경
- * */
-final egoByIdProvider = FutureProvider.family<EgoModelV1, int>((ref, egoId) async {
-  return await EgoService.fetchEgoById(egoId);
-});
 
 /**
  * EgoModelV2의 Provider 이후 확정된 모델로 변경

@@ -1,3 +1,5 @@
+import 'package:ego/models/ego_model_v2.dart';
+
 import '../ego_model_v1.dart';
 
 /**
@@ -10,7 +12,7 @@ class ChatRoomListModel {
   final int egoId;
   final DateTime lastChatAt;
   final bool isDeleted;
-  final EgoModelV1 egoModel;
+  final EgoModelV2 egoModel;
 
   ChatRoomListModel({
     required this.id,

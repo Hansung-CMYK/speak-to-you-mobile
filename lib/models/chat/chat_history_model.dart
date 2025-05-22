@@ -68,7 +68,7 @@ class ChatHistory {
       to: to,
       chatRoomId: chat.chatRoomId,
       content: chat.content,
-      type: type,
+      contentType: type,
       mcpEnabled: mcpEnabled,
       messageHash: chat.messageHash!,
     );

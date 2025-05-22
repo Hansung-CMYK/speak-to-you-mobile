@@ -1,12 +1,12 @@
 import 'package:ego/theme/color.dart';
-
+import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'ego_list_item.dart';
 
 // Gradient가 있는 EGO 사진
-Widget buildEgoListItemGradient(String assetPath, VoidCallback onTap) {
+Widget buildEgoListItemGradient(Uint8List? profileImageBytes, VoidCallback onTap) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 4.w),
     child: Stack(
@@ -37,7 +37,7 @@ Widget buildEgoListItemGradient(String assetPath, VoidCallback onTap) {
             color: AppColors.white,
           ),
         ),
-        buildEgoListItem(assetPath, onTap),
+        buildEgoListItem(profileImageBytes, onTap),
       ],
     ),
   );

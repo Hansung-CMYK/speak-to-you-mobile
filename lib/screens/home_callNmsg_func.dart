@@ -1,4 +1,5 @@
 import 'package:ego/models/ego_model_v1.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/screens/voice_chat/voice_chat_screen.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:ego/theme/color.dart';
@@ -13,7 +14,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'egolistview/ego_list_blurred_screen.dart';
 
 class HomeScreenCallnMsg extends ConsumerStatefulWidget {
-  final List<EgoModelV1> egoList;
+  final List<EgoModelV2> egoList;
 
   const HomeScreenCallnMsg({super.key, required this.egoList});
 
@@ -25,8 +26,8 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
     with SingleTickerProviderStateMixin {
   /// 선택한 Tab과 Body를 매핑하는 Controller이다.
   late TabController _tabController;
-  late final List<EgoModelV1> egoList;
-  late EgoModelV1 selectedEgo; // 선택된 EGO의 정보
+  late final List<EgoModelV2> egoList;
+  late EgoModelV2 selectedEgo; // 선택된 EGO의 정보
 
   /// _tabCntroller 초기화
   @override
@@ -68,7 +69,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
 
                   if (index == 10) {
                     // 11번째는 더보기 버튼
-                    return buildEgoListItem("", () {
+                    return buildEgoListItem(null, () {
                       Navigator.push(
                         context,
                         PageRouteBuilder(
@@ -77,7 +78,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
                               (_, __, ___) =>
                               BlurredListScreen(
                                 // uid는 시스템상에 존재한다 가정
-                                uid: "test",
+                                uid: "user_id_001",
                                 onEgoSelected: (selected) {
                                   setState(
                                         () => selectedEgo = selected,
