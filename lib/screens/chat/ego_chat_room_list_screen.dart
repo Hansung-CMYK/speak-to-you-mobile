@@ -55,7 +55,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
     // uid는 시스템상에 존재
     setState(() => _isLoading = true);
     final chatRooms = await ChatRoomService.fetchChatRoomList(
-      uid: "user_id_001",
+      uid: "user_id_001", //uid는 시스템에 존재
       pageNum: _pageNum,
       pageSize: 11,
     );

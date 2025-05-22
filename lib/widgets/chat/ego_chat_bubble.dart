@@ -75,24 +75,27 @@ class ChatBubble extends StatelessWidget {
             ),
           Flexible(
             child: GestureDetector(
-              onLongPress: () async {
-                final result = await showConfirmDialog(
-                  context: context,
-                  title: '메시지를 삭제할까요?',
-                  content: '삭제하면 이 메시지는 다시 볼 수 없어요.',
-                  dialogType: DialogType.info,
-                  stack: true,
-                  cancelText: '취소',
-                  confirmText: '삭제',
-                  confirmBackgroundColor: AppColors.red,
-                  confirmForegroundColor: AppColors.white,
-                  confirmOverlayColor: AppColors.white,
-                );
+              onLongPress:
+                  isUser // user인 경우만 삭제 할 수 있음
+                      ? () async {
+                        final result = await showConfirmDialog(
+                          context: context,
+                          title: '메시지를 삭제할까요?',
+                          content: '삭제하면 이 메시지는 다시 볼 수 없어요.',
+                          dialogType: DialogType.info,
+                          stack: true,
+                          cancelText: '취소',
+                          confirmText: '삭제',
+                          confirmBackgroundColor: AppColors.red,
+                          confirmForegroundColor: AppColors.white,
+                          confirmOverlayColor: AppColors.white,
+                        );
 
-                if (result == true) {
-                  onDelete(); // 삭제 콜백 호출
-                }
-              },
+                        if (result == true) {
+                          onDelete(); // 삭제 콜백 호출
+                        }
+                      }
+                      : null,
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
                 decoration: BoxDecoration(
