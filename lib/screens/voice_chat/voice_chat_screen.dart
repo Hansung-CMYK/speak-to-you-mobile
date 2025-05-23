@@ -45,7 +45,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: "user1",
         chatRoomId: 1,
         content: "방가방가",
-        type: "E",
+        type: "ego",
         chatAt: DateTime.parse("2025-05-09 09:21:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -54,7 +54,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: "user1",
         chatRoomId: 1,
         content: "오늘은 어떤일이 있었어?",
-        type: "E",
+        type: "ego",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -63,7 +63,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "U",
+        type: "user",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -72,7 +72,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "U",
+        type: "user",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -81,7 +81,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "U",
+        type: "user",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -90,7 +90,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "U",
+        type: "user",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -162,7 +162,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                           uid: "some-uid",
                           chatRoomId: 1,
                           content: "자동 추가된 메시지",
-                          type: "U",
+                          type: "user",
                           chatAt: DateTime.now(),
                           isDeleted: false,
                           contentType: "TEXT"
