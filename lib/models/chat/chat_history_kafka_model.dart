@@ -21,7 +21,7 @@ class ChatHistoryKafka {
 
   factory ChatHistoryKafka.fromJson(Map<String, dynamic> json) {
     return ChatHistoryKafka(
-      from: (json['from'] as String) ?? 'user_account_001',
+      from: (json['from'] as String) ?? 'user_id_001',
       to: (json['to'] as String) ?? '1',
       chatRoomId: (json['chatRoomId'] as int) ?? 1,
       content: json['content'] as String,
