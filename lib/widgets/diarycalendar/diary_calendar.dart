@@ -38,7 +38,7 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
   Widget build(BuildContext context) {
     final diariesAsync = ref.watch(
       monthlyDiaryProvider((
-        userId: "test", // uid는 시스템에 존재
+        userId: "user_id_001", // uid는 시스템에 존재
         year: _focusedDay.year,
         month: _focusedDay.month,
       )),

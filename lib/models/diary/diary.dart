@@ -1,5 +1,5 @@
 class Diary {
-  final int diaryId;
+  final int? diaryId;
   final String uid;
   final int egoId;
   final String feeling;
@@ -9,7 +9,7 @@ class Diary {
   final List<Topic> topics;
 
   Diary({
-    required this.diaryId,
+    this.diaryId,
     required this.uid,
     required this.egoId,
     required this.feeling,
@@ -28,9 +28,10 @@ class Diary {
       dailyComment: json['dailyComment'],
       createdAt: json['createdAt'],
       keywords: List<String>.from(json['keywords']),
-      topics: (json['topics'] as List)
-          .map((topicJson) => Topic.fromJson(topicJson))
-          .toList(),
+      topics:
+          (json['topics'] as List)
+              .map((topicJson) => Topic.fromJson(topicJson))
+              .toList(),
     );
   }
 
@@ -46,23 +47,39 @@ class Diary {
       'topics': topics.map((t) => t.toJson()).toList(),
     };
   }
+
+  @override
+  String toString() {
+    return '''
+📓 Diary {
+  🆔 diaryId: $diaryId
+  👤 uid: $uid
+  🧠 egoId: $egoId
+  😊 feeling: $feeling
+  💬 dailyComment: $dailyComment
+  🕒 createdAt: $createdAt
+  🏷️ keywords: ${keywords.join(', ')}
+  📝 topics:
+${topics.map((t) => t.toString()).join('\n')}
+}''';
+  }
 }
 
 class Topic {
-  final int topicId;
-  final int diaryId;
+  final int? topicId;
+  final int? diaryId;
   final String title;
-  final String content;
-  final String url;
-  final bool isDeleted;
+  String content;
+  String? url;
+  bool? isDeleted;
 
   Topic({
-    required this.topicId,
-    required this.diaryId,
+    this.topicId,
+    this.diaryId,
     required this.title,
     required this.content,
-    required this.url,
-    required this.isDeleted,
+    this.url,
+    this.isDeleted,
   });
 
   factory Topic.fromJson(Map<String, dynamic> json) {
@@ -72,7 +89,7 @@ class Topic {
       title: json['title'],
       content: json['content'],
       url: json['url'],
-      isDeleted: json['isDeleted'],
+      isDeleted: json['isDeleted'] ?? false,
     );
   }
 
@@ -85,5 +102,18 @@ class Topic {
       'url': url,
       'isDeleted': isDeleted,
     };
+  }
+
+  @override
+  String toString() {
+    return '''
+    📌 Topic {
+      🆔 topicId: $topicId
+      📘 diaryId: $diaryId
+      🏷️ title: $title
+      ✍️ content: $content
+      🌐 url: $url
+      ❌ isDeleted: $isDeleted
+    }''';
   }
 }

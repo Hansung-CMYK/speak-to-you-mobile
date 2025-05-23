@@ -27,7 +27,20 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
       error: (error, stack) {
         print('에러 발생: $error');
         print('스택트레이스: $stack');
-        return Center(child: Text('에러가 발생했습니다: $error'));
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  // 프로바이더 새로고침
+                  ref.invalidate(egoByIdProviderV2);
+                },
+                child: Text('다시 시도'),
+              ),
+            ],
+          ),
+        );
       },
       data: (ego) {
         return Container(

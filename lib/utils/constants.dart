@@ -13,3 +13,5 @@ enum Emotion {
 // local device base url
 const String baseUrl = 'http://10.0.2.2:8080/api/v1';
 const String webSocketUrl = 'ws://10.0.2.2:12345/ws'; // TODO 안드로이드에 맞는 Port로 변경 필요
+const String diaryCreateUrl = 'http://10.0.2.2:12345/api/diary';
+const String genImageUrl = 'http://10.0.2.2:12345/api/image';
