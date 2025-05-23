@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 /**
  * Firebase채팅에서 사용되는 객체 입니다.
@@ -28,5 +29,12 @@ class FirebaseChatModel {
       senderId: map['senderId'] ?? '',
       timestamp: map['timestamp'],
     );
+  }
+
+  String get formattedTime {
+    if (timestamp == null) return "";
+    final dateTime = timestamp!.toDate();
+    final formatter = DateFormat('a h:mm', 'ko');
+    return formatter.format(dateTime);
   }
 }

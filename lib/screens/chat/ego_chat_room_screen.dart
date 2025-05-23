@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 
 import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
 import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
-import 'package:ego/widgets/chat/chat_bubble.dart';
+import 'package:ego/widgets/chat/ego_chat_bubble.dart';
 
 // 개인 채팅방
 // 초기 데이터 fetch
