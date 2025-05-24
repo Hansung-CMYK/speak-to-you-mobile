@@ -18,7 +18,7 @@ class FirebaseChatModel {
   Map<String, dynamic> toMap() {
     return {
       'text': text,
-      'senderId': senderId,
+      'sender_id': senderId,
       'timestamp': timestamp ?? FieldValue.serverTimestamp(),
     };
   }
@@ -26,7 +26,7 @@ class FirebaseChatModel {
   factory FirebaseChatModel.fromMap(Map<String, dynamic> map) {
     return FirebaseChatModel(
       text: map['text'] ?? '',
-      senderId: map['senderId'] ?? '',
+      senderId: map['sender_id'] ?? '',
       timestamp: map['timestamp'],
     );
   }
