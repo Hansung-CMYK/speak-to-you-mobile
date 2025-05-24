@@ -1,4 +1,3 @@
-import 'package:ego/sample/cmyk-46/tmp_screen.dart';
 import 'package:ego/screens/chat/chat_tab_screen.dart';
 import 'package:ego/screens/record/record_screen.dart';
 import 'package:ego/theme/theme.dart';

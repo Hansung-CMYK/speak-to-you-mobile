@@ -5,6 +5,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 
+/// 해당화면이 쓰일지는 모르겠습니다. 현재 기회 기준 알림을 누르면 일기 작성 화면으로 넘어 갑니다. [2025-05-24]
 /// 공지사항의 세부 정보를 나타내는 화면
 ///
 /// TODO: AlarmScreen develop에 merge되면, 생성자 Notice 클래스로 변경할 것

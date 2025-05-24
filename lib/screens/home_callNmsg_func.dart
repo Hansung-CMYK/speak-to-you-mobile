@@ -135,7 +135,7 @@ class HomeChatScreenState extends ConsumerState<HomeScreenCallnMsg>
       child: SwipeActionContainer(
         onCall: () {
           // 전화 걸기 액션
-          // uid는 시스템 상에서 관리된다 가정
+          // uid는 시스템에 존재
           //TODO egoInfoModel을 EGOModel로 바꾸어서 발생하는 ERROR 이후 VoiceChatScreen FE issue에서 처리 예정
           // Navigator.push(
           //   context,
