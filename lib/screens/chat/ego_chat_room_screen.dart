@@ -1,6 +1,6 @@
 import 'package:ego/models/chat/chat_history_kafka_model.dart';
-import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/providers/ego_provider.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_history_model.dart';
@@ -8,6 +8,7 @@ import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,21 +18,10 @@ import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
 import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 import 'package:ego/widgets/chat/ego_chat_bubble.dart';
 
-// 개인 채팅방
-// 초기 데이터 fetch
-// spring에서 불러온 채팅 내용은 ChatHistory의 형식을 따른다.
-// 송신
-// 입력 받은 채팅을 ChatHistory의 형식으로 리스트에 저장한다.
-// 입력 받은 채팅 내용은 ChatHistoryKafka의 형식으로 Kafka에 보낸다.
-// 문제점 : 채팅 기록을 삭제하고 싶으면 ChatHistory의 id값을 알아야하는데 FE에서 알 수 없음
-// 해결방법 : 카프카로 hash값을 전달한다.
-// 수신
-// kafka에서 받은 ChatHistoryKafka 데이터를 ChatHistory로 바꾼다.
-// 리스트에 추가한다.
-class EgoChatRoomScreen extends StatefulWidget {
+class EgoChatRoomScreen extends ConsumerStatefulWidget {
   final int chatRoomId;
   final String uid;
-  final EgoModelV1 egoModel;
+  final EgoModelV2 egoModel;
 
   const EgoChatRoomScreen({
     Key? key,
@@ -44,7 +34,7 @@ class EgoChatRoomScreen extends StatefulWidget {
   _EgoChatRoomScreenState createState() => _EgoChatRoomScreenState();
 }
 
-class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
+class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
   final TextEditingController _controller = TextEditingController();
   final SocketService _socketService = SocketService();
 
@@ -88,16 +78,9 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
       });
     });
 
-    // ✅ 연결 시 메시지 수신 처리
-    _socketService.onMessageReceived((message) {
-      setState(() {
-        messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
-      });
-    });
-
     // ✅ 실제 연결
     //uid는 시스템에 존재
-    _socketService.connect(uid: "user_account_001");
+    _socketService.connect(uid: "user_id_001");
   }
 
   Future<void> _fetchInitialData() async {
@@ -159,19 +142,20 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
 
     final inputMessage = ChatHistory(
       //uid는 시스템에 존재
-      uid: "user_account_001",
+      uid: "user_id_001",
       chatRoomId: widget.chatRoomId,
       content: text,
-      type: "user",
+      type: "u",
       chatAt: now,
       isDeleted: false,
       messageHash: messageHash,
+      contentType: 'TEXT', // 일단 이미지 없이 text 채팅만 가능하도록 가정
     );
 
     final kafkaReqMessage = ChatHistory.convertToKafka(
       inputMessage,
       to: "1", // TODO 이후 수정 widget.egoModel.id.toString(),
-      type: "TEXT",
+      contentType: "TEXT",
     );
 
     _socketService.sendMessage(kafkaReqMessage);
@@ -207,18 +191,37 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
         surfaceTintColor: AppColors.white,
         centerTitle: true,
         actions: [
+          // 우상단 ego profile 이미지
           Padding(
             padding: EdgeInsets.only(right: 10.w),
             child: buildEgoListItem(widget.egoModel.profileImage, () {
-              // 임시 객체 실제로는 EGO 요청해야함
-              EgoModelV2 egoModelV2 = EgoModelV2(
-                name: '사과짱',
-                introduction: '사과가 좋아',
-                mbti: "infj",
-                createdAt: DateTime(2025, 5, 6),
-              );
+              final egoAsync = ref.watch(
+                  egoByIdProviderV2(widget.egoModel.id!));
 
-              showTodayEgoIntroSheetV2(this.context, egoModelV2);
+              egoAsync.when(
+                  data: (ego) {
+                    showTodayEgoIntroSheetV2(this.context, ego);
+                  },
+                  error: (error, stack) {
+                    print('에러 발생: $error');
+                    print('스택트레이스: $stack');
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // 프로바이더 새로고침
+                              ref.invalidate(egoByIdProviderV2);
+                            },
+                            child: Text('다시 시도'),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  loading: () => Center(child: CircularProgressIndicator())
+              );
             }, radius: 17),
           ),
         ],
@@ -239,7 +242,7 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
                 itemCount: messages.length,
                 itemBuilder: (context, index) {
                   final previous =
-                      index < messages.length - 1 ? messages[index + 1] : null;
+                  index < messages.length - 1 ? messages[index + 1] : null;
                   final next = index > 0 ? messages[index - 1] : null;
 
                   return ChatBubble(
@@ -248,15 +251,16 @@ class _EgoChatRoomScreenState extends State<EgoChatRoomScreen> {
                     nextMessage: next,
                     onDelete: () async {
                       // uid는 시스템에 존재한다 가정
+                      // TODO HASH값을 사용한 메시지 삭제 요청
                       try {
                         // 메시지 삭제 요청
-                        await ChatHistoryService.deleteChatMessage(
-                          uid: "test",
-                          messageHash: messages[index].messageHash!,
-                        );
+                        // await ChatHistoryService.deleteChatMessage(
+                        //     uid: "user_id_001",
+                        //     messageHash: messages[index].messageHash!,
+                        // );
 
-                        setState(() {
-                          messages.removeAt(index);
+                        setState(() { // 삭제요청을 보낸 부분채팅부터 최신 대화까지 삭제
+                          messages.removeRange(0, index + 1);
                         });
                         _focusNode.unfocus();
                       } catch (e) {

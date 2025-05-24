@@ -5,7 +5,7 @@ class ChatHistoryKafka {
   String to;
   final int chatRoomId;
   final String content;
-  final String type;
+  final String contentType;
   final bool mcpEnabled;
   final String messageHash;
 
@@ -14,18 +14,18 @@ class ChatHistoryKafka {
     required this.to,
     required this.chatRoomId,
     required this.content,
-    required this.type,
+    required this.contentType,
     required this.mcpEnabled,
     required this.messageHash,
   });
 
   factory ChatHistoryKafka.fromJson(Map<String, dynamic> json) {
     return ChatHistoryKafka(
-      from: (json['from'] as String) ?? 'user_account_001',
+      from: (json['from'] as String) ?? 'user_id_001',
       to: (json['to'] as String) ?? '1',
       chatRoomId: (json['chatRoomId'] as int) ?? 1,
       content: json['content'] as String,
-      type: (json['type'] as String) ?? 'TEXT',
+      contentType: (json['contentType'] as String) ?? 'TEXT',
       mcpEnabled: (json['mcpEnabled'] as bool) ?? false,
       messageHash: (json['hash'] as String?) ?? 'TEMP_HASH',
     );
@@ -37,7 +37,7 @@ class ChatHistoryKafka {
       'to': to,
       'chatRoomId': chatRoomId,
       'content': content,
-      'type': type,
+      'contentType': contentType,
       'mcpEnabled': mcpEnabled,
       'hash': messageHash,
     };
@@ -48,9 +48,10 @@ class ChatHistoryKafka {
       uid: kafkaMessage.from,
       chatRoomId: kafkaMessage.chatRoomId,
       content: kafkaMessage.content,
-      type: "ego",
+      type: "e",
       messageHash: kafkaMessage.messageHash,
       chatAt: DateTime.now(),
+      contentType: kafkaMessage.contentType,
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:ui';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/models/chat/chat_room_model.dart';
-import 'package:ego/models/ego_model_v1.dart';
 import 'package:ego/services/chat/chat_room_service.dart';
 import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
@@ -12,7 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class BlurredListScreen extends ConsumerStatefulWidget {
   final String uid;
-  final void Function(EgoModelV1) onEgoSelected;
+  final void Function(EgoModelV2) onEgoSelected;
 
   const BlurredListScreen({
     super.key,
@@ -27,8 +27,8 @@ class BlurredListScreen extends ConsumerStatefulWidget {
 class _BlurredListScreenState extends ConsumerState<BlurredListScreen> {
   final ScrollController _scrollController = ScrollController(); // scroller가 끝까지 간경우 다음 page 요청
   final List<ChatRoomModel> _chatRooms = [];
-  final List<EgoModelV1> _egoList = [];
-  late List<EgoModelV1> filteredList = []; // 정렬된 EGO List
+  final List<EgoModelV2> _egoList = [];
+  late List<EgoModelV2> filteredList = []; // 정렬된 EGO List
 
   String searchQuery = ''; // 검색할 EGO 이름
   String selectedSort = '최신대화순';

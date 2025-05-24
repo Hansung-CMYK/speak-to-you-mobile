@@ -1,4 +1,5 @@
-import '../ego_model_v1.dart';
+import 'package:ego/models/ego_model_v2.dart';
+
 
 /**
  * ChatRoom값과 EgoModel의 값을 묶어서 관리하기 위한 Class
@@ -10,7 +11,7 @@ class ChatRoomListModel {
   final int egoId;
   final DateTime lastChatAt;
   final bool isDeleted;
-  final EgoModelV1 egoModel;
+  final EgoModelV2 egoModel;
 
   ChatRoomListModel({
     required this.id,

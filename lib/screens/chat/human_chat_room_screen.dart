@@ -49,7 +49,7 @@ class _HumanChatScreenState extends State<HumanChatScreen> {
     fToast = FToast();
     fToast.init(context);
 
-    myUid = 'user_id_001'; //uid는 시스템에 존재
+    myUid = 'user_id_002'; //uid는 시스템에 존재
   }
 
   void _sendMessage() async {
@@ -74,7 +74,7 @@ class _HumanChatScreenState extends State<HumanChatScreen> {
         .collection('chats/user_chat/${chatId}')
         .add({
           'text': message,
-          'senderId': myUid,
+          'sender_id': myUid,
           'timestamp': FieldValue.serverTimestamp(),
         });
   }
@@ -152,7 +152,7 @@ class _HumanChatScreenState extends State<HumanChatScreen> {
                       nextChat = FirebaseChatModel.fromMap(nextData);
                     }
 
-                    final isMe = currentMessageData['senderId'] == myUid;
+                    final isMe = currentMessageData['sender_id'] == myUid;
 
                     return HumanChatBubble(
                       message: currentChat,

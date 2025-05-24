@@ -1,10 +1,10 @@
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/providers/chat/chat_room_provider.dart';
 import 'package:ego/screens/home_callNmsg_func.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import '../../models/ego_model_v1.dart';
 import '../../providers/ego_provider.dart';
 import '../../theme/theme.dart';
 
@@ -39,17 +39,18 @@ class HomeScreenCallnMsgWrapper extends ConsumerWidget {
   // 3단계 : 가져온 EGO정보로 main화면의 EGOList를 그린다.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatRoomListAsync = ref.watch(chatRoomProvider('test'));
+    // uid는 시스템에 존재
+    final chatRoomListAsync = ref.watch(chatRoomProvider('user_id_001'));
 
     return chatRoomListAsync.when(
       data: (chatRoomList) {
         // 각 egoId를 기반으로 egoModel Future 리스트를 만듦
         final futures = chatRoomList.map(
-              (chatRoom) => ref.watch(egoByIdProvider(chatRoom.egoId).future),
+              (chatRoom) => ref.watch(egoByIdProviderV2(chatRoom.egoId).future),
         ).toList();
 
         // 여러 개의 future를 기다리기 위해 Future.wait 사용
-        return FutureBuilder<List<EgoModelV1>>(
+        return FutureBuilder<List<EgoModelV2>>(
           future: Future.wait(futures),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {

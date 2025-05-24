@@ -55,7 +55,7 @@ class Sample extends StatelessWidget {
                 builder:
                     (context) {
 
-                  String otherUid = 'user_id_002';
+                  String otherUid = 'user_id_001';
                   return HumanChatScreen(otherUserId: otherUid, egoName: '사과',);
                 },
               ),

@@ -5,20 +5,20 @@ import 'package:ego/models/chat/chat_history_kafka_model.dart';
 import 'package:intl/intl.dart';
 
 class ChatHistory {
-  final int? id; // 채팅 내역 ID (nullable for new messages)
   final String uid; // 사용자 UID
   final int chatRoomId; // 채팅방 ID
   final String content; // 사용자가 보낸 메시지
-  final String type; // 대화 유형 (user, ego, group)
+  final String contentType; // 해당 chat이 이미지 형식인지, 이미지 형식인지 의미합니다.(IMAGE, TEXT)
+  final String type; // 대화 유형 (u, e)
   final DateTime chatAt; // 대화 발생 시간
   final bool isDeleted; // 삭제 여부
   final String? messageHash; // 메시지 해시 (nullable)
 
   ChatHistory({
-    this.id,
     required this.uid,
     required this.chatRoomId,
     required this.content,
+    required this.contentType,
     required this.type,
     required this.chatAt,
     this.isDeleted = false,
@@ -28,10 +28,10 @@ class ChatHistory {
   /// fromJson
   factory ChatHistory.fromJson(Map<String, dynamic> json) {
     return ChatHistory(
-      id: json['id'],
       uid: json['uid'],
       chatRoomId: json['chatRoomId'],
       content: json['content'],
+      contentType: json['contentType'],
       type: json['type'],
       chatAt: DateTime.parse(json['chatAt']),
       isDeleted: json['isDeleted'] ?? false,
@@ -45,6 +45,7 @@ class ChatHistory {
       'uid': uid,
       'chatRoomId': chatRoomId,
       'content': content,
+      'contentType': contentType,
       'type': type,
       'chatAt': chatAt.toIso8601String(),
       'isDeleted': isDeleted,
@@ -62,13 +63,13 @@ class ChatHistory {
     return digest.toString();
   }
 
-  static ChatHistoryKafka convertToKafka(ChatHistory chat, {required String to, required String type, bool mcpEnabled = false}) {
+  static ChatHistoryKafka convertToKafka(ChatHistory chat, {required String to, required String contentType, bool mcpEnabled = false}) {
     return ChatHistoryKafka(
       from: chat.uid,
       to: to,
       chatRoomId: chat.chatRoomId,
       content: chat.content,
-      type: type,
+      contentType: chat.contentType,
       mcpEnabled: mcpEnabled,
       messageHash: chat.messageHash!,
     );

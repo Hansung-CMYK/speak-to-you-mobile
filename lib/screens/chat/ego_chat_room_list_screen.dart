@@ -55,7 +55,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
     // uid는 시스템상에 존재
     setState(() => _isLoading = true);
     final chatRooms = await ChatRoomService.fetchChatRoomList(
-      uid: "test",
+      uid: "user_id_001", //uid는 시스템에 존재
       pageNum: _pageNum,
       pageSize: 11,
     );
@@ -148,7 +148,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
 
                 if (result == true) {
                   // uid는 시스템 상에 존재
-                  await ChatRoomService.deleteChatRoom(uid: "test",egoId:  chat.egoId);
+                  await ChatRoomService.deleteChatRoom(uid: "user_id_001",egoId:  chat.egoId);
 
                   setState(() {
                     _chatRoomList.removeWhere(
@@ -162,7 +162,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
                 child: Row(
                   children: [
                     buildEgoListItem(
-                      chat.egoModel.profileImage ?? 'assets/image/ego_icon.png',
+                      chat.egoModel.profileImage,
                       () {},
                       radius: 25.5,
                     ),
