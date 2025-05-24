@@ -1,6 +1,6 @@
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/providers/chat/chat_room_provider.dart';
-import 'package:ego/screens/home_callNmsg_func.dart';
+import 'package:ego/screens/speak_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,7 +63,7 @@ class HomeScreenCallnMsgWrapper extends ConsumerWidget {
               );
             } else if (snapshot.hasData) {
               final egoList = snapshot.data!;
-              return HomeScreenCallnMsg(egoList: egoList);
+              return SpeakScreen();
             } else {
               return const Scaffold(
                 body: Center(child: Text('예상치 못한 오류')),

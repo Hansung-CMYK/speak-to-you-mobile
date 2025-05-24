@@ -1,4 +1,4 @@
-import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/theme/color.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -12,7 +12,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 ///
 /// myEgoInfoModel : 수정할 EGO의 정보를 전달 받습니다. [EgoInfoModel]
 class EgoEditScreen extends StatefulWidget {
-  final myEgoInfoModel;
+  final EgoModelV2 myEgoInfoModel;
 
   const EgoEditScreen({super.key, required this.myEgoInfoModel});
 
@@ -21,7 +21,7 @@ class EgoEditScreen extends StatefulWidget {
 }
 
 class _EgoEditScreenState extends State<EgoEditScreen> {
-  late final EgoInfoModel myEgoInfoModel;
+  late final EgoModelV2 myEgoModel;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _egoIntroController = TextEditingController();
 
@@ -33,10 +33,10 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
   @override
   void initState() {
     super.initState();
-    myEgoInfoModel = widget.myEgoInfoModel;
-    _nameController.text = myEgoInfoModel.egoName;
-    _egoIntroController.text = myEgoInfoModel.egoSelfIntro;
-    selectedMBTI = myEgoInfoModel.egoMBTI;
+    myEgoModel = widget.myEgoInfoModel;
+    _nameController.text = myEgoModel.name;
+    _egoIntroController.text = myEgoModel.introduction;
+    selectedMBTI = myEgoModel.mbti;
   }
 
   @override
@@ -84,7 +84,12 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                               CircleAvatar(
                                 radius: 100.r,
                                 backgroundColor: AppColors.white,
-                                child: Image.asset('assets/image/ego_icon.png'),
+                                backgroundImage: myEgoModel.profileImage != null
+                                    ? MemoryImage(myEgoModel.profileImage!)
+                                    : null,
+                                child: myEgoModel.profileImage == null
+                                    ? Image.asset('assets/image/ego_icon.png') // 기본 이미지
+                                    : null,
                               ),
                               Container(
                                 width: 48.w,

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:ego/services/ego/ego_service.dart';
 
+import '../models/chat/chat_room_model.dart';
+
 
 /**
  * EgoModelV2의 Provider 이후 확정된 모델로 변경
@@ -28,3 +30,10 @@ final fullEgoByUserIdProvider = FutureProvider.family<EgoModelV2, String> ((ref,
 
   return ego;
 });
+
+final egoModelsFromChatRoomsWithoutRefProvider =
+FutureProvider.family<List<EgoModelV2>, List<ChatRoomModel>>(
+      (ref, chatRoomList) async {
+    return await EgoService.fetchEgoModelsFromChatRoomsWithoutRef(chatRoomList);
+  },
+);

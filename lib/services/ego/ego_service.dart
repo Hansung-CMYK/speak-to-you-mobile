@@ -30,6 +30,21 @@ class EgoService {
   }
 
   /**
+   * 스피크 화면에서 EGO list를 불러올때 사용 됩니다.
+   * */
+  static Future<List<EgoModelV2>> fetchEgoModelsFromChatRoomsWithoutRef(
+      List<ChatRoomModel> chatRoomList,
+      ) async {
+    // 각 chatRoom의 egoId를 사용하여 직접 API 호출
+    final futures = chatRoomList.map((chatRoom) {
+      return EgoService.fetchEgoByIdV2(chatRoom.egoId);
+    }).toList();
+
+    return await Future.wait(futures);
+  }
+
+
+  /**
    * EgoModelV2의 Provider 이후 확정된 모델로 변경
    * */
   static Future<EgoModelV2> fetchEgoByIdV2(int egoId) async {

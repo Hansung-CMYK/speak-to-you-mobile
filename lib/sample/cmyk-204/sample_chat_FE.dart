@@ -1,6 +1,6 @@
-import 'package:ego/sample/cmyk-46/tmp_screen.dart';
 import 'package:ego/screens/chat/chat_tab_screen.dart';
 import 'package:ego/screens/record/record_screen.dart';
+import 'package:ego/screens/speak_screen.dart';
 import 'package:ego/theme/theme.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -86,7 +86,7 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          TmpScreen(text: "스피크 페이지"), // TODO: 스피크 스크린에 연결
+          SpeakScreen(),
           RecordScreen(), // 캘린더 페이지
           ChatTabScreen()
         ],

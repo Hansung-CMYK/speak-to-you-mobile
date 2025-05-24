@@ -1,5 +1,5 @@
 import 'package:ego/models/ego_model_v2.dart';
-import 'package:ego/screens/home_callNmsg_func.dart';
+import 'package:ego/screens/speak_screen.dart';
 // import 'package:firebase_core/firebase_core.dart';
 // import '../../firebase_options.dart';
 // import '../../services/firebase_messaging_service.dart';
@@ -187,7 +187,7 @@ class MyApp extends StatelessWidget {
         theme: AppTheme.lightTheme,
         darkTheme: AppTheme.darkTheme,
         navigatorKey: navigatorKey,
-        home: HomeScreenCallnMsg(egoList: dummyEgoList),
+        home: SpeakScreen(),
         routes: {
           '/alert': (context) => AlarmScreen(),
         },

@@ -1,4 +1,5 @@
 import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/screens/ego_edit_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,16 +29,7 @@ class MyApp extends StatelessWidget {
 }
 
 class SampleHomeScreen extends StatelessWidget {
-  EgoInfoModel egoInfoModel = EgoInfoModel(
-    id: '1',
-    egoIcon: '',
-    egoName: 'Power',
-    egoBirth: '2002/05/03',
-    egoPersonality: '활발, 착함',
-    egoMBTI: 'ENFJ',
-    egoSelfIntro:
-        "나는 파워! 피의 악마다! 인간 따윈 우습지만, 냥이는 소중해! 머리도 좋고 싸움도 최고지! 덴지, 나를 왕처럼 떠받들라!",
-  );
+  EgoModelV2 egoModelV2 = EgoModelV2(name: '사과', introduction: '나는 사과얌', mbti: 'INFJ');
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +42,7 @@ class SampleHomeScreen extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder:
-                    (context) => EgoEditScreen(myEgoInfoModel: egoInfoModel),
+                    (context) => EgoEditScreen(myEgoInfoModel: egoModelV2),
               ),
             );
           },

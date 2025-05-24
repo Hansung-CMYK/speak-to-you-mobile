@@ -1,6 +1,6 @@
-import 'package:ego/sample/cmyk-46/tmp_screen.dart';
 import 'package:ego/screens/chat/chat_tab_screen.dart';
 import 'package:ego/screens/record/record_screen.dart';
+import 'package:ego/screens/speak_screen.dart';
 import 'package:ego/theme/theme.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import '../../screens/chat/ego_chat_room_list_screen.dart';
 
 /// AppBar 단위 테스트 코드
 /// SampleAppBarTest를 통해 위젯 비율을 조정하고 관리함
@@ -82,7 +81,7 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          TmpScreen(text: "스피크 페이지"), // TODO: 스피크 스크린에 연결
+          SpeakScreen(),
           RecordScreen(), // 캘린더 페이지
           ChatTabScreen()
         ],
