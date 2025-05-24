@@ -1,89 +1,98 @@
-import 'package:ego/providers/chat/chat_room_provider.dart';
-import 'package:ego/providers/ego_provider.dart';
-import 'package:ego/screens/home_callNmsg_func.dart';
+import 'package:ego/screens/chat/chat_tab_screen.dart';
+import 'package:ego/screens/speak_screen.dart';
+import 'package:ego/screens/record/record_screen.dart';
 import 'package:ego/theme/theme.dart';
-
+import 'package:ego/widgets/appbar/main_app_bar.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'models/ego_model_v2.dart';
+import '../../firebase_options.dart';
 
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
+/// AppBar 단위 테스트 코드
+/// SampleAppBarTest를 통해 위젯 비율을 조정하고 관리함
 void main() async {
-
   await initializeDateFormatting('ko');
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+
+  // TODO 계정 정보 업데이트
+
   runApp(
     ProviderScope(
-      child: MyApp(),
+      child: MainScreenTest(),
     ),
   );
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainScreenTest extends StatelessWidget {
+  const MainScreenTest({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: const Size(393, 852),
+      designSize: Size(393, 852),
       builder: (context, child) => MaterialApp(
-        title: 'Home Screen With Call N Msg Func',
-        debugShowCheckedModeBanner: false,
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        home: const HomeScreenCallnMsgWrapper(),
+          title: '앱 바 테스트 페이지',
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          initialRoute: 'Main',
+          routes: {
+            'Main': (context) => Consumer(
+              builder: (context, ref, child) {
+                return SampleMainScreen();
+              },
+            ),
+          }
       ),
     );
   }
 }
 
-class HomeScreenCallnMsgWrapper extends ConsumerWidget {
-  const HomeScreenCallnMsgWrapper({super.key});
-
-  // 1단계 : uid와 일치하는 ChatRoomList를 가져온다.
-  // 2단계 : ChatRoomList에는 egoId가 있으므로 egoId별로 ego를 가져온다.
-  // 3단계 : 가져온 EGO정보로 main화면의 EGOList를 그린다.
+/// [MainAppBar]를 사용하기 위한 Screen 구성 예시
+///
+/// ConsumerStatefulWidget을 이용하여, TabBarController 상태를 지속적으로 관리한다.
+class SampleMainScreen extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // uid는 시스템에 존재
-    final chatRoomListAsync = ref.watch(chatRoomProvider('user_id_001'));
+  _SampleMainAppBarScreenState createState() => _SampleMainAppBarScreenState();
+}
 
-    return chatRoomListAsync.when(
-      data: (chatRoomList) {
-        // 각 egoId를 기반으로 egoModel Future 리스트를 만듦
-        final futures = chatRoomList.map(
-              (chatRoom) => ref.watch(egoByIdProviderV2(chatRoom.egoId).future),
-        ).toList();
+class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
+    with SingleTickerProviderStateMixin {
+  /// 선택한 Tab과 Body를 매핑하는 Controller이다.
+  late TabController _tabController;
 
-        // 여러 개의 future를 기다리기 위해 Future.wait 사용
-        return FutureBuilder<List<EgoModelV2>>(
-          future: Future.wait(futures),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
-              );
-            } else if (snapshot.hasError) {
-              return Scaffold(
-                body: Center(child: Text('에러 발생: ${snapshot.error}')),
-              );
-            } else if (snapshot.hasData) { // home 화면 로딩
-              final egoList = snapshot.data!;
-              return HomeScreenCallnMsg(egoList: egoList);
-            } else {
-              return const Scaffold(
-                body: Center(child: Text('예상치 못한 오류')),
-              );
-            }
-          },
-        );
-      },
-      loading: () => const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error: (err, stack) => Scaffold(body: Center(child: Text('에러 발생1: $err'))),
+  /// _tabCntroller 초기화
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 3, vsync: this);
+  }
+
+  /// _tabCntroller 제거
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      /// 각 Screen으로 이동하기 위한 Navigator AppBar이다.
+      appBar: MainAppBar(_tabController),
+
+      /// MainAppBar에서 선택된 Tab의 Screen이 나타나는 영역이다.
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          SpeakScreen(),
+          RecordScreen(), // 캘린더 페이지
+          ChatTabScreen()
+        ],
+      ),
     );
   }
 }
