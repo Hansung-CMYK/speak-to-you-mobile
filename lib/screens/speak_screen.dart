@@ -17,10 +17,10 @@ class SpeakScreen extends ConsumerStatefulWidget {
   const SpeakScreen({super.key});
 
   @override
-  SpeackScreenState createState() => SpeackScreenState();
+  SpeakScreenState createState() => SpeakScreenState();
 }
 
-class SpeackScreenState extends ConsumerState<SpeakScreen>
+class SpeakScreenState extends ConsumerState<SpeakScreen>
     with SingleTickerProviderStateMixin {
   late List<ChatRoomModel> chatRoomList = [];
   late final List<EgoModelV2> egoList = [];
@@ -143,8 +143,12 @@ class SpeackScreenState extends ConsumerState<SpeakScreen>
               ),
             ),
 
-            // 현재 EGO 카드
-            _buildSelectedEGO(),
+            // selectedEgo는 EgoList를 불러온 이후 할당되는데, 해당 buildSelectedEGO에서
+            //null check operator을 수행하는 바람에 순간적으로 null 화면이 보입니다. 때문에 이를 방지하기 위해
+            // selectedEgo가 null이면 즉, 아직 egolist가 불려지지 않았으면 로딩창 띄우게 함
+            selectedEgo == null
+                ? CircularProgressIndicator()
+                : _buildSelectedEGO(),
           ],
         );
       },

@@ -88,9 +88,9 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          SpeakScreen(),
+          SpeakScreen(), // speak 페이지
           RecordScreen(), // 캘린더 페이지
-          ChatTabScreen()
+          ChatTabScreen() // 채팅 페이지
         ],
       ),
     );
