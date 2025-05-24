@@ -4,12 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../theme/theme.dart';
 
-void main() async {
-  await initializeDateFormatting('ko');
-  runApp(ProviderScope(child: MyApp()));
+Future<void> requestMicrophonePermission() async {
+  var status = await Permission.microphone.status;
+  if (!status.isGranted) {
+    await Permission.microphone.request();
+  }
+}
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Flutter Binding 초기화
+  await requestMicrophonePermission(); // 마이크 권한 요청
+  await initializeDateFormatting('ko'); // 날짜 포맷 초기화
+  runApp(ProviderScope(child: MyApp())); // 앱 실행
 }
 
 class MyApp extends StatelessWidget {
