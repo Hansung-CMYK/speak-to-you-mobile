@@ -65,6 +65,7 @@ dependencies:
   firebase_database: ^11.3.5
   smooth_page_indicator: ^1.2.1
   o3d: ^3.1.0
+  shared_preferences: ^2.5.3
 
 dependency_overrides:
   intl: ^0.20.2

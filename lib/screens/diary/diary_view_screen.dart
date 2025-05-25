@@ -4,6 +4,7 @@ import 'package:ego/screens/diary/share_all_diary.dart';
 import 'package:ego/screens/egoreview/ego_review.dart';
 import 'package:ego/services/diary/diary_service.dart';
 import 'package:ego/services/ego/ego_service.dart';
+import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -37,12 +38,15 @@ class DiaryViewScreen extends ConsumerStatefulWidget {
 class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
   late FToast fToast;
   final Map<int, int> regenerateKeys = {};
+  late String uid;
 
   @override
   void initState() {
     super.initState();
     fToast = FToast();
     fToast.init(context);
+
+    uid = SharedPrefService.getUid()!;
   }
 
   // 같은 prompt로 이미지생성이 가능하도록
@@ -58,10 +62,10 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final targetTime = DateTime(2025, 5, 19); // TODO이후에 현재 시간으로 변경
+    final targetTime = DateTime(2025, 5, 24); // TODO이후에 현재 시간으로 변경
     //uid는 시스템에 존재
     final request = DiaryRequestModel(
-      userId: "user_id_001",
+      userId: uid,
       egoId: 1, // TODO 이후 uid에 따라 오늘의 egoid를 전달 합니다.
       date: targetTime,
     );

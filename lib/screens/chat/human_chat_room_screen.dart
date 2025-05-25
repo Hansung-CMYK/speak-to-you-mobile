@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -49,7 +50,7 @@ class _HumanChatScreenState extends State<HumanChatScreen> {
     fToast = FToast();
     fToast.init(context);
 
-    myUid = 'user_id_002'; //uid는 시스템에 존재
+    myUid = SharedPrefService.getUid()!; //uid는 시스템에 존재
   }
 
   void _sendMessage() async {

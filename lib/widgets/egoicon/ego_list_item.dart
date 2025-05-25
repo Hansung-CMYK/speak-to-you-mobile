@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'dart:typed_data';
-import '../../theme/color.dart';
+import 'package:ego/theme/color.dart';
 
 /**
  * Main화면 상단에 보여지는 EGO List의 Item을 만듭니다.
