@@ -82,7 +82,7 @@ class _RecordScreenState extends State<RecordScreen>
         controller: _tabController, // 컨트롤러 부여
         children: [
           CalendarScreen(),
-          ChartScreen(), // TODO: 감정차트
+          ChartScreen(), // TODO: EgoPage로 변경 필요 [미개발]
         ],
       ),
     );

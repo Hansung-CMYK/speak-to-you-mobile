@@ -3,6 +3,7 @@ import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/providers/ego_provider.dart';
 import 'package:ego/services/chat/chat_room_service.dart';
 import 'package:ego/theme/color.dart';
+import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:ego/widgets/egocard/swipable_ego_card.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 import 'package:ego/widgets/egoicon/ego_list_item_gradient.dart';
@@ -10,10 +11,8 @@ import 'package:ego/widgets/egoicon/ego_list_item_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:o3d/o3d.dart';
 
-import '../widgets/animation/animation_object_widget.dart';
-import '../widgets/animation/frame_animation.dart';
+import 'package:ego/widgets/animation/frame_animation.dart';
 import 'egolistview/ego_list_blurred_screen.dart';
 
 class SpeakScreen extends ConsumerStatefulWidget {
@@ -28,6 +27,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
   late List<ChatRoomModel> chatRoomList = [];
   late final List<EgoModelV2> egoList = [];
   EgoModelV2? selectedEgo;
+  late String uid;
 
   late String animation;
   late bool cameraControls;
@@ -45,6 +45,8 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
     autoPlay = true;
     animationsData = FrameAnimationsData;
 
+    uid = SharedPrefService.getUid()!;
+
     _fetchChatRoomList();
   }
 
@@ -56,7 +58,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
 
   void _fetchChatRoomList() async {
     final chatRoomList = await ChatRoomService.fetchChatRoomList(
-      uid: "user_id_001",
+      uid: uid,
       pageNum: 0,
       pageSize: 30,
     );
@@ -113,7 +115,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
                                     pageBuilder:
                                         (_, __, ___) => BlurredListScreen(
                                           // uid는 시스템상에 존재한다 가정
-                                          uid: "user_id_001",
+                                          uid: uid,
                                           onEgoSelected: (selected) {
                                             setState(
                                               () => selectedEgo = selected,
@@ -190,7 +192,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
           //   context,
           //   MaterialPageRoute(
           //     builder: (context) =>
-          //         VoiceChatScreen(uid: "User_1", egoInfoModel: selectedEgo),
+          //         VoiceChatScreen(uid: uid, egoInfoModel: selectedEgo),
           //   ),
           // ).then((_) {
           //   // VoiceChatScreen에서 돌아온 후, HomeScreenCallnMsg 화면을 새로 로드

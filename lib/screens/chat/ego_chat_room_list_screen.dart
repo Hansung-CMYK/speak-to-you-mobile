@@ -1,3 +1,4 @@
+import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +10,8 @@ import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
 
 
-import '../../services/chat/chat_room_service.dart';
-import '../../services/ego/ego_service.dart';
+import 'package:ego/services/chat/chat_room_service.dart';
+import 'package:ego/services/ego/ego_service.dart';
 import 'ego_chat_room_screen.dart';
 
 /**
@@ -28,6 +29,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
   late TabController _tabController;
   List<ChatRoomListModel> _chatRoomList = [];
   int? _selectedChatRoomId;
+  late String uid;
 
   int _pageNum = 0; // 페이지 번호
   bool _isLoading = false; // 로딩 상태 추적
@@ -40,6 +42,8 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
     _scrollController.addListener(_scrollListener);
+
+    uid = SharedPrefService.getUid()!;
 
     fetchChatRooms();
   }
@@ -55,7 +59,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
     // uid는 시스템상에 존재
     setState(() => _isLoading = true);
     final chatRooms = await ChatRoomService.fetchChatRoomList(
-      uid: "user_id_001", //uid는 시스템에 존재
+      uid: uid, //uid는 시스템에 존재
       pageNum: _pageNum,
       pageSize: 11,
     );
@@ -148,7 +152,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
 
                 if (result == true) {
                   // uid는 시스템 상에 존재
-                  await ChatRoomService.deleteChatRoom(uid: "user_id_001",egoId:  chat.egoId);
+                  await ChatRoomService.deleteChatRoom(uid: uid, egoId: chat.egoId);
 
                   setState(() {
                     _chatRoomList.removeWhere(

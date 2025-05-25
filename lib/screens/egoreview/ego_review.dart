@@ -5,6 +5,7 @@ import 'package:ego/models/evaluation_model.dart';
 import 'package:ego/services/evaluation_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
+import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -28,11 +29,14 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
   int totalRate = 0;
   int solvingProblemRate = -1; // 대화의 흐름(문제해결능력) 점수 저장
   int empathyRate = -1; // 대화의 온도(공감능력) 점수 저장
+  late final String uid;
 
   @override
   void initState() {
     super.initState();
     this.egoModelV2 = widget.egoModelV2;
+
+    uid = SharedPrefService.getUid()!;
   }
 
   // 클릭된 아이콘(점수)를 가져오기 위한 함수 (1~3점)
@@ -164,7 +168,7 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
             // TODO 완성된 홈 화면으로 이동
             //uid는 시스템에 존재
             EvaluationModel evaluation = EvaluationModel(
-              uid: 'user_id_001',
+              uid: uid,
               egoId: egoModelV2.id!,
               solvingScore: solvingProblemRate,
               talkingScore: empathyRate,

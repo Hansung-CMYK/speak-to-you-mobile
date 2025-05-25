@@ -8,6 +8,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/providers/ego_provider.dart';
 
+import 'package:ego/utils/shared_pref_helper.dart';
+
 /**
  * 그룹 채팅방 리스트를 확인하는 화면
  * */
@@ -21,6 +23,7 @@ class GroupChatListScreen extends ConsumerStatefulWidget {
 class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+  late String uid;
 
   late ScrollController _scrollController; // 스크롤 컨트롤러
 
@@ -29,6 +32,8 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _scrollController = ScrollController();
+
+    uid = SharedPrefService.getUid()!;
   }
 
   @override
@@ -41,7 +46,6 @@ class _GroupChatListScreenState extends ConsumerState<GroupChatListScreen>
   @override
   Widget build(BuildContext context) {
     // uid는 시스템에 존재
-    final uid = 'uid2';
     final userEgo = ref.watch(fullEgoByUserIdProvider(uid)); // 현 사용자의 ego 조회
 
     return userEgo.when(

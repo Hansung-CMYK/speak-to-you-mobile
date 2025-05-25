@@ -2,6 +2,7 @@ import 'package:ego/screens/chat/chat_tab_screen.dart';
 import 'package:ego/screens/speak_screen.dart';
 import 'package:ego/screens/record/record_screen.dart';
 import 'package:ego/theme/theme.dart';
+import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,14 @@ import 'package:intl/date_symbol_data_local.dart';
 
 import '../../firebase_options.dart';
 
-/// AppBar 단위 테스트 코드
-/// SampleAppBarTest를 통해 위젯 비율을 조정하고 관리함
 void main() async {
   await initializeDateFormatting('ko');
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
 
   // TODO 계정 정보 업데이트
+  await SharedPrefService.init();
+  await SharedPrefService.setUid('user_id_001'); // 현재 test 데이터가 user_id_001에 저장되어 있음
 
   runApp(
     ProviderScope(

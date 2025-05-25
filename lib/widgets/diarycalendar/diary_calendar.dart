@@ -8,6 +8,8 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:ego/models/diary/monthly_diary.dart';
 import 'package:ego/providers/diary/monthly_diary_provider.dart';
 
+import 'package:ego/utils/shared_pref_helper.dart';
+
 /// 일기보기(캘린더)에서 이용하는 캘린더 위젯이다.
 ///
 /// TODO: 현재는 다른 화면으로 이동하고 돌아오면 초기화 된다. (퍼블이므로 수정하진 않음)
@@ -25,6 +27,7 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
   /// [_focusedDay] 화면에 띄워지는 날짜. 기본적으로 DateTime.now()이다.
   DateTime _focusedDay = DateTime.now(); // 현재
   DateTime? _selectedDay;
+  late final uid;
 
   /// [_emotions] 사용자가 일기를 작성한 날짜와 해당 날짜의 MonthlyDiary를 매핑
   final Map<DateTime, MonthlyDiary> _emotions = {};
@@ -32,13 +35,14 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
   @override
   void initState() {
     super.initState();
+    uid = SharedPrefService.getUid()!;
   }
 
   @override
   Widget build(BuildContext context) {
     final diariesAsync = ref.watch(
       monthlyDiaryProvider((
-        userId: "user_id_001", // uid는 시스템에 존재
+        userId: uid, // uid는 시스템에 존재
         year: _focusedDay.year,
         month: _focusedDay.month,
       )),

@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../models/diary/diary.dart';
 import '../../providers/diary/diary_provider.dart';
 import '../../services/diary/diary_service.dart';
+import '../../utils/shared_pref_helper.dart';
 import 'helped_ego_info_container.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,12 +42,16 @@ class _DiaryViewForBottomSheetState
     extends ConsumerState<DiaryViewForBottomSheet> {
   late FToast fToast;
   final Map<int, int> regenerateKeys = {};
+  late final String uid;
 
   @override
   void initState() {
     super.initState();
     fToast = FToast();
     fToast.init(context);
+
+    uid = SharedPrefService.getUid()!;
+
   }
 
   // 같은 prompt로 이미지생성이 가능하도록
@@ -66,7 +71,7 @@ class _DiaryViewForBottomSheetState
     final diaryAsync = ref.watch(
       dailyDiaryProvider((
         diaryId: widget.diaryId,
-        userId: "user_id_001", // uid는 시스템에 존재
+        userId: uid, // uid는 시스템에 존재
       )),
     );
 
@@ -285,7 +290,7 @@ class _DiaryViewForBottomSheetState
               ref.refresh(
                 dailyDiaryProvider((
                   diaryId: widget.diaryId,
-                  userId: "test", // userId 그대로 유지
+                  userId: uid, // uid는 시스템에 존재
                 )),
               );
             },

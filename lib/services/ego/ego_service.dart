@@ -7,6 +7,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:ego/providers/ego_provider.dart';
 
+import 'package:ego/utils/shared_pref_helper.dart';
+
 class EgoService {
   /**
    * 전달된 ChatRoomModel들을 바탕으로 EGO정보를 조회합니다.
@@ -87,7 +89,10 @@ class EgoService {
    * */
   static Future<EgoModelV2> fetchOtherEgoByUserIdWithRating(String otherUid) async {
     final otherEgoData = await fetchEgoByUserId(otherUid); // uid로 상대의 ego 조회
-    String uid = 'uid2'; //uid는 시스템에 존재
+
+    //uid는 시스템에 존재
+    String uid = SharedPrefService.getUid()!;
+
     final otherEgoRating = await http.get(Uri.parse('$baseUrl/ego/${otherEgoData.id}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
 
     if(otherEgoRating.statusCode == 200){

@@ -80,7 +80,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
 
     // ✅ 실제 연결
     //uid는 시스템에 존재
-    _socketService.connect(uid: "user_id_001");
+    _socketService.connect(uid: widget.uid);
   }
 
   Future<void> _fetchInitialData() async {
@@ -142,7 +142,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
 
     final inputMessage = ChatHistory(
       //uid는 시스템에 존재
-      uid: "user_id_001",
+      uid: widget.uid,
       chatRoomId: widget.chatRoomId,
       content: text,
       type: "u",
@@ -255,7 +255,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                       try {
                         // 메시지 삭제 요청
                         // await ChatHistoryService.deleteChatMessage(
-                        //     uid: "user_id_001",
+                        //     uid: widget.uid,
                         //     messageHash: messages[index].messageHash!,
                         // );
 
