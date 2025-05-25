@@ -10,7 +10,10 @@ import 'package:ego/widgets/egoicon/ego_list_item_gradient.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:o3d/o3d.dart';
 
+import '../widgets/animation/animation_object_widget.dart';
+import '../widgets/animation/frame_animation.dart';
 import 'egolistview/ego_list_blurred_screen.dart';
 
 class SpeakScreen extends ConsumerStatefulWidget {
@@ -26,10 +29,22 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
   late final List<EgoModelV2> egoList = [];
   EgoModelV2? selectedEgo;
 
+  late String animation;
+  late bool cameraControls;
+  late bool autoRotate;
+  late bool autoPlay;
+  late List<FrameAnimation> animationsData;
+
   /// _tabCntroller 초기화
   @override
   void initState() {
     super.initState();
+    animation = "";
+    cameraControls = true;
+    autoRotate = false;
+    autoPlay = true;
+    animationsData = FrameAnimationsData;
+
     _fetchChatRoomList();
   }
 
@@ -129,19 +144,15 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
             ),
 
             // TODO 여기서 EGO가 움직입니다.
-            Expanded(
-              child: Container(
-                color: Colors.green.withOpacity(0.3), // 영역 표시용 배경색
-                child: Center(
-                  child: Container(
-                    child: Image.asset(
-                      'assets/image/ego_1.png',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            // E/FrameEvents( 4492): updateAcquireFence: Did not find frame.로 인해 log를 가려서 주석처리 했습니다.
+            // Expanded(
+            //   child: AnimationObjectWidget(
+            //     animationName: animation,
+            //     cameraControls: cameraControls,
+            //     autoRotate: autoRotate,
+            //     autoPlay: autoPlay,
+            //   ),
+            // ),
 
             // selectedEgo는 EgoList를 불러온 이후 할당되는데, 해당 buildSelectedEGO에서
             //null check operator을 수행하는 바람에 순간적으로 null 화면이 보입니다. 때문에 이를 방지하기 위해
