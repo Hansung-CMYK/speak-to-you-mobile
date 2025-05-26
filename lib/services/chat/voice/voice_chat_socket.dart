@@ -31,7 +31,7 @@ class VoiceChatSocketClient {
 
   Future<void> connect() async {
     final url =
-        'ws://10.0.2.2:8000/api/ws/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker';
+        'ws://10.0.2.2:8000/api/ws/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=1';
 
     _channel = WebSocketChannel.connect(Uri.parse(url));
     _channel.stream.listen(

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/screens/voice_chat/call_time_banner.dart';
@@ -79,7 +82,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "user",
+        type: "U",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -88,7 +91,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "user",
+        type: "U",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -97,7 +100,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "user",
+        type: "U",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -106,7 +109,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         uid: widget.uid,
         chatRoomId: 1,
         content: "블라블라 오늘도 블라블르라",
-        type: "user",
+        type: "U",
         chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
         isDeleted: false,
         contentType: "TEXT"
@@ -249,7 +252,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                           uid: "some-uid",
                           chatRoomId: 1,
                           content: "자동 추가된 메시지",
-                          type: "user",
+                          type: "U",
                           chatAt: DateTime.now(),
                           isDeleted: false,
                           contentType: "TEXT"
