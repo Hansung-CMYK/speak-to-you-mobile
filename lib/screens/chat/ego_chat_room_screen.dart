@@ -251,13 +251,12 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                     nextMessage: next,
                     onDelete: () async {
                       // uid는 시스템에 존재한다 가정
-                      // TODO HASH값을 사용한 메시지 삭제 요청
                       try {
                         // 메시지 삭제 요청
-                        // await ChatHistoryService.deleteChatMessage(
-                        //     uid: widget.uid,
-                        //     messageHash: messages[index].messageHash!,
-                        // );
+                        await ChatHistoryService.deleteChatMessage(
+                            uid: widget.uid,
+                            messageHash: messages[index].messageHash!,
+                        );
 
                         setState(() { // 삭제요청을 보낸 부분채팅부터 최신 대화까지 삭제
                           messages.removeRange(0, index + 1);

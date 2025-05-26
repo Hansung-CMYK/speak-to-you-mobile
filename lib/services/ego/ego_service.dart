@@ -114,4 +114,19 @@ class EgoService {
 
   }
 
+  static Future<EgoModelV2> fetchTodayEgo(String uid) async {
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$uid/daily'));
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final egoData = decodedJson['data'];
+
+      return EgoModelV2.fromJson(egoData);
+    } else {
+      throw Exception('오늘의 Ego 정보 불러오기 실패: ${response.statusCode}');
+    }
+  }
+
 }
