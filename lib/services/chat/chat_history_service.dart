@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/services/setting_service.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,7 +15,7 @@ class ChatHistoryService {
     required int pageSize,
   }) async {
     final uri = Uri.parse(
-      '$baseUrl/chat-history/list?pageNum=$pageNum&pageSize=$pageSize',
+      '${SettingsService().dbUrl}/chat-history/list?pageNum=$pageNum&pageSize=$pageSize',
     );
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({'uid': uid, 'chatRoomId': chatRoomId});
@@ -37,7 +38,7 @@ class ChatHistoryService {
     required String messageHash,
   }) async {
 
-    final uri = Uri.parse('$baseUrl/chat-history/$uid/$messageHash');
+    final uri = Uri.parse('${SettingsService().dbUrl}/chat-history/$uid/$messageHash');
 
     final headers = {'Content-Type': 'application/json'};
 

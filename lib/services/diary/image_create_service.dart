@@ -1,3 +1,4 @@
+import 'package:ego/services/setting_service.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:ego/utils/constants.dart';
@@ -8,7 +9,7 @@ class ImageCreateService {
     final query = Uri.encodeComponent(prompt);
 
     final response = await http.post(
-      Uri.parse('${genImageUrl}?prompt_ko=${query}'),
+      Uri.parse('${SettingsService().genImageUrl}?prompt_ko=${query}'),
       headers: {'Content-Type': 'application/json'},
     );
 

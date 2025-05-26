@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:ego/services/setting_service.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:ego/models/diary/diary.dart';
@@ -15,7 +16,7 @@ class DiaryService {
     required String userId,
     required int diaryId,
   }) async {
-    final uri = Uri.parse('$baseUrl/diary/$userId/$diaryId');
+    final uri = Uri.parse('${SettingsService().dbUrl}/diary/$userId/$diaryId');
 
     final response = await http.post(uri);
 
@@ -35,7 +36,7 @@ class DiaryService {
    * */
   static Future<Diary> sendDiaryRequest(DiaryRequestModel request) async {
     final response = await http.post(
-      Uri.parse(diaryCreateUrl),
+      Uri.parse('${SettingsService().diaryCreateUrl}'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(request.toJson()),
     );
@@ -56,7 +57,7 @@ class DiaryService {
    * */
   static Future<Diary> saveDiary(Diary diary) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/diary'),
+      Uri.parse('${SettingsService().dbUrl}/diary'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(diary.toJson()),
     );
@@ -80,7 +81,7 @@ class DiaryService {
     required int year,
     required int month,
   }) async {
-    final uri = Uri.parse('$baseUrl/calendar/$userId?month=$month&year=$year');
+    final uri = Uri.parse('${SettingsService().dbUrl}/calendar/$userId?month=$month&year=$year');
 
     final response = await http.get(uri);
 

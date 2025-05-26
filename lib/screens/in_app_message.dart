@@ -1,12 +1,10 @@
 import 'package:another_flushbar/flushbar.dart';
-import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/main.dart'; // 현재에 있는 main화면에서 일기 알림을 띄움
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../models/diary/diary.dart';
-import '../sample/cmyk-196/sample_home_with_fcm.dart'; // 나중에 있을 main화면 완성본에 맞게 경로 수정
 import '../theme/color.dart';
 import 'diary/diary_view_screen.dart';
 

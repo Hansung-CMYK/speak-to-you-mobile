@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:ego/services/setting_service.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -11,7 +12,7 @@ class ChatRoomService {
     required int pageNum,
     required int pageSize
   }) async {
-    final uri = Uri.parse('$baseUrl/chat-room/list?pageNum=$pageNum&pageSize=$pageSize');
+    final uri = Uri.parse('${SettingsService().dbUrl}/chat-room/list?pageNum=$pageNum&pageSize=$pageSize');
     final headers = {'Content-Type': 'application/json'};
     final body = jsonEncode({'uid': uid});
 
@@ -29,7 +30,7 @@ class ChatRoomService {
   }
 
   static Future<bool> deleteChatRoom({required String uid, required int egoId}) async {
-    final url = Uri.parse('$baseUrl/chat-room');
+    final url = Uri.parse('${SettingsService().dbUrl}/chat-room');
 
     final headers = {
       'Content-Type': 'application/json',

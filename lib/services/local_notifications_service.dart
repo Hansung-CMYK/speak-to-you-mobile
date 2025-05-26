@@ -5,7 +5,6 @@ import 'package:ego/screens/in_app_message.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 
-import '../models/ego_info_model.dart';
 import 'package:flutter/material.dart';
 
 class LocalNotificationsService {
@@ -156,7 +155,7 @@ class LocalNotificationsService {
 
   // custom in app msg 호출
   Future<void> showNotification() async {
-
+    print("showNotification");
     // notification API가 완성되면 알림 저장 진행
 
     // FCM Custom in App Alert

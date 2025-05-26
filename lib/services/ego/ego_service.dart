@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:ego/models/chat/chat_room_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/services/setting_service.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -50,7 +51,7 @@ class EgoService {
    * EgoModelV2의 Provider 이후 확정된 모델로 변경
    * */
   static Future<EgoModelV2> fetchEgoByIdV2(int egoId) async {
-    final response = await http.get(Uri.parse('$baseUrl/ego/$egoId'));
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$egoId'));
 
     if (response.statusCode == 200) {
       // response.body 대신 bodyBytes 사용하여 UTF-8로 디코딩
@@ -70,7 +71,7 @@ class EgoService {
    * 사용자 id로 사용자의 ego조회
    * */
   static Future<EgoModelV2> fetchEgoByUserId(String uid) async {
-    final response = await http.get(Uri.parse('$baseUrl/ego/user/$uid'));
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/user/$uid'));
 
     if (response.statusCode == 200) {
       final json = utf8.decode(response.bodyBytes);
@@ -93,7 +94,7 @@ class EgoService {
     //uid는 시스템에 존재
     String uid = SharedPrefService.getUid()!;
 
-    final otherEgoRating = await http.get(Uri.parse('$baseUrl/ego/${otherEgoData.id}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
+    final otherEgoRating = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/${otherEgoData.id}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
 
     if(otherEgoRating.statusCode == 200){
 
