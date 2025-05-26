@@ -196,11 +196,11 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
             padding: EdgeInsets.only(right: 10.w),
             child: buildEgoListItem(widget.egoModel.profileImage, () {
               final egoAsync = ref.watch(
-                  egoByIdProviderV2(widget.egoModel.id!));
+                  fullEgoInfoByEgoIdProvider(widget.egoModel.id!));
 
               egoAsync.when(
                   data: (ego) {
-                    showTodayEgoIntroSheetV2(this.context, ego);
+                    showTodayEgoIntroSheetV2(this.context, ego, isOtherEgo: true);
                   },
                   error: (error, stack) {
                     print('에러 발생: $error');

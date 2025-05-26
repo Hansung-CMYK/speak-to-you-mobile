@@ -1,17 +1,25 @@
+import 'package:ego/models/chat/chat_room_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/providers/chat/chat_room_provider.dart';
+import 'package:ego/screens/chat/ego_chat_room_screen.dart';
 import 'package:ego/screens/egoreview/ego_review.dart';
+import 'package:ego/services/chat/chat_room_service.dart';
+import 'package:ego/utils/shared_pref_helper.dart';
+import 'package:ego/utils/util_function.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/theme/color.dart';
+
+import '../../screens/chat/human_chat_room_screen.dart';
+import '../../services/ego/ego_service.dart';
 
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
 /// context : 띄워질 부모의 context \[BuildContext]
 /// EgoModelV2 : 띄울 EGO의 정보 \[EgoModelV2]
-void showTodayEgoIntroSheetV2(
+Future<void> showTodayEgoIntroSheetV2(
   BuildContext context,
   EgoModelV2 egoModelV2, {
   bool isOtherEgo = false,
@@ -20,7 +28,44 @@ void showTodayEgoIntroSheetV2(
   String relationTag = "", // ego와의 친밀도 태그
   bool canChatWithHuman = false, // 사람과 채팅 가능한지 여부
   String unavailableReason = "", // 채팅 불가능한 이유
-}) {
+}) async {
+
+  relationTag = egoModelV2.relation ?? "";
+  String uid = SharedPrefService.getUid()!;
+
+  // ego대화 화면 이동
+  if(isOtherEgo){
+
+    ChatRoomModel chatRoomModel = await ChatRoomService.createChatRoom(uid: uid, egoId: egoModelV2.id!);
+
+    onChatWithEgo = (){
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (context) => EgoChatRoomScreen(uid: uid,egoModel: egoModelV2, chatRoomId: chatRoomModel.id,),
+        ),
+      );
+    };
+  }
+
+  // 상대와 채팅이 가능한 경우 사람채팅으로 이동
+  if(isOtherEgo && UtilFunction.relationToHumanChatPossible(egoModelV2.relation)){
+    canChatWithHuman = true;
+    String ownerId = await EgoService.fetchEgoOwnerId(egoModelV2.id!);
+
+    onChatWithHuman = () async {
+      Navigator.of(context, rootNavigator: true).push(
+        MaterialPageRoute(
+          builder: (context) => HumanChatScreen(
+            egoName: egoModelV2.name,
+            otherUserId: ownerId,
+          ),
+        ),
+      );
+    };
+  } else { // 안친할 경우
+    unavailableReason = "해당 EGO와 친하지 않아요.";
+  }
+
   showModalBottomSheet(
     context: context,
     backgroundColor: AppColors.gray100,
@@ -89,7 +134,7 @@ Widget _header(BuildContext context) {
 
 /// BottomSheet의 Body부분 EGO의 정보들을 보여줍니다.
 ///
-/// \[egoModelV2] : EGO의 정보를 가지고 있는 model입니다. \[EgoInfoModel]
+/// \[egoModelV2] : EGO의 정보를 가지고 있는 model입니다.
 /// \[context] : BottomSheet를 닫기 위해 context를 전달해 줍니다. \[BuildContext]
 Widget _body(
   BuildContext context,
@@ -123,9 +168,9 @@ Widget _body(
 
 /// Ego의 프로필이미지, 이름, 생일을 보여줍니다.
 ///
-/// \[egoModelV2] : EGO의 정보를 가지고 있습니다. \[EgoInfoModel]
+/// \[egoModelV2] : EGO의 정보를 가지고 있습니다. \[EgoModelV2]
 /// Ego의 프로필이미지, 이름, 생일을 보여줍니다.
-class EgoInfoCard extends StatefulWidget {
+  class EgoInfoCard extends StatefulWidget {
   final EgoModelV2 egoModelV2;
   final bool isOtherEgo;
   final String relationTag;

@@ -59,4 +59,23 @@ class ChatRoomService {
     }
   }
 
+  // chatRoom 생성
+  static Future<ChatRoomModel> createChatRoom({required String uid,required int egoId}) async {
+    final uri = Uri.parse('${SettingsService().dbUrl}/chat-room');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({'uid': uid, 'egoId' : egoId});
+
+    final response = await http.post(uri, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes); // 한글 깨짐 방지
+      final decodedJson = jsonDecode(json);
+      final chatRoomModel = ChatRoomModel.fromJson(decodedJson['data']);
+
+      return chatRoomModel;
+    } else {
+      throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
+    }
+  }
+
 }

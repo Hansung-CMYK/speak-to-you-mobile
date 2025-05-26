@@ -42,3 +42,7 @@ final todayEgoProvider = FutureProvider.family<EgoModelV2, String>((ref, uid) as
     return await EgoService.fetchTodayEgo(uid);
   },
 );
+
+final fullEgoInfoByEgoIdProvider = FutureProvider.family<EgoModelV2, int> ((ref, egoId)async{
+  return await EgoService.fetchFullEgoInfoByEgoId(egoId);
+});

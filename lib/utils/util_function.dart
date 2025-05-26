@@ -63,4 +63,35 @@ class UtilFunction {
 
     return personalityMap[personalityTag] ?? 0; // 존재하는 값이 없으면 0반환
   }
+
+  // relation tag값을 기반으로 사람과 채팅할 수 있는지 결정합니다.
+  static bool relationToHumanChatPossible(String? relation){
+
+    if(relation ==null ) return false;
+
+    const positiveOrNeutralEmotions = {
+      "감사",
+      "격려",
+      "공감",
+      "감탄",
+      "호감",
+      "애정",
+      "신뢰",
+      "친근감",
+      "존경",
+      "지원",
+      "희망",
+      "위로",
+      "연민",
+      "흥미",
+      "흥분",
+      "호기심(긍정)",
+      "놀람",
+      "호기심(부정)",
+      "무관심",
+    };
+
+    return positiveOrNeutralEmotions.contains(relation);
+  }
+
 }
