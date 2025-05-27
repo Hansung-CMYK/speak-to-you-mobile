@@ -16,6 +16,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../../firebase_options.dart';
+import 'screens/host_port_setting_screen.dart';
 import 'services/setting_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -74,12 +75,13 @@ class MainScreenTest extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             initialRoute: 'Main',
             routes: {
-              'Main':
+              '/Main':
                   (context) => Consumer(
                     builder: (context, ref, child) {
                       return SampleMainScreen();
                     },
                   ),
+              '/settings' : (context) => HostPortSettingScreen()
             },
           ),
     );

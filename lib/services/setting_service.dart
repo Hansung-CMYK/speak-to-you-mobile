@@ -43,16 +43,16 @@ class SettingsService {
 
 
   // --- Getters ---
-  String get _host => _prefs.getString(_hostUrl) ?? '10.0.2.2'; // build 할때는 localhost로 수정
+  String get host => _prefs.getString(_hostUrl) ?? '10.0.2.2'; // build 할때는 localhost로 수정
 
-  String get _dbPort => _prefs.getString(_dbPortKey) ?? '11111'; // DB에 저장 - 30080
-  String get _wsTextPort => _prefs.getString(_wsPortKey) ?? '22222'; // text ws 통신 - 8000
-  String get _diaryCreatePort => _prefs.getString(_diaryPortKey) ?? '33333'; // 일기 생성 - 8003
-  String get _imageGenPort => _prefs.getString(_imagePortKey) ?? '44444'; // 이미지 생성 - 8003
+  String get dbPort => _prefs.getString(_dbPortKey) ?? '11111'; // DB에 저장 - 30080
+  String get wsTextPort => _prefs.getString(_wsPortKey) ?? '22222'; // text ws 통신 - 8000
+  String get diaryCreatePort => _prefs.getString(_diaryPortKey) ?? '33333'; // 일기 생성 - 8003
+  String get imageGenPort => _prefs.getString(_imagePortKey) ?? '44444'; // 이미지 생성 - 8003
 
   // --- URLs ---
-  String get dbUrl => 'http://$_host:$_dbPort/api/v1';
-  String get webSocketUrl => 'ws://$_host:$_wsTextPort/ws';
-  String get diaryCreateUrl => 'http://$_host:$_diaryCreatePort/api/diary';
-  String get genImageUrl => 'http://$_host:$_imageGenPort/api/image';
+  String get dbUrl => 'http://$host:$dbPort/api/v1';
+  String get webSocketUrl => 'ws://$host:$wsTextPort/ws';
+  String get diaryCreateUrl => 'http://$host:$diaryCreatePort/api/diary';
+  String get genImageUrl => 'http://$host:$imageGenPort/api/image';
 }
