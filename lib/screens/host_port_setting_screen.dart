@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ego/services/setting_service.dart';
 
+import 'package:ego/utils/shared_pref_helper.dart';
+
 class HostPortSettingScreen extends StatefulWidget {
   const HostPortSettingScreen({Key? key}) : super(key: key);
 
@@ -10,6 +12,7 @@ class HostPortSettingScreen extends StatefulWidget {
 }
 
 class _HostPortSettingScreenState extends State<HostPortSettingScreen> {
+  final _uidController = TextEditingController();
   final _hostController = TextEditingController();
   final _dbPortController = TextEditingController();
   final _wsPortController = TextEditingController();
@@ -27,8 +30,10 @@ class _HostPortSettingScreenState extends State<HostPortSettingScreen> {
   }
 
   Future<void> _loadSettings() async {
+    final uid = SharedPrefService.getUid() ?? '';
 
     setState(() {
+      _uidController.text = uid;
       _hostController.text = _settings.host;
       _dbPortController.text = _settings.dbPort;
       _wsPortController.text = _settings.wsTextPort;
@@ -39,6 +44,7 @@ class _HostPortSettingScreenState extends State<HostPortSettingScreen> {
   }
 
   Future<void> _saveSettings() async {
+    await SharedPrefService.setUid(_uidController.text);
     await _settings.setHost(_hostController.text);
     await _settings.setApiPort(_dbPortController.text);
     await _settings.setWsPort(_wsPortController.text);
@@ -52,6 +58,7 @@ class _HostPortSettingScreenState extends State<HostPortSettingScreen> {
 
   @override
   void dispose() {
+    _uidController.dispose();
     _hostController.dispose();
     _dbPortController.dispose();
     _wsPortController.dispose();
@@ -77,14 +84,13 @@ class _HostPortSettingScreenState extends State<HostPortSettingScreen> {
         padding: EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            _buildTextField('UID', _uidController),
             _buildTextField('호스트 주소', _hostController, hint: '예: 10.0.2.2'),
             _buildTextField('DB 포트', _dbPortController, isNumber: true),
             _buildTextField('WebSocket 포트', _wsPortController, isNumber: true),
             _buildTextField('일기 생성 포트', _diaryPortController, isNumber: true),
             _buildTextField('이미지 생성 포트', _imagePortController, isNumber: true),
-
             SizedBox(height: 20),
-
             ElevatedButton(
               onPressed: _saveSettings,
               child: Text('저장'),
