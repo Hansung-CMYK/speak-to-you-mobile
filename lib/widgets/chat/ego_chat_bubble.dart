@@ -1,9 +1,9 @@
+import 'dart:convert';
+
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -22,103 +22,107 @@ class ChatBubble extends StatelessWidget {
   final VoidCallback onDelete;
 
   const ChatBubble({
+    Key? key,
     required this.message,
     this.previousMessage,
     this.nextMessage,
     required this.onDelete,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final isUser = message.type == "u";
+    final isUser = message.type == 'u';
+    final sameAsPrev = previousMessage?.type == message.type;
+    final sameAsNext = nextMessage?.type == message.type;
 
-    final bool sameAsPrevious = previousMessage?.type == message.type;
-    final bool sameAsNext = nextMessage?.type == message.type;
+    // ---------- 공통 UI 계산 ----------
+    final r = const Radius.circular(16);
+    final align = isUser ? MainAxisAlignment.end : MainAxisAlignment.start;
+    final bg = isUser ? AppColors.accent : AppColors.white;
+    final txtCol = isUser ? AppColors.white : AppColors.black;
 
-    final Radius radius = Radius.circular(16);
+    BorderRadius bubbleRadius = BorderRadius.only(
+      topLeft: isUser ? r : (sameAsPrev ? const Radius.circular(5) : r),
+      topRight: isUser ? (sameAsPrev ? const Radius.circular(5) : r) : r,
+      bottomLeft: isUser ? r : (sameAsNext ? const Radius.circular(5) : r),
+      bottomRight: isUser ? (sameAsNext ? const Radius.circular(5) : r) : r,
+    );
 
-    BorderRadius bubbleRadius;
+    // ---------- 콘텐츠 위젯 ----------
+    Widget contentWidget;
+    bool isImage = message.contentType == 'IMAGE';
+    if (isImage) {
+      // Base64 or URL
+      final data = message.content;
+      final image =
+          data.startsWith('http')
+              ? Image.network(data, fit: BoxFit.cover)
+              : Image.memory(base64Decode(data), fit: BoxFit.cover);
 
-    if (isUser) {
-      bubbleRadius = BorderRadius.only(
-        topLeft: radius,
-        topRight: sameAsPrevious ? Radius.circular(5) : radius,
-        bottomLeft: radius,
-        bottomRight: sameAsNext ? Radius.circular(5) : radius,
+      // 이미지만 보이도록 ClipRRect 사용
+      contentWidget = ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 0.65.sw, // 가로 폭 제한 (화면 65%)
+            maxHeight: 0.5.sh, // 세로 폭 제한 (화면 50%)
+          ),
+          child: image,
+        ),
       );
     } else {
-      bubbleRadius = BorderRadius.only(
-        topLeft: sameAsPrevious ? Radius.circular(5) : radius,
-        topRight: radius,
-        bottomLeft: sameAsNext ? Radius.circular(5) : radius,
-        bottomRight: radius,
+      contentWidget = Text(
+        message.content,
+        style: TextStyle(fontSize: 15.sp, color: txtCol),
       );
     }
 
-    final alignment = isUser ? MainAxisAlignment.end : MainAxisAlignment.start;
-    final bubbleColor = isUser ? AppColors.accent : AppColors.white;
-    final textColor = isUser ? AppColors.white : AppColors.black;
+    // ---------- 래퍼 ----------
+    Widget bubble =
+        isImage
+            ? contentWidget // 이미지면 말풍선 없이 그대로
+            : Container(
+              decoration: BoxDecoration(color: bg, borderRadius: bubbleRadius),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              child: contentWidget,
+            );
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 3.h),
       child: Row(
-        mainAxisAlignment: alignment,
+        mainAxisAlignment: align,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          if (isUser)
-            Padding(
-              padding: EdgeInsets.only(right: 4),
-              child: Text(
-                message.formattedChatAt,
-                style: TextStyle(fontSize: 12.sp, color: Colors.grey),
-              ),
-            ),
+          if (isUser) _timeText(message.formattedChatAt),
           Flexible(
             child: GestureDetector(
               onLongPress:
-                  isUser // user인 경우만 삭제 할 수 있음
+                  isUser
                       ? () async {
-                        final result = await showConfirmDialog(
+                        final ok = await showConfirmDialog(
                           context: context,
                           title: '메시지를 삭제할까요?',
                           content: '삭제하면 이 메시지는 다시 볼 수 없어요.',
                           dialogType: DialogType.info,
-                          stack: true,
                           cancelText: '취소',
                           confirmText: '삭제',
                           confirmBackgroundColor: AppColors.red,
                           confirmForegroundColor: AppColors.white,
-                          confirmOverlayColor: AppColors.white,
                         );
-
-                        if (result == true) {
-                          onDelete(); // 삭제 콜백 호출
-                        }
+                        if (ok == true) onDelete();
                       }
                       : null,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-                decoration: BoxDecoration(
-                  color: bubbleColor,
-                  borderRadius: bubbleRadius,
-                ),
-                child: Text(
-                  message.content,
-                  style: TextStyle(fontSize: 15.sp, color: textColor),
-                ),
-              ),
+              child: bubble,
             ),
           ),
-          if (!isUser)
-            Padding(
-              padding: const EdgeInsets.only(left: 4),
-              child: Text(
-                message.formattedChatAt,
-                style: TextStyle(fontSize: 12.sp, color: Colors.grey),
-              ),
-            ),
+          if (!isUser) _timeText(message.formattedChatAt),
         ],
       ),
     );
   }
+
+  Widget _timeText(String text) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4),
+    child: Text(text, style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+  );
 }

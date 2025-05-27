@@ -21,37 +21,36 @@ class ChatHistoryKafka {
 
   factory ChatHistoryKafka.fromJson(Map<String, dynamic> json) {
     return ChatHistoryKafka(
-      from: (json['from'] as String) ?? 'user_id_001',
-      to: (json['to'] as String) ?? '1',
-      chatRoomId: (json['chatRoomId'] as int) ?? 1,
-      content: json['content'] as String,
-      contentType: (json['contentType'] as String) ?? 'TEXT',
-      mcpEnabled: (json['mcpEnabled'] as bool) ?? false,
-      messageHash: (json['hash'] as String?) ?? 'TEMP_HASH',
+      from: json['from'] as String? ?? '',
+      to: json['to'] as String? ?? '',
+      chatRoomId: json['chatRoomId'] as int? ?? 0,
+      content: json['content'] as String? ?? '',
+      contentType: json['contentType'] as String? ?? 'TEXT',
+      mcpEnabled: json['mcpEnabled'] as bool? ?? false,
+      messageHash: json['hash'] as String? ?? '',
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'from': from,
-      'to': to,
-      'chatRoomId': chatRoomId,
-      'content': content,
-      'contentType': contentType,
-      'mcpEnabled': mcpEnabled,
-      'hash': messageHash,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'from': from,
+    'to': to,
+    'chatRoomId': chatRoomId,
+    'content': content,
+    'contentType': contentType,
+    'mcpEnabled': mcpEnabled,
+    'hash': messageHash,
+  };
 
-  static ChatHistory convertToChatHistory(ChatHistoryKafka kafkaMessage) {
+  static ChatHistory convertToChatHistory(ChatHistoryKafka kafka) {
     return ChatHistory(
-      uid: kafkaMessage.from,
-      chatRoomId: kafkaMessage.chatRoomId,
-      content: kafkaMessage.content,
-      type: "e",
-      messageHash: kafkaMessage.messageHash,
+      uid: kafka.from,
+      chatRoomId: kafka.chatRoomId,
+      content: kafka.content,
+      type: 'e',
       chatAt: DateTime.now(),
-      contentType: kafkaMessage.contentType,
+      isDeleted: false,
+      messageHash: kafka.messageHash,
+      contentType: kafka.contentType,
     );
   }
 }
