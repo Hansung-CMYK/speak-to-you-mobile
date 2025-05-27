@@ -200,7 +200,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
 
               egoAsync.when(
                   data: (ego) {
-                    showTodayEgoIntroSheetV2(this.context, ego, isOtherEgo: true);
+                    showTodayEgoIntroSheetV2(this.context, ego, isOtherEgo: true, egoChatPossible: false);
                   },
                   error: (error, stack) {
                     print('에러 발생: $error');

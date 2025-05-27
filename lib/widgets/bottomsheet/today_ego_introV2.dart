@@ -13,8 +13,8 @@ import 'package:intl/intl.dart';
 
 import 'package:ego/theme/color.dart';
 
-import '../../screens/chat/human_chat_room_screen.dart';
-import '../../services/ego/ego_service.dart';
+import 'package:ego/screens/chat/human_chat_room_screen.dart';
+import 'package:ego/services/ego/ego_service.dart';
 
 /// 오늘의 EGO정보를 BottomSheet를 사용하여 보여줍니다.
 /// context : 띄워질 부모의 context \[BuildContext]
@@ -28,13 +28,14 @@ Future<void> showTodayEgoIntroSheetV2(
   String relationTag = "", // ego와의 친밀도 태그
   bool canChatWithHuman = false, // 사람과 채팅 가능한지 여부
   String unavailableReason = "", // 채팅 불가능한 이유
+  bool egoChatPossible = true // ego 채팅으로 이동이 가능한지 여부
 }) async {
 
   relationTag = egoModelV2.relation ?? "";
   String uid = SharedPrefService.getUid()!;
 
   // ego대화 화면 이동
-  if(isOtherEgo){
+  if(isOtherEgo && egoChatPossible){
 
     ChatRoomModel chatRoomModel = await ChatRoomService.createChatRoom(uid: uid, egoId: egoModelV2.id!);
 
@@ -95,6 +96,7 @@ Future<void> showTodayEgoIntroSheetV2(
                 relationTag,
                 canChatWithHuman,
                 unavailableReason,
+                egoChatPossible
               ),
             ],
           ),
@@ -145,6 +147,7 @@ Widget _body(
   String relationTag,
   bool canChatWithHuman,
   String unavailableReason,
+    bool egoChatPossible
 ) {
   return Column(
     children: [
@@ -161,6 +164,7 @@ Widget _body(
         onChatWithHuman,
         canChatWithHuman,
         unavailableReason,
+        egoChatPossible
       ),
     ],
   );
@@ -445,6 +449,7 @@ Widget _footerButtons(
   VoidCallback? onChatWithHuman,
   bool canChatWithHuman,
   String unavailableReason,
+  bool egoChatPossible
 ) {
   if (isOtherEgo) {
     return Column(
@@ -456,27 +461,29 @@ Widget _footerButtons(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // EGO 버튼
-              Expanded(
-                child: TextButton(
-                  onPressed: onChatWithEgo,
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.r),
+              if (egoChatPossible)...[
+                Expanded(
+                  child: TextButton(
+                    onPressed: onChatWithEgo,
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.r),
+                      ),
+                      padding: EdgeInsets.symmetric(vertical: 15.h),
+                      backgroundColor: AppColors.strongOrange,
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 15.h),
-                    backgroundColor: AppColors.strongOrange,
-                  ),
-                  child: Text(
-                    "EGO와 채팅",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.w700,
+                    child: Text(
+                      "EGO와 채팅",
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(width: 16.w),
+                SizedBox(width: 16.w),
+              ],
               // 사람과 채팅 버튼 + 안내문
               Expanded(
                 child: Column(
