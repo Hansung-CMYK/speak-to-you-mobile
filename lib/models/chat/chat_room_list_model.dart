@@ -12,6 +12,7 @@ class ChatRoomListModel {
   final DateTime lastChatAt;
   final bool isDeleted;
   final EgoModelV2 egoModel;
+  final String lastChatContent;
 
   ChatRoomListModel({
     required this.id,
@@ -19,6 +20,7 @@ class ChatRoomListModel {
     required this.egoId,
     required this.lastChatAt,
     required this.isDeleted,
-    required this.egoModel
+    required this.egoModel,
+    required this.lastChatContent
   });
 }

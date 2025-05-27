@@ -1,3 +1,4 @@
+import 'package:ego/services/chat/chat_history_service.dart';
 import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -77,13 +78,18 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
         final chatRoom = chatRooms[i];
         final ego = egos[i];
 
+        final chatHistory = await ChatHistoryService.fetchChatHistoryList(uid: uid, pageNum: 0,pageSize: 1, chatRoomId: chatRoom.id);
+
+        String lastChatContent = chatHistory.isNotEmpty ? chatHistory[0].content : '';
+
         chatRoomListModels.add(ChatRoomListModel(
           id: chatRoom.id,
           uid: chatRoom.uid,
           egoId: chatRoom.egoId,
           lastChatAt: chatRoom.lastChatAt,
           isDeleted: chatRoom.isDeleted,
-          egoModel: ego
+          egoModel: ego,
+          lastChatContent: lastChatContent
         ));
       }
 
@@ -119,22 +125,28 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
             final chat = _chatRoomList[index];
 
             return InkWell(
-              onTap: () {
+              onTap: () async {
                 setState(() {
                   _selectedChatRoomId = chat.id;
                 });
 
-                Navigator.push(
+                // B화면에서 되돌아올 때까지 기다림
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder:
-                        (context) => EgoChatRoomScreen(
-                          chatRoomId: chat.id,
-                          uid: chat.uid,
-                          egoModel: chat.egoModel,
-                        ),
+                    builder: (context) => EgoChatRoomScreen(
+                      chatRoomId: chat.id,
+                      uid: chat.uid,
+                      egoModel: chat.egoModel,
+                    ),
                   ),
                 );
+
+                if (result == true) {
+                  --_pageNum;
+                  _chatRoomList.clear();
+                  await fetchChatRooms(); // ChatRoom 목록 새로고침 함수
+                }
               },
               onLongPress: () async {
                 final result = await showConfirmDialog(
@@ -151,12 +163,11 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
                 );
 
                 if (result == true) {
-                  // uid는 시스템 상에 존재
                   await ChatRoomService.deleteChatRoom(uid: uid, egoId: chat.egoId);
 
                   setState(() {
                     _chatRoomList.removeWhere(
-                      (element) => element.id == chat.id,
+                          (element) => element.id == chat.id,
                     );
                   });
                 }
@@ -165,9 +176,10 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 child: Row(
                   children: [
+                    // 채팅방 리스트 프로필 이미지
                     buildEgoListItem(
                       chat.egoModel.profileImage,
-                      () {},
+                          () {},
                       radius: 25.5,
                     ),
                     SizedBox(width: 24.w),
@@ -198,7 +210,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
                           ),
                           SizedBox(height: 4.h),
                           Text(
-                            '최근 메시지',
+                            '${chat.lastChatContent}',
                             style: TextStyle(
                               color: AppColors.gray600,
                               fontSize: 14.sp,
