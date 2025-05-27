@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:ego/models/chat/chat_room_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/services/setting_service.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -50,7 +51,7 @@ class EgoService {
    * EgoModelV2의 Provider 이후 확정된 모델로 변경
    * */
   static Future<EgoModelV2> fetchEgoByIdV2(int egoId) async {
-    final response = await http.get(Uri.parse('$baseUrl/ego/$egoId'));
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$egoId'));
 
     if (response.statusCode == 200) {
       // response.body 대신 bodyBytes 사용하여 UTF-8로 디코딩
@@ -70,7 +71,7 @@ class EgoService {
    * 사용자 id로 사용자의 ego조회
    * */
   static Future<EgoModelV2> fetchEgoByUserId(String uid) async {
-    final response = await http.get(Uri.parse('$baseUrl/ego/user/$uid'));
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/user/$uid'));
 
     if (response.statusCode == 200) {
       final json = utf8.decode(response.bodyBytes);
@@ -93,7 +94,7 @@ class EgoService {
     //uid는 시스템에 존재
     String uid = SharedPrefService.getUid()!;
 
-    final otherEgoRating = await http.get(Uri.parse('$baseUrl/ego/${otherEgoData.id}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
+    final otherEgoRating = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/${otherEgoData.id}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
 
     if(otherEgoRating.statusCode == 200){
 
@@ -104,6 +105,8 @@ class EgoService {
 
       otherEgoData.rating = ratingNpersonality['rating'];
       otherEgoData.personalityList = List<String>.from(ratingNpersonality['personalityList']);
+      otherEgoData.relation = ratingNpersonality['relation'];
+      otherEgoData.isLiked = ratingNpersonality['isLiked'];
 
       return otherEgoData;
     } else{
@@ -111,6 +114,63 @@ class EgoService {
     }
 
 
+  }
+
+  static Future<EgoModelV2> fetchTodayEgo(String uid) async {
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$uid/daily'));
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final egoData = decodedJson['data'];
+
+      return EgoModelV2.fromJson(egoData);
+    } else {
+      throw Exception('오늘의 Ego 정보 불러오기 실패: ${response.statusCode}');
+    }
+  }
+
+  static Future<String> fetchEgoOwnerId(int egoId ) async{
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$egoId/owner'));
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final egoData = decodedJson['data'];
+
+      return egoData['uid'];
+    } else {
+      throw Exception('ego의 주인 id 정보 불러오기 실패: ${response.statusCode}');
+    }
+  }
+
+  // 사용자와 ego간의 관계를 포함한 전체 정보 반환
+  static Future<EgoModelV2> fetchFullEgoInfoByEgoId(int egoId) async {
+    final egoData = await fetchEgoByIdV2(egoId); // egoid로 기본 ego 정보 조회
+
+    //uid는 시스템에 존재
+    String uid = SharedPrefService.getUid()!;
+
+    final otherEgoRating = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/${egoId}/$uid')); // 내(현 시스템 사용자)가 다른 ego를 어떤식으로 평가했는지 값
+
+    if(otherEgoRating.statusCode == 200){
+
+      final json = utf8.decode(otherEgoRating.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final ratingNpersonality = decodedJson['data'];
+
+      egoData.rating = ratingNpersonality['rating'];
+      egoData.personalityList = List<String>.from(ratingNpersonality['personalityList']);
+      egoData.relation = ratingNpersonality['relation'];
+      egoData.isLiked = ratingNpersonality['isLiked'];
+
+      return egoData;
+    } else{
+      throw Exception('Egoid로 ego 정보 및 personalityList, rating 조회 실패 : ${otherEgoRating.statusCode}');
+    }
   }
 
 }

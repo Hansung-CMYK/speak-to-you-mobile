@@ -4,6 +4,8 @@ import 'package:ego/models/evaluation_model.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
+import 'setting_service.dart';
+
 class EvaluationService{
 
   /**
@@ -11,7 +13,7 @@ class EvaluationService{
    * */
   static Future<EvaluationModel> saveEvaluation(EvaluationModel request) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/evaluation'),
+      Uri.parse('${SettingsService().dbUrl}/evaluation'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(request.toJson()),
     );

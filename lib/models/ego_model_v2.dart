@@ -11,6 +11,8 @@ class EgoModelV2 {
   final int? likes;
   List<String>? personalityList; // 성격 리스트 (util_function에 나열되어 있음)
   int? rating; //user가 평가한 점수
+  String? relation; // Ego와 사용자의 관계
+  bool? isLiked; // 해당 ego의 좋아요를 눌렀는가
 
   EgoModelV2({
     this.id,
@@ -21,7 +23,9 @@ class EgoModelV2 {
     this.createdAt,
     this.likes,
     this.personalityList,
-    this.rating
+    this.rating,
+    this.relation,
+    this.isLiked
   });
 
   /// JSON → Ego 객체
@@ -41,7 +45,9 @@ class EgoModelV2 {
       json['personalityList'] != null
           ? List<String>.from(json['personalityList'])
           : [],
-      rating: json['rating']
+      rating: json['rating'],
+      relation: json['relation'],
+      isLiked: json['isLiked'],
     );
   }
 
@@ -55,7 +61,9 @@ class EgoModelV2 {
       'createdAt': createdAt?.toIso8601String(),
       'likes': likes,
       'personalityList': personalityList,
-      'rating' : rating
+      'rating' : rating,
+      'isLiked' : isLiked,
+      'relation' : relation,
     };
   }
 

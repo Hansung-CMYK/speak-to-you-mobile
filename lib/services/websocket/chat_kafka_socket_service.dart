@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:async';
 import 'package:ego/models/chat/chat_history_kafka_model.dart';
+import 'package:ego/services/setting_service.dart';
 import 'package:ego/utils/constants.dart';
 import 'package:stomp_dart_client/stomp_dart_client.dart';
 
@@ -24,7 +25,7 @@ class SocketService {
   Future<void> connect({required String uid}) async {
     _client = StompClient(
       config: StompConfig(
-        url: webSocketUrl,
+        url: SettingsService().webSocketUrl,
         onConnect: (frame) => _onConnect(frame, uid),
         onWebSocketError: (dynamic error) {
           print('❌ WebSocket 에러: $error');

@@ -1,31 +1,63 @@
 import 'package:ego/screens/chat/chat_tab_screen.dart';
 import 'package:ego/screens/speak_screen.dart';
 import 'package:ego/screens/record/record_screen.dart';
+import 'package:ego/services/firebase_messaging_service.dart';
+import 'package:ego/services/local_notifications_service.dart';
 import 'package:ego/theme/theme.dart';
 import 'package:ego/utils/shared_pref_helper.dart';
 import 'package:ego/widgets/appbar/main_app_bar.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import '../../firebase_options.dart';
+import 'screens/host_port_setting_screen.dart';
+import 'services/setting_service.dart';
 
-void main() async {
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+Future<void> requestNotificationPermission() async {
+  final status = await Permission.notification.status;
+  if (!status.isGranted) {
+    await Permission.notification.request();
+  }
+}
+
+Future<void> main() async {
   await initializeDateFormatting('ko');
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
 
   // TODO 계정 정보 업데이트
   await SharedPrefService.init();
-  await SharedPrefService.setUid('user_id_001'); // 현재 test 데이터가 user_id_001에 저장되어 있음
+  await SharedPrefService.setUid(
+    'user_id_001',
+  ); // 현재 test 데이터가 user_id_001에 저장되어 있음
 
-  runApp(
-    ProviderScope(
-      child: MainScreenTest(),
-    ),
+  tz.initializeTimeZones();
+
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await requestNotificationPermission();
+  final localNotificationsService = LocalNotificationsService.instance();
+  await localNotificationsService.init();
+
+
+  await SettingsService().init(); // host, port 초기화
+
+  await FirebaseMessaging.instance.subscribeToTopic(
+    SharedPrefService.getUid()!,
   );
+
+  final firebaseMessagingService = FirebaseMessagingService.instance();
+  await firebaseMessagingService.init(
+    localNotificationsService: localNotificationsService,
+  );
+
+  runApp(ProviderScope(child: MainScreenTest()));
 }
 
 class MainScreenTest extends StatelessWidget {
@@ -35,19 +67,23 @@ class MainScreenTest extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: Size(393, 852),
-      builder: (context, child) => MaterialApp(
-          title: '앱 바 테스트 페이지',
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          initialRoute: 'Main',
-          routes: {
-            'Main': (context) => Consumer(
-              builder: (context, ref, child) {
-                return SampleMainScreen();
-              },
-            ),
-          }
-      ),
+      builder:
+          (context, child) => MaterialApp(
+            navigatorKey: navigatorKey,
+            title: '앱 바 테스트 페이지',
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            initialRoute: 'Main',
+            routes: {
+              'Main':
+                  (context) => Consumer(
+                    builder: (context, ref, child) {
+                      return SampleMainScreen();
+                    },
+                  ),
+              '/settings' : (context) => HostPortSettingScreen()
+            },
+          ),
     );
   }
 }
@@ -84,14 +120,13 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
     return Scaffold(
       /// 각 Screen으로 이동하기 위한 Navigator AppBar이다.
       appBar: MainAppBar(_tabController),
-
       /// MainAppBar에서 선택된 Tab의 Screen이 나타나는 영역이다.
       body: TabBarView(
         controller: _tabController,
         children: [
           SpeakScreen(), // speak 페이지
           RecordScreen(), // 캘린더 페이지
-          ChatTabScreen() // 채팅 페이지
+          ChatTabScreen(), // 채팅 페이지
         ],
       ),
     );

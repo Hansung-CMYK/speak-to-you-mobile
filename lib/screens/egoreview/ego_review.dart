@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:ego/main.dart';
 import 'emoji_rate_bar.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
@@ -165,7 +166,6 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
 
           // 평가완료 버튼
           reviewCompleteBtn(context, () async {
-            // TODO 완성된 홈 화면으로 이동
             //uid는 시스템에 존재
             EvaluationModel evaluation = EvaluationModel(
               uid: uid,
@@ -176,6 +176,13 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
             );
 
             await EvaluationService.saveEvaluation(evaluation);
+
+            //홈 화면으로 이동
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => SampleMainScreen()),
+              (route) => false,
+            );
           }, totalRate != 0 && solvingProblemRate != -1 && empathyRate != -1),
         ],
       ),
@@ -215,6 +222,13 @@ Widget EgoInfoProfile({
                         width: 100.w,
                         height: 100.h,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.person,
+                            size: 100.w,
+                            color: AppColors.gray300,
+                          );
+                        },
                       )
                       : Icon(
                         Icons.person,

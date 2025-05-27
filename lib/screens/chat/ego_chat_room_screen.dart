@@ -154,7 +154,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
 
     final kafkaReqMessage = ChatHistory.convertToKafka(
       inputMessage,
-      to: "1", // TODO 이후 수정 widget.egoModel.id.toString(),
+      to: widget.egoModel.id.toString(),
       contentType: "TEXT",
     );
 
@@ -176,31 +176,42 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      backgroundColor: AppColors.gray200,
-      appBar: AppBar(
-        title: Text(
-          "${widget.egoModel.name}",
-          style: TextStyle(
-            color: AppColors.gray900,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w700,
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pop(context, true); // true 반환
+        return false; // 우리가 직접 pop 했기 때문에 시스템이 자동 pop 하지 않도록 false
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
+        backgroundColor: AppColors.gray200,
+        appBar: AppBar(
+          title: Text(
+            "${widget.egoModel.name}",
+            style: TextStyle(
+              color: AppColors.gray900,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w700,
+            ),
           ),
-        ),
-        surfaceTintColor: AppColors.white,
-        centerTitle: true,
-        actions: [
-          // 우상단 ego profile 이미지
-          Padding(
-            padding: EdgeInsets.only(right: 10.w),
-            child: buildEgoListItem(widget.egoModel.profileImage, () {
-              final egoAsync = ref.watch(
-                  egoByIdProviderV2(widget.egoModel.id!));
+          surfaceTintColor: AppColors.white,
+          centerTitle: true,
+          actions: [
+            // 우상단 ego profile 이미지
+            Padding(
+              padding: EdgeInsets.only(right: 10.w),
+              child: buildEgoListItem(widget.egoModel.profileImage, () {
+                final egoAsync = ref.watch(
+                  fullEgoInfoByEgoIdProvider(widget.egoModel.id!),
+                );
 
-              egoAsync.when(
+                egoAsync.when(
                   data: (ego) {
-                    showTodayEgoIntroSheetV2(this.context, ego);
+                    showTodayEgoIntroSheetV2(
+                      this.context,
+                      ego,
+                      isOtherEgo: true,
+                      egoChatPossible: false,
+                    );
                   },
                   error: (error, stack) {
                     print('에러 발생: $error');
@@ -220,102 +231,108 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                       ),
                     );
                   },
-                  loading: () => Center(child: CircularProgressIndicator())
-              );
-            }, radius: 17),
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: RawScrollbar(
-              thumbVisibility: true,
-              thickness: 3,
-              thumbColor: AppColors.gray700,
-              radius: Radius.circular(10.r),
-              controller: _scrollController,
-              child: ListView.builder(
-                reverse: true,
+                  loading: () => Center(child: CircularProgressIndicator()),
+                );
+              }, radius: 17),
+            ),
+          ],
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: RawScrollbar(
+                thumbVisibility: true,
+                thickness: 3,
+                thumbColor: AppColors.gray700,
+                radius: Radius.circular(10.r),
                 controller: _scrollController,
-                padding: EdgeInsets.symmetric(vertical: 8.h),
-                itemCount: messages.length,
-                itemBuilder: (context, index) {
-                  final previous =
-                  index < messages.length - 1 ? messages[index + 1] : null;
-                  final next = index > 0 ? messages[index - 1] : null;
+                child: ListView.builder(
+                  reverse: true,
+                  controller: _scrollController,
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    final previous =
+                        index < messages.length - 1
+                            ? messages[index + 1]
+                            : null;
+                    final next = index > 0 ? messages[index - 1] : null;
 
-                  return ChatBubble(
-                    message: messages[index],
-                    previousMessage: previous,
-                    nextMessage: next,
-                    onDelete: () async {
-                      // uid는 시스템에 존재한다 가정
-                      // TODO HASH값을 사용한 메시지 삭제 요청
-                      try {
-                        // 메시지 삭제 요청
-                        // await ChatHistoryService.deleteChatMessage(
-                        //     uid: widget.uid,
-                        //     messageHash: messages[index].messageHash!,
-                        // );
+                    return ChatBubble(
+                      message: messages[index],
+                      previousMessage: previous,
+                      nextMessage: next,
+                      onDelete: () async {
+                        // uid는 시스템에 존재한다 가정
+                        try {
+                          // 메시지 삭제 요청
+                          await ChatHistoryService.deleteChatMessage(
+                            uid: widget.uid,
+                            messageHash: messages[index].messageHash!,
+                          );
 
-                        setState(() { // 삭제요청을 보낸 부분채팅부터 최신 대화까지 삭제
-                          messages.removeRange(0, index + 1);
-                        });
-                        _focusNode.unfocus();
-                      } catch (e) {
-                        // 삭제 오류시 ToastMSG 생성
-                        customToast.init(fToast);
-                        customToast.showTopToast();
-                      }
-                    },
-                  );
-                },
+                          setState(() {
+                            // 삭제요청을 보낸 부분채팅부터 최신 대화까지 삭제
+                            messages.removeRange(0, index + 1);
+                          });
+                          _focusNode.unfocus();
+                        } catch (e) {
+                          // 삭제 오류시 ToastMSG 생성
+                          customToast.init(fToast);
+                          customToast.showTopToast();
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
 
-          // 입력 필드 부분
-          Container(
-            color: Colors.white,
-            padding: EdgeInsets.all(10),
-            child: SafeArea(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(color: AppColors.gray200, width: 2.w),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _controller,
-                        focusNode: _focusNode,
-                        autofocus: false,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.white,
-                          enabledBorder: InputBorder.none,
-                          focusedBorder: InputBorder.none,
+            // 입력 필드 부분
+            Container(
+              color: Colors.white,
+              padding: EdgeInsets.all(10),
+              child: SafeArea(
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(30),
+                    border: Border.all(color: AppColors.gray200, width: 2.w),
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 4.h,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          focusNode: _focusNode,
+                          autofocus: false,
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: Colors.white,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(width: 8.w),
-                    CircleAvatar(
-                      backgroundColor: AppColors.accent,
-                      child: IconButton(
-                        icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
-                        onPressed: _sendMessage,
+                      SizedBox(width: 8.w),
+                      CircleAvatar(
+                        backgroundColor: AppColors.accent,
+                        child: IconButton(
+                          icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
+                          onPressed: _sendMessage,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

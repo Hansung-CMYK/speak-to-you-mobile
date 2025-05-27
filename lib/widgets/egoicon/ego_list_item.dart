@@ -18,6 +18,15 @@ Widget buildEgoListItem(
   bool isMoreBtn = false,
   double radius = 28,
 }) {
+  ImageProvider? _getSafeImage(Uint8List? bytes) {
+    if (bytes == null || bytes.length < 100) return null;
+    try {
+      return MemoryImage(bytes);
+    } catch (e) {
+      return null;
+    }
+  }
+
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 4.w),
     child: GestureDetector(
@@ -25,12 +34,7 @@ Widget buildEgoListItem(
       child: CircleAvatar(
         radius: radius.r,
         backgroundColor: isMoreBtn ? AppColors.gray300 : Colors.grey.shade300,
-        backgroundImage:
-            isMoreBtn
-                ? null
-                : profileImageBytes != null
-                ? MemoryImage(profileImageBytes)
-                : null,
+        backgroundImage: isMoreBtn ? null : _getSafeImage(profileImageBytes),
         child:
             isMoreBtn
                 ? Icon(
@@ -38,7 +42,7 @@ Widget buildEgoListItem(
                   color: AppColors.gray700,
                   size: 35,
                 )
-                : profileImageBytes == null
+                : _getSafeImage(profileImageBytes) == null
                 ? Icon(Icons.person, color: Colors.white, size: radius.r)
                 : null,
       ),

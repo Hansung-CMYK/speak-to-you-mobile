@@ -37,3 +37,12 @@ FutureProvider.family<List<EgoModelV2>, List<ChatRoomModel>>(
     return await EgoService.fetchEgoModelsFromChatRoomsWithoutRef(chatRoomList);
   },
 );
+
+final todayEgoProvider = FutureProvider.family<EgoModelV2, String>((ref, uid) async {
+    return await EgoService.fetchTodayEgo(uid);
+  },
+);
+
+final fullEgoInfoByEgoIdProvider = FutureProvider.family<EgoModelV2, int> ((ref, egoId)async{
+  return await EgoService.fetchFullEgoInfoByEgoId(egoId);
+});

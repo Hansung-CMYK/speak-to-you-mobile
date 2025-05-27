@@ -76,19 +76,8 @@ class FirebaseMessagingService {
   /// Handles messages received while the app is in the foreground
   void _onForegroundMessage(RemoteMessage message) {
     print('Foreground message received: ${message.data.toString()}');
+     _localNotificationsService?.showNotification();
     final notificationData = message.notification;
-    if (notificationData != null) {
-      // Display a local notification using the service
-      // _localNotificationsService?.showNotification(
-      //     notificationData.title, notificationData.body, message.data.toString());
-
-      // notification API가 완성되면 알림 저장 진행
-
-      // FCM Custom in App Alert
-      showFlushBarFromForegroundFirebase(message);
-
-      // TODO 알림 저장 API 보내기
-    }
   }
 
   /// Handles notification taps when app is opened from the background or terminated state
