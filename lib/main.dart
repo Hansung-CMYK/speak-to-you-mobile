@@ -75,7 +75,7 @@ class MainScreenTest extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             initialRoute: 'Main',
             routes: {
-              '/Main':
+              'Main':
                   (context) => Consumer(
                     builder: (context, ref, child) {
                       return SampleMainScreen();
