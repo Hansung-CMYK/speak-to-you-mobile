@@ -1,22 +1,26 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:ego/models/chat/chat_history_kafka_model.dart';
+import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/providers/ego_provider.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
+import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
 import 'package:ego/theme/color.dart';
-import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
+import 'package:ego/widgets/chat/ego_chat_bubble.dart';
 import 'package:ego/widgets/customtoast/custom_toast.dart';
 import 'package:ego/widgets/egoicon/ego_list_item.dart';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
-import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
-import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
-import 'package:ego/widgets/chat/ego_chat_bubble.dart';
+import 'package:path_provider/path_provider.dart';
 
 class EgoChatRoomScreen extends ConsumerStatefulWidget {
   final int chatRoomId;
@@ -46,11 +50,9 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
   );
 
   late FocusNode _focusNode;
-
   final ScrollController _scrollController = ScrollController();
 
-  late List<ChatHistory> messages = [];
-
+  List<ChatHistory> messages = [];
   int _pageNum = 0;
   bool _isLoading = false;
   bool _hasMore = true;
@@ -59,8 +61,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
   void initState() {
     super.initState();
 
-    fToast = FToast();
-    fToast.init(context);
+    fToast = FToast()..init(context);
     _fetchInitialData();
 
     _focusNode = FocusNode();
@@ -71,52 +72,46 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
       }
     });
 
-    // ✅ 연결 시 메시지 수신 처리
-    _socketService.onMessageReceived((message) {
+    // WebSocket 수신 훅
+    _socketService.onMessageReceived((msg) {
       setState(() {
-        messages.insert(0, ChatHistoryKafka.convertToChatHistory(message));
+        messages.insert(0, ChatHistoryKafka.convertToChatHistory(msg));
       });
     });
 
-    // ✅ 실제 연결
-    //uid는 시스템에 존재
     _socketService.connect(uid: widget.uid);
   }
 
   Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
-    final chatHistories = await ChatHistoryService.fetchChatHistoryList(
+    final list = await ChatHistoryService.fetchChatHistoryList(
       uid: widget.uid,
       pageNum: _pageNum,
       pageSize: 15,
       chatRoomId: widget.chatRoomId,
     );
-    if (chatHistories.isEmpty) {
-      setState(() => _hasMore = false);
+    if (list.isEmpty) {
+      _hasMore = false;
     } else {
-      setState(() {
-        messages.addAll(chatHistories);
-        _pageNum++;
-      });
+      messages.addAll(list);
+      _pageNum++;
     }
     setState(() => _isLoading = false);
   }
 
   Future<void> _fetchMoreData() async {
     setState(() => _isLoading = true);
-    final chatHistories = await ChatHistoryService.fetchChatHistoryList(
+    final list = await ChatHistoryService.fetchChatHistoryList(
       uid: widget.uid,
       pageNum: _pageNum,
       pageSize: 15,
       chatRoomId: widget.chatRoomId,
     );
-    if (chatHistories.isEmpty) {
-      setState(() => _hasMore = false);
+    if (list.isEmpty) {
+      _hasMore = false;
     } else {
-      setState(() {
-        messages.addAll(chatHistories);
-        _pageNum++;
-      });
+      messages.addAll(list);
+      _pageNum++;
     }
     setState(() => _isLoading = false);
   }
@@ -130,108 +125,163 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     super.dispose();
   }
 
-  void _sendMessage() {
+  /* -------------------- 메시지 전송 -------------------- */
+
+  void _sendText() {
     final text = _controller.text.trim();
     if (text.isEmpty) return;
 
     final now = DateTime.now();
-    final formattedDate = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+    final formatted = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+    final hashInput = "${widget.uid}|$formatted|TEXT|$text";
+    final hash = ChatHistory.generateSHA256(hashInput);
 
-    final hashInput = "${widget.uid}|$formattedDate|$text";
-    final messageHash = ChatHistory.generateSHA256(hashInput);
-
-    final inputMessage = ChatHistory(
-      //uid는 시스템에 존재
+    final msg = ChatHistory(
       uid: widget.uid,
       chatRoomId: widget.chatRoomId,
       content: text,
       type: "u",
       chatAt: now,
       isDeleted: false,
-      messageHash: messageHash,
-      contentType: 'TEXT', // 일단 이미지 없이 text 채팅만 가능하도록 가정
+      messageHash: hash,
+      contentType: 'TEXT',
     );
 
-    final kafkaReqMessage = ChatHistory.convertToKafka(
-      inputMessage,
-      to: widget.egoModel.id.toString(),
-      contentType: "TEXT",
+    _socketService.sendMessage(
+      ChatHistory.convertToKafka(
+        msg,
+        to: widget.egoModel.id.toString(),
+        contentType: 'TEXT',
+      ),
     );
-
-    _socketService.sendMessage(kafkaReqMessage);
 
     setState(() {
-      messages.insert(0, inputMessage);
+      messages.insert(0, msg);
       _controller.clear();
     });
+    _scrollToBottom();
+  }
 
+  Future<File?> _pickAndCompressImage() async {
+    final XFile? picked = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
+    if (picked == null) return null;
+
+    final dir = await getTemporaryDirectory();
+    final targetPath =
+        '${dir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    int quality = 90;
+    XFile? compressed;
+    do {
+      compressed = await FlutterImageCompress.compressAndGetFile(
+        picked.path,
+        targetPath,
+        minWidth: 800,
+        minHeight: 800,
+        quality: quality,
+      );
+      quality -= 10;
+    } while (compressed != null &&
+        await compressed.length() > 700 * 1024 &&
+        quality > 20);
+
+    return compressed != null ? File(compressed.path) : null;
+  }
+
+  void _sendImage() async {
+    final file = await _pickAndCompressImage();
+    if (file == null) return;
+
+    final now = DateTime.now();
+    final formatted = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+    final bytes = await file.readAsBytes();
+    final b64 = base64Encode(bytes);
+    final hashInput = "${widget.uid}|$formatted|IMAGE|$b64";
+    final hash = ChatHistory.generateSHA256(hashInput);
+
+    final msg = ChatHistory(
+      uid: widget.uid,
+      chatRoomId: widget.chatRoomId,
+      content: b64,
+      type: "u",
+      chatAt: now,
+      isDeleted: false,
+      messageHash: hash,
+      contentType: 'IMAGE',
+    );
+
+    _socketService.sendMessage(
+      ChatHistory.convertToKafka(
+        msg,
+        to: widget.egoModel.id.toString(),
+        contentType: 'IMAGE',
+      ),
+    );
+
+    setState(() => messages.insert(0, msg));
+    _scrollToBottom();
+  }
+
+  /* -------------------- UI helpers -------------------- */
+
+  void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.animateTo(
         _scrollController.position.minScrollExtent,
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut,
       );
     });
   }
 
+  Widget _timeText(String text) => Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4),
+    child: Text(text, style: TextStyle(fontSize: 12.sp, color: Colors.grey)),
+  );
+
+  /* -------------------- Build -------------------- */
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pop(context, true); // true 반환
-        return false; // 우리가 직접 pop 했기 때문에 시스템이 자동 pop 하지 않도록 false
+        Navigator.pop(context, true);
+        return false;
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,
         backgroundColor: AppColors.gray200,
         appBar: AppBar(
           title: Text(
-            "${widget.egoModel.name}",
+            widget.egoModel.name,
             style: TextStyle(
               color: AppColors.gray900,
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
-          surfaceTintColor: AppColors.white,
           centerTitle: true,
+          surfaceTintColor: AppColors.white,
           actions: [
-            // 우상단 ego profile 이미지
             Padding(
               padding: EdgeInsets.only(right: 10.w),
               child: buildEgoListItem(widget.egoModel.profileImage, () {
-                final egoAsync = ref.watch(
+                final async = ref.watch(
                   fullEgoInfoByEgoIdProvider(widget.egoModel.id!),
                 );
-
-                egoAsync.when(
-                  data: (ego) {
-                    showTodayEgoIntroSheetV2(
-                      this.context,
-                      ego,
-                      isOtherEgo: true,
-                      egoChatPossible: false,
-                    );
-                  },
-                  error: (error, stack) {
-                    print('에러 발생: $error');
-                    print('스택트레이스: $stack');
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              // 프로바이더 새로고침
-                              ref.invalidate(egoByIdProviderV2);
-                            },
-                            child: Text('다시 시도'),
-                          ),
-                        ],
+                async.when(
+                  data:
+                      (ego) => showTodayEgoIntroSheetV2(
+                        context,
+                        ego,
+                        isOtherEgo: true,
+                        egoChatPossible: false,
                       ),
-                    );
-                  },
-                  loading: () => Center(child: CircularProgressIndicator()),
+                  error: (_, __) => ref.invalidate(egoByIdProviderV2),
+                  loading:
+                      () => const Center(child: CircularProgressIndicator()),
                 );
               }, radius: 17),
             ),
@@ -239,6 +289,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
         ),
         body: Column(
           children: [
+            /* ---------- 메시지 리스트 ---------- */
             Expanded(
               child: RawScrollbar(
                 thumbVisibility: true,
@@ -251,33 +302,23 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                   controller: _scrollController,
                   padding: EdgeInsets.symmetric(vertical: 8.h),
                   itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    final previous =
-                        index < messages.length - 1
-                            ? messages[index + 1]
-                            : null;
-                    final next = index > 0 ? messages[index - 1] : null;
-
+                  itemBuilder: (_, i) {
+                    final prev =
+                        i < messages.length - 1 ? messages[i + 1] : null;
+                    final next = i > 0 ? messages[i - 1] : null;
                     return ChatBubble(
-                      message: messages[index],
-                      previousMessage: previous,
+                      message: messages[i],
+                      previousMessage: prev,
                       nextMessage: next,
                       onDelete: () async {
-                        // uid는 시스템에 존재한다 가정
                         try {
-                          // 메시지 삭제 요청
                           await ChatHistoryService.deleteChatMessage(
                             uid: widget.uid,
-                            messageHash: messages[index].messageHash!,
+                            messageHash: messages[i].messageHash!,
                           );
-
-                          setState(() {
-                            // 삭제요청을 보낸 부분채팅부터 최신 대화까지 삭제
-                            messages.removeRange(0, index + 1);
-                          });
+                          setState(() => messages.removeRange(0, i + 1));
                           _focusNode.unfocus();
-                        } catch (e) {
-                          // 삭제 오류시 ToastMSG 생성
+                        } catch (_) {
                           customToast.init(fToast);
                           customToast.showTopToast();
                         }
@@ -288,10 +329,10 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
               ),
             ),
 
-            // 입력 필드 부분
+            /* ---------- 입력 영역 ---------- */
             Container(
               color: Colors.white,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: SafeArea(
                 child: Container(
                   decoration: BoxDecoration(
@@ -305,25 +346,32 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                   ),
                   child: Row(
                     children: [
+                      /* 이미지 선택 버튼 */
+                      IconButton(
+                        icon: const Icon(
+                          Icons.photo_outlined,
+                          color: Colors.grey,
+                        ),
+                        onPressed: _sendImage,
+                      ),
+                      /* 텍스트 입력 */
                       Expanded(
                         child: TextField(
                           controller: _controller,
                           focusNode: _focusNode,
-                          autofocus: false,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            hintText: '메시지를 입력하세요',
                           ),
                         ),
                       ),
                       SizedBox(width: 8.w),
+                      /* 전송 버튼 */
                       CircleAvatar(
                         backgroundColor: AppColors.accent,
                         child: IconButton(
-                          icon: SvgPicture.asset("assets/icon/paper_plane.svg"),
-                          onPressed: _sendMessage,
+                          icon: SvgPicture.asset('assets/icon/paper_plane.svg'),
+                          onPressed: _sendText,
                         ),
                       ),
                     ],
