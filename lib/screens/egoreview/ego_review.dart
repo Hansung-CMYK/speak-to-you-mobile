@@ -181,7 +181,7 @@ class _EgoReviewScreenState extends State<EgoReviewScreen> {
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(builder: (context) => SampleMainScreen()),
-                  (route) => false,
+              (route) => false,
             );
           }, totalRate != 0 && solvingProblemRate != -1 && empathyRate != -1),
         ],
@@ -222,6 +222,13 @@ Widget EgoInfoProfile({
                         width: 100.w,
                         height: 100.h,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.person,
+                            size: 100.w,
+                            color: AppColors.gray300,
+                          );
+                        },
                       )
                       : Icon(
                         Icons.person,

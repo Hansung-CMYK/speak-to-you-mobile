@@ -108,7 +108,7 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(right: 20.w),
+                            padding: EdgeInsets.only(right: 20.w),
                             color: AppColors.white,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,

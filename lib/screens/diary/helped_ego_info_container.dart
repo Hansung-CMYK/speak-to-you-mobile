@@ -77,25 +77,33 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
                     height: size,
                     decoration: BoxDecoration(
                       color: AppColors.warningBase,
-                      image:
-                          ego.profileImage != null
-                              ? DecorationImage(
-                                image: MemoryImage(ego.profileImage!),
-                                fit: BoxFit.cover,
-                              )
-                              : null,
                       borderRadius: BorderRadius.circular(8.r),
                     ),
-                    child:
-                        ego.profileImage == null
-                            ? Center(
-                              child: Icon(
-                                Icons.person,
-                                size: 48.sp,
-                                color: AppColors.gray400,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.r),
+                      child:
+                          ego.profileImage != null
+                              ? Image.memory(
+                                ego.profileImage!,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Center(
+                                    child: Icon(
+                                      Icons.person,
+                                      size: 48.sp,
+                                      color: AppColors.gray400,
+                                    ),
+                                  );
+                                },
+                              )
+                              : Center(
+                                child: Icon(
+                                  Icons.person,
+                                  size: 48.sp,
+                                  color: AppColors.gray400,
+                                ),
                               ),
-                            )
-                            : null,
+                    ),
                   );
                 },
               ),
@@ -118,7 +126,11 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
                       onTap: () {
                         // 클릭 시 동작 EGO BottomSheet 띄우기
                         // 해당 EGO는 평가 수정이 가능해야 함
-                        showTodayEgoIntroSheetV2(context, ego, isOtherEgo: true);
+                        showTodayEgoIntroSheetV2(
+                          context,
+                          ego,
+                          isOtherEgo: true,
+                        );
                       },
                       child: Row(
                         children: [

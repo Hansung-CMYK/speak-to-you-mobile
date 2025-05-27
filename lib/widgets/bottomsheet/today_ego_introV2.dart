@@ -213,20 +213,27 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
           height: 80.h,
           decoration: BoxDecoration(shape: BoxShape.circle),
           child: ClipOval(
-            child:
-                widget.egoModelV2.profileImage != null
-                    ? Image.memory(
-                      widget.egoModelV2.profileImage!,
-                      fit: BoxFit.cover,
-                    )
-                    : Center(
-                      child: Icon(
-                        Icons.person,
-                        size: 48.sp,
-                        color: AppColors.gray400,
-                      ),
-                    ),
-          ),
+            child: (widget.egoModelV2.profileImage != null &&
+                widget.egoModelV2.profileImage!.length > 100)
+                ? Image.memory(
+              widget.egoModelV2.profileImage!,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Center(
+                child: Icon(
+                  Icons.person,
+                  size: 48.sp,
+                  color: AppColors.gray400,
+                ),
+              ),
+            )
+                : Center(
+              child: Icon(
+                Icons.person,
+                size: 48.sp,
+                color: AppColors.gray400,
+              ),
+            ),
+          )
         ),
         Padding(
           padding: EdgeInsets.only(left: 12.w),
