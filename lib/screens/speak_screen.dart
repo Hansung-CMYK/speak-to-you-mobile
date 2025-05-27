@@ -1,6 +1,7 @@
 import 'package:ego/models/chat/chat_room_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/providers/ego_provider.dart';
+import 'package:ego/screens/chat/ego_chat_room_screen.dart';
 import 'package:ego/services/chat/chat_room_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/utils/shared_pref_helper.dart';
@@ -206,8 +207,15 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
         },
 
         onText: () {
-          // 문자 보내기 액션
-          print('문자 보내기');
+          final matchingRoomId = chatRoomList.firstWhere(
+                (room) => room.egoId == selectedEgo?.id,
+          );
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => EgoChatRoomScreen(chatRoomId: matchingRoomId.id , uid: uid, egoModel: selectedEgo!)),
+          );
+
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),

@@ -66,7 +66,8 @@ class _DiaryViewScreenState extends ConsumerState<DiaryViewScreen> {
 
     return todayEgoSync.when(
       data: (todayEgo) {
-        final targetTime = DateTime(2025, 5, 25); // TODO이후에 현재 시간으로 변경
+        DateTime now = DateTime.now();
+        final targetTime = DateTime(now.year, now.month, now.day);
         //uid는 시스템에 존재
         final request = DiaryRequestModel(
           userId: uid,

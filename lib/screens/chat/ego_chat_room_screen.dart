@@ -179,7 +179,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context, true); // true 반환
-        return true; // 우리가 직접 pop 했기 때문에 시스템이 자동 pop 하지 않도록 false
+        return false; // 우리가 직접 pop 했기 때문에 시스템이 자동 pop 하지 않도록 false
       },
       child: Scaffold(
         resizeToAvoidBottomInset: true,

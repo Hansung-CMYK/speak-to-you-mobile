@@ -75,7 +75,6 @@ class _SwipeActionContainerState extends State<SwipeActionContainer>
   }
 
   void _animateSlide(double targetOffset, VoidCallback? onComplete) {
-    // 애니메이션 속도 설정을 위해 duration 및 curve를 변경
     _offsetAnimation = Tween<Offset>(
       begin: Offset(_dragOffset, 0),
       end: Offset(targetOffset, 0),
@@ -84,23 +83,38 @@ class _SwipeActionContainerState extends State<SwipeActionContainer>
     _controller.reset();
     _controller.forward();
 
-    // 애니메이션 완료 후 처리
-    _controller.addStatusListener((status) {
+    // 기존 리스너 중복 방지 (한 번만 실행되게 처리)
+    void listener(AnimationStatus status) {
       if (status == AnimationStatus.completed) {
+        _controller.removeStatusListener(listener);
+
+        // 1. 콜백 호출
         if (onComplete != null) onComplete();
-        if (targetOffset == 0) {
+
+        // 2. 복귀가 필요한 경우 (전화 or 문자 → 실행 후 원상 복귀)
+        if (targetOffset != 0) {
+          // 애니메이션 없이 원래 위치로 복귀
+          setState(() {
+            _dragOffset = 0;
+            _offsetAnimation = Tween<Offset>(
+              begin: Offset.zero,
+              end: Offset.zero,
+            ).animate(_controller); // 애니메이션 없음
+            _backgroundColor = Colors.transparent;
+          });
+        } else {
+          // 그냥 되돌아온 경우 (드래그 부족)
           setState(() {
             _dragOffset = 0;
             _backgroundColor = Colors.transparent;
           });
-        } else {
-          setState(() {
-            _dragOffset = targetOffset;
-          });
         }
       }
-    });
+    }
+
+    _controller.addStatusListener(listener);
   }
+
 
   @override
   Widget build(BuildContext context) {
