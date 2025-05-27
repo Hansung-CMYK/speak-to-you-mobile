@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ego/services/setting_service.dart';
@@ -44,12 +45,18 @@ class _HostPortSettingScreenState extends State<HostPortSettingScreen> {
   }
 
   Future<void> _saveSettings() async {
+    await FirebaseMessaging.instance.unsubscribeFromTopic(SharedPrefService.getUid()!);
+
     await SharedPrefService.setUid(_uidController.text);
     await _settings.setHost(_hostController.text);
     await _settings.setApiPort(_dbPortController.text);
     await _settings.setWsPort(_wsPortController.text);
     await _settings.setDiaryPort(_diaryPortController.text);
     await _settings.setImagePort(_imagePortController.text);
+
+    await FirebaseMessaging.instance.subscribeToTopic(
+      SharedPrefService.getUid()!,
+    );
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('설정이 저장되었습니다.')),
