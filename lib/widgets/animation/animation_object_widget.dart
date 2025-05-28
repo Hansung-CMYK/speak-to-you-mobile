@@ -23,7 +23,7 @@ class AnimationObjectWidget extends StatelessWidget {
       autoPlay: autoPlay,
       autoRotate: autoRotate,
       autoRotateDelay: 0,
-      animationName: animationName,
+      animationName: 'HI',
       cameraControls: cameraControls,
       cameraOrbit: CameraOrbit(0, 90, 2.0),
     );
