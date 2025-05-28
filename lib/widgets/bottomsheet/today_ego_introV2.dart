@@ -49,23 +49,26 @@ Future<void> showTodayEgoIntroSheetV2(
   }
 
   // 상대와 채팅이 가능한 경우 사람채팅으로 이동
-  if(isOtherEgo && UtilFunction.relationToHumanChatPossible(egoModelV2.relation)){
-    canChatWithHuman = true;
-    String ownerId = await EgoService.fetchEgoOwnerId(egoModelV2.id!);
+  if(false){ // 기획 변동으로 인한 false처리 [2025-05-29]
+    if(isOtherEgo && UtilFunction.relationToHumanChatPossible(egoModelV2.relation)){
+      canChatWithHuman = true;
+      String ownerId = await EgoService.fetchEgoOwnerId(egoModelV2.id!);
 
-    onChatWithHuman = () async {
-      Navigator.of(context, rootNavigator: true).push(
-        MaterialPageRoute(
-          builder: (context) => HumanChatScreen(
-            egoName: egoModelV2.name,
-            otherUserId: ownerId,
+      onChatWithHuman = () async {
+        Navigator.of(context, rootNavigator: true).push(
+          MaterialPageRoute(
+            builder: (context) => HumanChatScreen(
+              egoName: egoModelV2.name,
+              otherUserId: ownerId,
+            ),
           ),
-        ),
-      );
-    };
-  } else { // 안친할 경우
-    unavailableReason = "해당 EGO와 친하지 않아요.";
+        );
+      };
+    } else { // 안친할 경우
+      unavailableReason = "해당 EGO와 친하지 않아요.";
+    }
   }
+
 
   showModalBottomSheet(
     context: context,
@@ -197,14 +200,8 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
   void initState() {
     super.initState();
 
-    if (!widget.isOtherEgo) {
-      isFavorite = true;
-    }
-
     heartCount = widget.egoModelV2.likes ?? 0;
-
-    //TODO heartCount 불러오는 로직 필요
-    //TODO isFavorite 불러오는 로직 필요
+    isFavorite = widget.egoModelV2.isLiked ?? false;
   }
 
   @override
@@ -333,13 +330,14 @@ class _EgoInfoCardState extends State<EgoInfoCard> {
                   children: [
                     GestureDetector(
                       onTap:
-                          widget.isOtherEgo
-                              ? () {
+                    !(widget.isOtherEgo)
+                              ? () async {
                                 setState(() {
                                   isFavorite = !isFavorite;
                                   heartCount += isFavorite ? 1 : -1;
-                                  // TODO: 하트 전송 API 호출
+                                  if(heartCount < 0) heartCount = 0;
                                 });
+                                heartCount = await EgoService.fetchEgoLikeCnt(widget.egoModelV2.id! , isFavorite);
                               }
                               : null,
                       child: Icon(

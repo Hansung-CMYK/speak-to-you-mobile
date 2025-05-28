@@ -215,26 +215,27 @@ Widget EgoInfoProfile({
             CircleAvatar(
               radius: 50.w,
               backgroundColor: AppColors.transparent,
-              child:
-                  profileImage != null
-                      ? Image.memory(
-                        profileImage,
-                        width: 100.w,
-                        height: 100.h,
-                        fit: BoxFit.cover,
-                        errorBuilder: (context, error, stackTrace) {
-                          return Icon(
-                            Icons.person,
-                            size: 100.w,
-                            color: AppColors.gray300,
-                          );
-                        },
-                      )
-                      : Icon(
-                        Icons.person,
-                        size: 100.w,
-                        color: AppColors.gray300,
-                      ), // 대체 이미지
+              child: profileImage != null
+                  ? ClipOval(
+                child: Image.memory(
+                  profileImage,
+                  width: 100.w,
+                  height: 100.h,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    return Icon(
+                      Icons.person,
+                      size: 100.w,
+                      color: AppColors.gray300,
+                    );
+                  },
+                ),
+              )
+                  : Icon(
+                Icons.person,
+                size: 100.w,
+                color: AppColors.gray300,
+              ),
             ),
 
             SizedBox(height: 8.h),

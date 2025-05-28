@@ -16,7 +16,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
 import '../../firebase_options.dart';
+import 'screens/chat/ego_chat_room_list_screen.dart';
+import 'screens/ego_edit_screen.dart';
 import 'screens/host_port_setting_screen.dart';
+import 'screens/logins/main_login_screen.dart';
 import 'services/setting_service.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -73,8 +76,10 @@ class MainScreenTest extends StatelessWidget {
             title: '앱 바 테스트 페이지',
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            initialRoute: 'Main',
+            initialRoute: 'Login',
             routes: {
+              'Login' : (context) => MainLoginScreen(),
+              'CreateEgo':(context) => EgoEditScreen(),
               'Main':
                   (context) => Consumer(
                     builder: (context, ref, child) {
@@ -126,7 +131,8 @@ class _SampleMainAppBarScreenState extends ConsumerState<SampleMainScreen>
         children: [
           SpeakScreen(), // speak 페이지
           RecordScreen(), // 캘린더 페이지
-          ChatTabScreen(), // 채팅 페이지
+          // ChatTabScreen(), // 채팅 페이지
+          PersonalChatListScreen()
         ],
       ),
     );

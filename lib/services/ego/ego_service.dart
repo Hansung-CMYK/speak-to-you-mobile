@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:ego/models/chat/chat_room_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/services/setting_service.dart';
-import 'package:ego/utils/constants.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
@@ -55,13 +54,12 @@ class EgoService {
 
     if (response.statusCode == 200) {
       // response.body 대신 bodyBytes 사용하여 UTF-8로 디코딩
-      final json = utf8.decode(response.bodyBytes);
-      final Map<String, dynamic> decodedJson = jsonDecode(json);
-
-      final egoData = decodedJson['data'];
+      final jsonString = utf8.decode(response.bodyBytes);
+      final decodedJson = json.decode(jsonString);
+      final egoData = EgoModelV2.fromJson(decodedJson['data']);
 
       // 데이터를 EgoModel로 변환하여 반환
-      return EgoModelV2.fromJson(egoData);
+      return egoData;
     } else {
       throw Exception('Ego 정보 불러오기 실패: ${response.statusCode}');
     }
@@ -171,6 +169,49 @@ class EgoService {
     } else{
       throw Exception('Egoid로 ego 정보 및 personalityList, rating 조회 실패 : ${otherEgoRating.statusCode}');
     }
+  }
+
+  static Future<EgoModelV2> createNewEgo(EgoModelV2 newEgoModel) async {
+
+    final uri = Uri.parse('${SettingsService().dbUrl}/ego');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode(newEgoModel.toJson());
+
+    final response = await http.post(uri, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final jsonString = utf8.decode(response.bodyBytes);
+      final decodedJson = json.decode(jsonString);
+      final newEgoResponse = EgoModelV2.fromJson(decodedJson['data']);
+
+      return newEgoResponse;
+    } else {
+      throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
+    }
+
+  }
+
+  static Future<int> fetchEgoLikeCnt(int egoId, bool isLike) async {
+
+    final uid = SharedPrefService.getUid();
+
+    final uri = Uri.parse('${SettingsService().dbUrl}/ego-like');
+    final headers = {'Content-Type': 'application/json'};
+    final body = jsonEncode({"uid":uid, "egoId" : egoId, "isLike": isLike});
+
+    final response = await http.post(uri, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final egoData = decodedJson['data'];
+
+      return egoData['likes']; // 해당 ego의 좋아요 갯수 반환
+    } else {
+      throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
+    }
+
   }
 
 }

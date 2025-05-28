@@ -7,20 +7,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class MainLoginScreen extends StatelessWidget {
-  void emailClickMethod(BuildContext context) {
-    Navigator.pushNamed(context, 'EmailLogin');
+  void createNewEgoMethod(BuildContext context) {
+    Navigator.pushNamed(context, 'CreateEgo');
   }
 
   void naverClickMethod(BuildContext context) {
     Navigator.pushNamed(context, 'NaverLogin');
   }
 
-  void googleClickMethod(BuildContext context) {
-    Navigator.pushNamed(context, 'GoogleLogin');
+  void continueWithPreEgo(BuildContext context) {
+    Navigator.pushNamed(context, 'Main');
   }
 
   void signUpClickMethod(BuildContext context) {
-    Navigator.pushNamed(context, 'SignUp');
+    Navigator.pushNamed(context, '/settings');
   }
 
   const MainLoginScreen({super.key});
@@ -104,10 +104,10 @@ class MainLoginScreen extends StatelessWidget {
       spacing: 8.h,
       children: [
         RadiusButton(
-          text: '이메일로 계속하기',
+          text: '새로운 EGO 생성',
           foregroundColor: AppColors.white,
           backgroundColor: AppColors.primary,
-          confirmMethod: () => emailClickMethod(context),
+          confirmMethod: () => createNewEgoMethod(context),
           height: 48.h,
           textStyle: TextStyle(
             fontWeight: FontWeight.w600,
@@ -143,23 +143,10 @@ class MainLoginScreen extends StatelessWidget {
           ),
         ),
         RadiusButton(
-          logoPath: 'assets/icon/naver_logo.svg',
-          text: '네이버로 계속하기',
-          foregroundColor: AppColors.white,
-          backgroundColor: AppColors.naverColor,
-          confirmMethod: () => naverClickMethod(context),
-          height: 48.h,
-          textStyle: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 14.sp
-          ),
-        ),
-        RadiusButton(
-          logoPath: 'assets/icon/google_logo.svg',
-          text: 'Google로 계속하기',
+          text: '기존 EGO로 계속하기',
           foregroundColor: AppColors.gray900,
           backgroundColor: AppColors.white,
-          confirmMethod: () => googleClickMethod(context),
+          confirmMethod: () => continueWithPreEgo(context),
           borderColor: AppColors.gray300,
           height: 48.h,
           textStyle: TextStyle(
