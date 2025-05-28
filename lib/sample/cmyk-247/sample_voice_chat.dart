@@ -54,7 +54,7 @@ class Sample extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) {
                   return VoiceChatScreen(
-                    egoInfoModel: EgoInfoModel(
+                    egoModelV2: EgoInfoModel(
                       id: '1',
                       egoIcon: '',
                       egoName: 'Power',

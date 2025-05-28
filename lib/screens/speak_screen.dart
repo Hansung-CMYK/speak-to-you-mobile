@@ -15,6 +15,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:ego/widgets/animation/frame_animation.dart';
 import 'egolistview/ego_list_blurred_screen.dart';
+import 'voice_chat/voice_chat_screen.dart';
 
 class SpeakScreen extends ConsumerStatefulWidget {
   const SpeakScreen({super.key});
@@ -188,22 +189,13 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
         onCall: () {
           // 전화 걸기 액션
           // uid는 시스템에 존재
-          //TODO egoInfoModel을 EGOModel로 바꾸어서 발생하는 ERROR 이후 VoiceChatScreen FE issue에서 처리 예정
-          // Navigator.push(
-          //   context,
-          //   MaterialPageRoute(
-          //     builder: (context) =>
-          //         VoiceChatScreen(uid: uid, egoInfoModel: selectedEgo),
-          //   ),
-          // ).then((_) {
-          //   // VoiceChatScreen에서 돌아온 후, HomeScreenCallnMsg 화면을 새로 로드
-          //   Navigator.pushReplacement(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => HomeScreenCallnMsg(egoList: egoList),
-          //     ),
-          //   );
-          // });
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  VoiceChatScreen(uid: uid, egoModelV2: selectedEgo!),
+            ),
+          );
         },
 
         onText: () {

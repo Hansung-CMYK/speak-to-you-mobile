@@ -78,4 +78,22 @@ class ChatRoomService {
     }
   }
 
+  // userId와 egoId로 chatroomId를 조회합니다.
+  static Future<int> fetchChatRoomIdByEgoIdNuserId(String uid, int egoId) async {
+    final uri = Uri.parse('${SettingsService().dbUrl}/chat-room/$uid/$egoId');
+    final headers = {'Content-Type': 'application/json'};
+
+    final response = await http.get(uri, headers: headers);
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes); // 한글 깨짐 방지
+      final decodedJson = jsonDecode(json);
+      final chatRoomId = int.parse(decodedJson['data']['chatRoomId'].toString());
+
+      return chatRoomId;
+    } else {
+      throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
+    }
+  }
+
 }

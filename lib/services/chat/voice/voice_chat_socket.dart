@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:ego/services/chat/chat_room_service.dart';
+import 'package:ego/services/setting_service.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -9,7 +11,7 @@ import 'package:audioplayers/audioplayers.dart';
 
 class VoiceChatSocketClient {
   final String userId;
-  final String egoId;
+  final int egoId;
   final String speaker;
   final void Function(Map<String, dynamic>) onMessage;
   final void Function(Uint8List) onAudioChunk;
@@ -29,9 +31,21 @@ class VoiceChatSocketClient {
     required this.onAudioChunk,
   });
 
+  bool _isMicOn = true;
+
+  Future<void> toggleMic() async {
+    // [수정됨] 마이크 녹음을 중단하지 않고 전송 여부만 토글
+    _isMicOn = !_isMicOn;
+    print(_isMicOn ? "🎙️ 마이크 ON (전송 허용)" : "🔇 마이크 OFF (전송 차단)");
+  }
+
+  bool get isMicOn => _isMicOn;
+
   Future<void> connect() async {
-    final url =
-        'ws://10.0.2.2:8000/api/ws/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=1';
+
+    final chatRoomId = await ChatRoomService.fetchChatRoomIdByEgoIdNuserId(userId, egoId);
+
+    final url = '${SettingsService().webVoiceUrl}/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=$chatRoomId';
 
     _channel = WebSocketChannel.connect(Uri.parse(url));
     _channel.stream.listen(
@@ -108,7 +122,7 @@ class VoiceChatSocketClient {
   }
 
   void sendPCM(Uint8List pcmBytes, int sampleRate) {
-    if (!_isConnected) return;
+    if (!_isConnected || !_isMicOn) return;
 
     final meta = jsonEncode({'sampleRate': sampleRate});
     final metaBytes = utf8.encode(meta);
