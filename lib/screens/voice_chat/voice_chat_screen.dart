@@ -1,9 +1,13 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_info_model.dart';
+import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/screens/voice_chat/call_time_banner.dart';
 import 'package:ego/screens/voice_chat/voice_chat_overlay.dart';
+import 'package:ego/services/chat/voice/voice_chat_socket.dart';
 import 'package:ego/theme/color.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,12 +15,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'chat_history_screen.dart';
 
 class VoiceChatScreen extends StatefulWidget {
-  final EgoInfoModel egoInfoModel;
+  final EgoModelV2 egoModelV2;
   final String uid;
 
   const VoiceChatScreen({
     Key? key,
-    required this.egoInfoModel,
+    required this.egoModelV2,
     required this.uid,
   }) : super(key: key);
 
@@ -26,6 +30,7 @@ class VoiceChatScreen extends StatefulWidget {
 
 class _VoiceChatScreenState extends State<VoiceChatScreen> {
   final ScrollController _scrollController = ScrollController();
+  late VoiceChatSocketClient socketClient;
 
   bool isMicOn = true;
   bool isSpeakerOn = true;
@@ -39,67 +44,28 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   @override
   void initState() {
     super.initState();
+    _initializeChatHistory();
+
+    socketClient = VoiceChatSocketClient(
+      userId: widget.uid,
+      egoId: widget.egoModelV2.id!,
+      speaker: "karina", // 필요에 따라 변경 가능
+      onMessage: _handleSocketMessage,
+      onAudioChunk: _handleAudioChunk,
+    );
+
+    socketClient.connect();
+  }
+
+  void _initializeChatHistory() async
+  {
     // 임시 데이터
-    chatHistoryList = [
-      ChatHistory(
-        uid: "user1",
-        chatRoomId: 1,
-        content: "방가방가",
-        type: "E",
-        chatAt: DateTime.parse("2025-05-09 09:21:00.000"),
-        isDeleted: false,
-        contentType: "TEXT"
-      ),
-      ChatHistory(
-        uid: "user1",
-        chatRoomId: 1,
-        content: "오늘은 어떤일이 있었어?",
-        type: "E",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-        contentType: "TEXT"
-      ),
-      ChatHistory(
-        uid: widget.uid,
-        chatRoomId: 1,
-        content: "블라블라 오늘도 블라블르라",
-        type: "U",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-        contentType: "TEXT"
-      ),
-      ChatHistory(
-        uid: widget.uid,
-        chatRoomId: 1,
-        content: "블라블라 오늘도 블라블르라",
-        type: "U",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-        contentType: "TEXT"
-      ),
-      ChatHistory(
-        uid: widget.uid,
-        chatRoomId: 1,
-        content: "블라블라 오늘도 블라블르라",
-        type: "U",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-        contentType: "TEXT"
-      ),
-      ChatHistory(
-        uid: widget.uid,
-        chatRoomId: 1,
-        content: "블라블라 오늘도 블라블르라",
-        type: "U",
-        chatAt: DateTime.parse("2025-05-09 09:20:00.000"),
-        isDeleted: false,
-        contentType: "TEXT"
-      ),
-    ];
+    chatHistoryList = [];
   }
 
   @override
   void dispose() {
+    socketClient.stop();
     _scrollController.dispose();
     super.dispose();
   }
@@ -124,9 +90,79 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     }
   }
 
+  void _handleSocketMessage(Map<String, dynamic> message) {
+    switch (message['type']) {
+      case 'realtime':
+        print("🗣️ 실시간 텍스트: ${message['text']}");
+        _addChat(ChatHistory(
+          uid: widget.uid,
+          chatRoomId: 1,
+          content: message['text'] ?? '',
+          type: 'u',
+          chatAt: DateTime.now(),
+          isDeleted: false,
+          contentType: "TEXT"
+        ));
+        break;
+
+      case 'fullSentence':
+        print("✅ STT 종료: ${message['text']}");
+        break;
+
+      case 'response_chunk':
+        print("🤖 LLM 응답 중: ${message['text']}");
+        break;
+
+      case 'response_done':
+        print("✅ 서버 응답 완료");
+        _addChat(ChatHistory(
+            uid: "애고",
+            chatRoomId: 1,
+            content: message['text'] ?? '',
+            type: 'e',
+            chatAt: DateTime.now(),
+            isDeleted: false,
+            contentType: "TEXT"
+        ));
+        break;
+
+      case 'cancel_audio':
+        print("🛑 오디오 재생 취소 요청");
+        // 오디오만 중단
+        socketClient.stopAudio(); // 또는 socketClient.stopAudio() 를 새로 만들어도 OK
+        break;
+
+      case 'audio_chunk':
+        final base64Str = message['audio_base64'];
+        if (base64Str == null || base64Str.isEmpty) {
+          print("⚠️ audio_base64 없음");
+          return;
+        }
+
+        try {
+          final bytes = base64Decode(base64Str);
+          print("📥 [오디오 디코딩 완료] ${bytes.length} bytes");
+
+          // 오디오 디코딩 결과를 재생하도록 전달
+          socketClient.onAudioChunk(bytes); // 내부에서 재생 처리
+        } catch (e) {
+          print("❌ audio_base64 디코딩 실패: $e");
+        }
+        break;
+
+      default:
+        print("⚠️ 처리되지 않은 타입: ${message['type']}");
+    }
+  }
+
+  void _handleAudioChunk(Uint8List data) {
+    // TODO: 오디오 플레이어 추가 처리 가능
+    print("🔊 오디오 청크 수신 (${data.length} bytes)");
+  }
+
   @override
   Widget build(BuildContext context) {
-    EgoInfoModel egoInfo = widget.egoInfoModel;
+    EgoModelV2 egoInfo = widget.egoModelV2;
     String uid = widget.uid;
 
     return Scaffold(
@@ -154,20 +190,10 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                     ),
                   ),
                   padding: EdgeInsets.zero,
-                  onPressed: () {
+                  onPressed: () async {
+                    await socketClient.toggleMic();
                     setState(() {
                       isMicOn = !isMicOn;
-                      _addChat(
-                        ChatHistory(
-                          uid: "some-uid",
-                          chatRoomId: 1,
-                          content: "자동 추가된 메시지",
-                          type: "U",
-                          chatAt: DateTime.now(),
-                          isDeleted: false,
-                          contentType: "TEXT"
-                        ),
-                      );
                     });
                   },
                 ),
@@ -254,7 +280,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         children: [
           Padding(
             padding: EdgeInsets.only(top: 40.h),
-            child: TopCallTimeBanner(egoName: egoInfo.egoName),
+            child: TopCallTimeBanner(egoName: egoInfo.name),
           ),
           Expanded(
             child: Stack(
