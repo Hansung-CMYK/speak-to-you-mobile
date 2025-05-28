@@ -1,20 +1,19 @@
 import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/theme/color.dart';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:image_picker/image_picker.dart';
 
-/// 사용자 EGO를 수정하는 화며입니다.
-///
-/// myEgoInfoModel : 수정할 EGO의 정보를 전달 받습니다. [EgoInfoModel]
 class EgoEditScreen extends StatefulWidget {
-  final EgoModelV2 myEgoInfoModel;
 
-  const EgoEditScreen({super.key, required this.myEgoInfoModel});
+  const EgoEditScreen({super.key});
 
   @override
   State<EgoEditScreen> createState() => _EgoEditScreenState();
@@ -30,13 +29,26 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
 
   String selectedMBTI = '';
 
+  Uint8List? selectedImage;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImageFromGallery() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      final Uint8List bytes = await image.readAsBytes();
+      setState(() {
+        selectedImage = bytes;
+        myEgoModel.profileImage = bytes; // 이미지 전송 또는 저장용
+      });
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    myEgoModel = widget.myEgoInfoModel;
-    _nameController.text = myEgoModel.name;
-    _egoIntroController.text = myEgoModel.introduction;
-    selectedMBTI = myEgoModel.mbti;
+    _nameController.text = '';
+    _egoIntroController.text = '';
+    selectedMBTI = 'INFJ';
   }
 
   @override
@@ -84,12 +96,29 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                               CircleAvatar(
                                 radius: 100.r,
                                 backgroundColor: AppColors.white,
-                                backgroundImage: myEgoModel.profileImage != null
-                                    ? MemoryImage(myEgoModel.profileImage!)
-                                    : null,
-                                child: myEgoModel.profileImage == null
-                                    ? Image.asset('assets/image/ego_icon.png') // 기본 이미지
-                                    : null,
+                                child: selectedImage != null
+                                    ? ClipOval(
+                                  child: Image.memory(
+                                    selectedImage!,
+                                    width: 200.r,
+                                    height: 200.r,
+                                    fit: BoxFit.cover,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      return Image.asset(
+                                        'assets/image/ego_icon.png',
+                                        width: 200.r,
+                                        height: 200.r,
+                                        fit: BoxFit.cover,
+                                      );
+                                    },
+                                  ),
+                                )
+                                    : Image.asset(
+                                  'assets/image/ego_icon.png',
+                                  width: 200.r,
+                                  height: 200.r,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               Container(
                                 width: 48.w,
@@ -105,7 +134,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                                     'assets/icon/camera.svg',
                                   ),
                                   onPressed: () {
-                                    //TODO 이미지 선택 및 변경 + 변경된 이미지 전송
+                                    _pickImageFromGallery();
                                   },
                                 ),
                               ),
@@ -247,8 +276,11 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                   ),
 
                   // 완료 버튼 부분
-                  _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () {
-                    //TODO 전송 로직 작성
+                  _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () async {
+                    final createdEgo = await EgoService.createNewEgo(
+                      EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI, personalityList: [], profileImage: selectedImage)
+                    );
+                    // 상준이 사용자 정보 입력 화면으로 이동
                   }),
                 ],
               ),

@@ -9,6 +9,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 
+import '../../services/ego/ego_service.dart';
+
 /**
  * 일기 작성을 도와준 EGO의 정보를 보여줍니다.
  * */
@@ -123,12 +125,15 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         // 클릭 시 동작 EGO BottomSheet 띄우기
                         // 해당 EGO는 평가 수정이 가능해야 함
+                        final detailedEgoData = await EgoService.fetchFullEgoInfoByEgoId(ego.id!);
+
                         showTodayEgoIntroSheetV2(
                           context,
-                          ego,
+                          detailedEgoData,
+                          egoChatPossible: false,
                           isOtherEgo: true,
                         );
                       },

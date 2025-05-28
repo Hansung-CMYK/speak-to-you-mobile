@@ -6,6 +6,7 @@ import 'package:ego/models/chat/chat_history_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/providers/ego_provider.dart';
 import 'package:ego/services/chat/chat_history_service.dart';
+import 'package:ego/services/ego/ego_service.dart';
 import 'package:ego/services/websocket/chat_kafka_socket_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
@@ -52,6 +53,8 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
   late FocusNode _focusNode;
   final ScrollController _scrollController = ScrollController();
 
+  late final EgoModelV2 detailedEgoData;
+
   List<ChatHistory> messages = [];
   int _pageNum = 0;
   bool _isLoading = false;
@@ -80,6 +83,16 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     });
 
     _socketService.connect(uid: widget.uid);
+
+    fetchDetailEgoData(widget.egoModel.id!);
+  }
+
+  void fetchDetailEgoData(int egoId) async {
+
+    final egoData = await EgoService.fetchFullEgoInfoByEgoId(widget.egoModel.id!);
+    setState(() {
+      detailedEgoData = egoData;
+    });
   }
 
   Future<void> _fetchInitialData() async {
@@ -267,22 +280,13 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
           actions: [
             Padding(
               padding: EdgeInsets.only(right: 10.w),
-              child: buildEgoListItem(widget.egoModel.profileImage, () {
-                final async = ref.watch(
-                  fullEgoInfoByEgoIdProvider(widget.egoModel.id!),
-                );
-                async.when(
-                  data:
-                      (ego) => showTodayEgoIntroSheetV2(
-                        context,
-                        ego,
-                        isOtherEgo: true,
-                        egoChatPossible: false,
-                      ),
-                  error: (_, __) => ref.invalidate(egoByIdProviderV2),
-                  loading:
-                      () => const Center(child: CircularProgressIndicator()),
-                );
+              child: buildEgoListItem(widget.egoModel.profileImage, (){
+                showTodayEgoIntroSheetV2(
+                            context,
+                            detailedEgoData,
+                            isOtherEgo: false,
+                            egoChatPossible: false,
+                          );
               }, radius: 17),
             ),
           ],

@@ -5,7 +5,7 @@ class EgoModelV2 {
   int? id;
   final String name;
   final String introduction;
-  final Uint8List? profileImage; // base64 인코딩된 이미지
+  Uint8List? profileImage; // base64 인코딩된 이미지
   final String mbti;
   final DateTime? createdAt;
   final int? likes;

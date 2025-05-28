@@ -282,6 +282,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
             padding: EdgeInsets.only(top: 40.h),
             child: TopCallTimeBanner(egoName: egoInfo.name),
           ),
+          //TODO 여기서 EGO가 보여짐
           Expanded(
             child: Stack(
               children: [
