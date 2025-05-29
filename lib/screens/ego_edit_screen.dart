@@ -58,7 +58,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'EGO 수정하기',
+          '나의 EGO 만들기',
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.w700,
@@ -283,6 +283,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
 
                   // 완료 버튼 부분
                   _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () async {
+                    myEgoModel = EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
