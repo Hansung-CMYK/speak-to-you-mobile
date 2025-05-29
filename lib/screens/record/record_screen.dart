@@ -1,10 +1,9 @@
-import 'package:ego/screens/ego_chart_screen.dart';
 import 'package:ego/screens/record/calendar/calendar_screen.dart';
-import 'package:ego/screens/record/chart/chart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/color.dart';
+import '../ego_chart_screen.dart';
 
 /// 기록보기(가제) 화면이다. (2025-02-25: 현재는 캘린더 화면)
 ///
@@ -70,7 +69,7 @@ class _RecordScreenState extends State<RecordScreen>
         tabs: [
           // 탭 종류
           Tab(text: "캘린더"),
-          Tab(text: "감정차트"),
+          Tab(text: "EGO 관계"),
         ],
       ),
     );
@@ -83,7 +82,7 @@ class _RecordScreenState extends State<RecordScreen>
         controller: _tabController, // 컨트롤러 부여
         children: [
           CalendarScreen(),
-          RelationBarScreen(), // TODO: EgoPage로 변경 필요 [미개발]
+          RelationBarScreen()
         ],
       ),
     );

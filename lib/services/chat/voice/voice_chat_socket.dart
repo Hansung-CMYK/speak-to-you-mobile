@@ -92,10 +92,7 @@ class VoiceChatSocketClient {
       onDone: () {
         _isConnected = false;
         print("❌ WebSocket 끊김, 재연결 시도 중...");
-        if (!_isDisposed) {
-          print("🔁 재연결 시도 중...");
-          Future.delayed(const Duration(seconds: 2), connect);
-        }
+        Future.delayed(const Duration(seconds: 2), connect);
       },
       onError: (err) {
         _isConnected = false;

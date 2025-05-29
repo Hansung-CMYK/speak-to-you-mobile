@@ -9,6 +9,8 @@ import 'package:ego/providers/ego_provider.dart';
 
 import 'package:ego/utils/shared_pref_helper.dart';
 
+import 'package:ego/models/ego_relation_model.dart';
+
 class EgoService {
   /**
    * 전달된 ChatRoomModel들을 바탕으로 EGO정보를 조회합니다.
@@ -212,6 +214,24 @@ class EgoService {
       throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
     }
 
+  }
+
+  static Future<List<EgoRelationship>> fetchEgoRelation() async {
+    final uid = SharedPrefService.getUid();
+
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego-relationship/$uid'));
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final List<dynamic> egoData = decodedJson['data'];
+
+      // List<EgoRelationship>로 변환하여 반환
+      return egoData.map((e) => EgoRelationship.fromJson(e)).toList();
+    } else {
+      throw Exception('ego의 관계 정보 불러오기 실패: ${response.statusCode}');
+    }
   }
 
 }

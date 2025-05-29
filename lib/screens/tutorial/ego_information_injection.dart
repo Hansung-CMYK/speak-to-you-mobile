@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:core';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ego/models/chat/chat_history_model.dart';
+import 'package:ego/models/ego_model_v2.dart';
+import 'package:ego/models/persona_ego_model.dart';
+import 'package:ego/services/setting_service.dart';
 import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/alert_dialog.dart';
@@ -15,12 +19,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:path/path.dart' as p;
+
+import 'package:ego/services/ego/ego_service.dart';
+
 
 const int kStreamSampleRate = 16000; // 16 kHz
 const int kFlushBytes = 3200; // 0.1 s @16 kHz (PCM16 mono)
 
 class PronunciationWs {
-  final Uri uri = Uri.parse('ws://172.20.10.3:8003/api/ws/pronunciation-test');
+  final Uri uri = Uri.parse('${SettingsService().webVoiceUrl}/pronunciation-test');
   late IOWebSocketChannel _ch;
   bool _opened = false;
   bool get isOpened => _opened;
@@ -63,9 +71,10 @@ class PronunciationWs {
 }
 
 class UserInfoOnboardingScreen extends StatefulWidget {
-  const UserInfoOnboardingScreen({Key? key, required this.onOnboardingComplete})
+  const UserInfoOnboardingScreen({Key? key, required this.onOnboardingComplete, required this.egoModelV2})
     : super(key: key);
   final VoidCallback onOnboardingComplete;
+  final EgoModelV2 egoModelV2;
   @override
   State<UserInfoOnboardingScreen> createState() =>
       _UserInfoOnboardingScreenState();
@@ -223,6 +232,7 @@ class _UserInfoOnboardingScreenState extends State<UserInfoOnboardingScreen> {
     }
   }
 
+  String refer_path = '/home/keem/refer';
   void _onWsEvent(dynamic e) {
     final d = jsonDecode(e as String);
     switch (d['type']) {
@@ -235,26 +245,41 @@ class _UserInfoOnboardingScreenState extends State<UserInfoOnboardingScreen> {
           _addSystem('✅ 발음 $acc% 일치! 저장되었습니다.');
           widget.onOnboardingComplete();
           _waiting = false;
-
-          Future.delayed(const Duration(seconds: 1), () {
-            if (!mounted) return;
-            showAlertDialog(
-              context: context,
-              dialogType: DialogType.success,
-              title: '에고 설정이 완료되었습니다!',
-              content: '모든 설정이 완료되었어요.\n확인을 누르면 다음 화면으로 이동합니다.',
-              buttonText: '확인',
-              buttonBackgroundColor: AppColors.primary,
-              buttonForegroundColor: AppColors.white,
-            ).then((_) {
-              /// TODO 에고 정보 저장 (경로) 끝나면 메인 화면으로 넘어가기
-            });
-          });
         } else {
           _addSystem('⚠️ 발음 $acc% 일치 — 다시 시도해주세요');
         }
         break;
       case 'saved':
+        refer_path += d['path'];
+        Future.delayed(const Duration(seconds: 1), () {
+          if (!mounted) return;
+          showAlertDialog(
+            context: context,
+            dialogType: DialogType.success,
+            title: '에고 설정이 완료되었습니다!',
+            content: '모든 설정이 완료되었어요.\n확인을 누르면 다음 화면으로 이동합니다.',
+            buttonText: '확인',
+            buttonBackgroundColor: AppColors.primary,
+            buttonForegroundColor: AppColors.white,
+          ).then((_) async {
+            /// TODO 에고 정보 저장 (경로) 끝나면 메인 화면으로 넘어가기
+            widget.egoModelV2.voiceUrl = refer_path;
+            final createdEgo = await EgoService.createNewEgo(widget.egoModelV2);
+
+            final qNa = [_questions, _examples];
+
+            final personaEgoModel = PersonaEgoModel(
+                mbti: createdEgo.mbti,
+                name:createdEgo.name ,
+                egoId:createdEgo.id! ,
+                interview: qNa
+            );
+
+            PersonaEgoModel.sendPersonaEgoModel(personaEgoModel);
+
+            Navigator.pushReplacementNamed(context, 'Main'); // Main화면으로 이동
+          });
+        });
         break;
       case 'error':
         _addSystem('❌ 오류: ${d['message']}');

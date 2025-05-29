@@ -1,5 +1,11 @@
+import 'dart:ui';
+
 import 'package:ego/utils/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import 'package:ego/screens/ego_chart_screen.dart';
+import 'package:ego/models/ego_relation_model.dart';
 
 /// 서비스 전체에서 공통적으로 이용하는 함수를 모아둔 클래스
 class UtilFunction {
@@ -65,9 +71,8 @@ class UtilFunction {
   }
 
   // relation tag값을 기반으로 사람과 채팅할 수 있는지 결정합니다.
-  static bool relationToHumanChatPossible(String? relation){
-
-    if(relation ==null ) return false;
+  static bool relationToHumanChatPossible(String? relation) {
+    if (relation == null) return false;
 
     const positiveOrNeutralEmotions = {
       "감사",
@@ -117,6 +122,7 @@ class UtilFunction {
       case '격려':
       case '친근감':
       case '지원':
+      case '놀람':
         return '원만한';
 
       case '희망':
@@ -126,12 +132,6 @@ class UtilFunction {
 
       case '애정':
       case '감탄':
-        return '즐거운';
-
-      case '존경':
-      case '감사':
-        return '매력적';
-
       case '호기심(긍정)':
       case '흥분':
       case '흥미':
@@ -139,13 +139,72 @@ class UtilFunction {
       case '연민':
         return '즐거운';
 
-      case '놀람':
-        return '원만한'; // 또는 상황에 따라 분기 처리 가능
+      case '존경':
+      case '감사':
+        return '매력적';
 
       default:
         return '기타';
     }
   }
 
+  static double mapCategoryToValue(String category) {
+    switch (category) {
+      case '부정적':
+        return 2;
+      case '불안한':
+        return 4;
+      case '지루한':
+        return 6;
+      case '원만한':
+        return 8;
+      case '만족한':
+        return 10;
+      case '즐거운':
+        return 12;
+      case '매력적':
+        return 14;
+      default:
+        return 0;
+    }
+  }
 
+  static List<BarData> relationDataToBarData(
+    List<EgoRelationship> egoRelationData,
+  ) {
+    return egoRelationData.map((e) {
+      final category = mapEmotionToCategory(e.relationshipContent);
+      final value = mapCategoryToValue(category);
+
+      // 예시로 색상은 value에 따라 지정
+      final Color color;
+      switch (value.toInt()) {
+        case 2:
+          color = const Color(0xFFE57373); // soft red
+          break;
+        case 4:
+          color = const Color(0xFFFFB74D); // warm orange
+          break;
+        case 6:
+          color = const Color(0xFFFFF176); // pastel yellow
+          break;
+        case 8:
+          color = const Color(0xFF81C784); // soft green
+          break;
+        case 10:
+          color = const Color(0xFF4FC3F7); // sky blue
+          break;
+        case 12:
+          color = const Color(0xFF64B5F6); // light blue
+          break;
+        case 14:
+          color = const Color(0xFFBA68C8); // lavender purple
+          break;
+        default:
+          color = const Color(0xFFB0BEC5); // neutral grey
+      }
+
+      return BarData(color, value, e.profileImage, e.egoName);
+    }).toList();
+  }
 }

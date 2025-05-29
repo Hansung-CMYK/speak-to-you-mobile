@@ -1,29 +1,42 @@
 import 'dart:math' as math;
 
+import 'package:ego/services/ego/ego_service.dart';
+import 'package:ego/utils/util_function.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'dart:typed_data';
 
 import '../theme/color.dart';
 
 class RelationBarScreen extends ConsumerStatefulWidget {
   RelationBarScreen({super.key});
 
-  final dataList = [
-    const _BarData(AppColors.amethystPurple, 18),
-    const _BarData(AppColors.naverColor, 17),
-    const _BarData(AppColors.primary, 10),
-    const _BarData(AppColors.strongOrange, 2.5),
-    const _BarData(AppColors.accent, 2),
-    const _BarData(AppColors.warningBase, 2),
-  ];
-
   @override
   ConsumerState<RelationBarScreen> createState() => _BarChartSample7State();
 }
 
 class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
+
+  List<BarData>? fetchedEgoToBarData;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fetchEgoRelationData();
+  }
+
+  void _fetchEgoRelationData() async {
+    final fetchedEgoRelationData = await EgoService.fetchEgoRelation();
+
+    setState(() {
+      fetchedEgoToBarData = UtilFunction.relationDataToBarData(fetchedEgoRelationData);
+    });
+
+  }
+
   BarChartGroupData generateBarGroup(
       int x,
       Color color,
@@ -46,18 +59,36 @@ class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
 
   int rotationTurns = 1;
 
+  Set<String> selectedEmotions = {
+    '부정적', '불안한', '지루한', '원만한', '만족한', '즐거운', '매력적'
+  };
+
+  final Map<int, String> emotionLabels = {
+    2: '부정적',
+    4: '불안한',
+    6: '지루한',
+    8: '원만한',
+    10: '만족한',
+    12: '즐거운',
+    14: '매력적',
+  };
+
   @override
   Widget build(BuildContext context) {
+    if (fetchedEgoToBarData == null) {
+      return const Center(child: CircularProgressIndicator()); // 로딩 표시
+    }
+
     return Padding(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(18),
       child: Column(
         children: [
-          const SizedBox(height: 18),
+          const SizedBox(height: 10),
           AspectRatio(
             aspectRatio: 1.4,
             child: BarChart(
               BarChartData(
-                alignment: BarChartAlignment.spaceBetween,
+                alignment: BarChartAlignment.spaceAround,
                 rotationQuarterTurns: rotationTurns,
                 borderData: FlBorderData(
                   show: true,
@@ -74,23 +105,23 @@ class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 25,
-                      interval: 2.0,
+                      interval: 1,
                       getTitlesWidget: (value, meta) {
                         // 숫자 -> 문자열 매핑
                         String? label;
                         if (value == 2) {
                           label = '부정적';
-                        } else if (value == 6) {
+                        } else if (value == 4) {
                           label = '불안한';
-                        } else if (value == 10) {
+                        } else if (value == 6) {
                           label = '지루한';
-                        } else if (value == 14) {
+                        } else if (value == 8) {
                           label = '원만한';
-                        } else if (value == 18) {
+                        } else if (value == 10) {
                           label = '만족한';
-                        } else if(value == 24) {
+                        } else if(value == 12) {
                           label = '즐거운';
-                        } else if(value == 28) {
+                        } else if(value == 14) {
                           label = '매력적';
                         }
 
@@ -123,8 +154,10 @@ class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
                         return SideTitleWidget(
                           meta: meta,
                           child: _IconWidget(
-                            color: widget.dataList[index].color,
+                            color: fetchedEgoToBarData![index].color,
                             isSelected: touchedGroupIndex == index,
+                            profileImage: fetchedEgoToBarData![index].profileImage,
+                            egoName: fetchedEgoToBarData![index].name,
                           ),
                         );
                       },
@@ -136,21 +169,24 @@ class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
+                  drawHorizontalLine: false,
                   getDrawingHorizontalLine: (value) => FlLine(
                     color: AppColors.darkCharcoal,
                     strokeWidth: 1,
                   ),
                 ),
-                barGroups: widget.dataList.asMap().entries.map((e) {
-                  final index = e.key;
-                  final data = e.value;
-                  return generateBarGroup(
-                    index,
-                    data.color,
-                    data.value
-                  );
+                barGroups: fetchedEgoToBarData!.asMap().entries
+                    .where((entry) {
+                  // 감정 필터링
+                  final emotionLabel = emotionLabels[entry.value.value.toInt()];
+                  return selectedEmotions.contains(emotionLabel);
+                })
+                    .map((entry) {
+                  final index = entry.key;
+                  final data = entry.value;
+                  return generateBarGroup(index, data.color, data.value);
                 }).toList(),
-                maxY: 20,
+                maxY: 16,
                 barTouchData: BarTouchData(
                   enabled: true,
                   handleBuiltInTouches: false,
@@ -196,26 +232,70 @@ class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
               ),
             ),
           ),
+
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.center ,
+            children: [
+              '부정적', '불안한', '지루한', '원만한',
+              '만족한', '즐거운', '매력적',
+            ].map((emotion) {
+              final isSelected = selectedEmotions.contains(emotion);
+              return ChoiceChip(
+                label: Text(
+                  emotion,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : AppColors.gray900,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                selected: isSelected,
+                onSelected: (selected) {
+                  setState(() {
+                    if (selected) {
+                      selectedEmotions.add(emotion);
+                    } else {
+                      selectedEmotions.remove(emotion);
+                    }
+                  });
+                },
+                selectedColor: AppColors.primary,
+                backgroundColor: AppColors.gray200,
+                showCheckmark: false,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide.none,
+                ),
+              );
+            }).toList(),
+          ),
         ],
       ),
     );
   }
 }
 
-class _BarData {
-  const _BarData(this.color, this.value);
+class BarData {
+  const BarData(this.color, this.value, this.profileImage, this.name);
 
   final Color color;
   final double value;
+  final Uint8List? profileImage;
+  final String name;
 }
 
 class _IconWidget extends ImplicitlyAnimatedWidget {
   const _IconWidget({
     required this.color,
     required this.isSelected,
+    required this.profileImage,
+    required this.egoName
   }) : super(duration: const Duration(milliseconds: 300));
   final Color color;
   final bool isSelected;
+  final Uint8List? profileImage;
+  final String egoName;
 
   @override
   ImplicitlyAnimatedWidgetState<ImplicitlyAnimatedWidget> createState() =>
@@ -226,29 +306,59 @@ class _IconWidgetState extends AnimatedWidgetBaseState<_IconWidget> {
   Tween<double>? _rotationTween;
 
   @override
-  Widget build(BuildContext context) {
-    final rotation = math.pi * 4 * _rotationTween!.evaluate(animation);
-    final scale = 1 + _rotationTween!.evaluate(animation) * 0.5;
-    return Transform(
-      transform: Matrix4.rotationZ(rotation).scaled(scale, scale),
-      origin: const Offset(14, 14),
-      child: Icon(
-        widget.isSelected ? Icons.face_retouching_natural : Icons.face,
-        color: widget.color,
-        size: 28,
-      ),
-    );
-  }
-
-  @override
   void forEachTween(TweenVisitor<dynamic> visitor) {
     _rotationTween = visitor(
       _rotationTween,
       widget.isSelected ? 1.0 : 0.0,
-          (dynamic value) => Tween<double>(
-        begin: value as double,
-        end: widget.isSelected ? 1.0 : 0.0,
-      ),
+          (value) => Tween<double>(begin: value as double),
     ) as Tween<double>?;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final rotation = math.pi * 4 * _rotationTween!.evaluate(animation);
+    final scale = 1 + _rotationTween!.evaluate(animation) * 0.5;
+
+    final imageOrIcon = widget.profileImage != null
+        ? ClipOval(
+      child: Image.memory(
+        widget.profileImage!,
+        width: 28,
+        height: 28,
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Icon(
+            Icons.face,
+            color: widget.color,
+            size: 28,
+          );
+        },
+      ),
+    )
+        : Icon(
+      Icons.face,
+      color: widget.color,
+      size: 28,
+    );
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Transform(
+          transform: Matrix4.rotationZ(rotation).scaled(scale, scale),
+          origin: const Offset(14, 14),
+          child: imageOrIcon,
+        ),
+        const SizedBox(height: 4),
+        Text(
+          '${widget.egoName}', // 혹은 다른 텍스트로 교체 가능
+          style: TextStyle(
+            fontSize: 10,
+            color: widget.color,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
   }
 }
