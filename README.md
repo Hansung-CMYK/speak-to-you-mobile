@@ -2,6 +2,8 @@
 
 2025 한성대학교 캡스톤디자인
 
+영상 링크: https://drive.google.com/file/d/1F8UYUaL974q9_MrxjWgIjGMADaRsaCOf/view?usp=drive_link
+
 ## Documents
 
 - [코드 컨벤션](https://6-keem-dev.vercel.app/blog/%EC%BA%A1%EC%8A%A4%ED%86%A4%EB%94%94%EC%9E%90%EC%9D%B8/2025-02-05)
