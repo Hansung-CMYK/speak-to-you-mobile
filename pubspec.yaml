@@ -43,7 +43,7 @@ dependencies:
   fluttertoast: ^8.2.12
   flutter_svg: ^2.0.17
   table_calendar: ^3.0.9
-  fl_chart: ^0.70.2
+  fl_chart: ^1.0.0
   flutter_html: ^3.0.0-beta.2
   blur: ^4.0.0
   flutter_rating_bar: ^4.0.1

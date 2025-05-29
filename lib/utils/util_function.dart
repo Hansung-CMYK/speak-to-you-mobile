@@ -94,4 +94,58 @@ class UtilFunction {
     return positiveOrNeutralEmotions.contains(relation);
   }
 
+  static String mapEmotionToCategory(String emotion) {
+    switch (emotion) {
+      case '경멸':
+      case '분노':
+      case '짜증':
+      case '억울함':
+      case '실망':
+      case '무관심':
+      case '질투':
+        return '부정적';
+
+      case '불안':
+      case '경계심':
+        return '불안한';
+
+      case '슬픔(연민)':
+      case '호기심(부정)':
+        return '지루한';
+
+      case '위로':
+      case '격려':
+      case '친근감':
+      case '지원':
+        return '원만한';
+
+      case '희망':
+      case '호감':
+      case '신뢰':
+        return '만족한';
+
+      case '애정':
+      case '감탄':
+        return '즐거운';
+
+      case '존경':
+      case '감사':
+        return '매력적';
+
+      case '호기심(긍정)':
+      case '흥분':
+      case '흥미':
+      case '공감':
+      case '연민':
+        return '즐거운';
+
+      case '놀람':
+        return '원만한'; // 또는 상황에 따라 분기 처리 가능
+
+      default:
+        return '기타';
+    }
+  }
+
+
 }

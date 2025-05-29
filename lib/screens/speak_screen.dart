@@ -150,14 +150,14 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
 
             // TODO 여기서 EGO가 움직입니다.
             // E/FrameEvents( 4492): updateAcquireFence: Did not find frame.로 인해 log를 가려서 주석처리 했습니다.
-            Expanded(
-              child: AnimationObjectWidget(
-                animationName: animation,
-                cameraControls: cameraControls,
-                autoRotate: autoRotate,
-                autoPlay: autoPlay,
-              ),
-            ),
+            // Expanded(
+            //   child: AnimationObjectWidget(
+            //     animationName: animation,
+            //     cameraControls: cameraControls,
+            //     autoRotate: autoRotate,
+            //     autoPlay: autoPlay,
+            //   ),
+            // ),
 
             // selectedEgo는 EgoList를 불러온 이후 할당되는데, 해당 buildSelectedEGO에서
             //null check operator을 수행하는 바람에 순간적으로 null 화면이 보입니다. 때문에 이를 방지하기 위해

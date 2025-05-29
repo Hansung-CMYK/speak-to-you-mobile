@@ -1,3 +1,4 @@
+import 'package:ego/screens/ego_chart_screen.dart';
 import 'package:ego/screens/record/calendar/calendar_screen.dart';
 import 'package:ego/screens/record/chart/chart_screen.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +83,7 @@ class _RecordScreenState extends State<RecordScreen>
         controller: _tabController, // 컨트롤러 부여
         children: [
           CalendarScreen(),
-          ChartScreen(), // TODO: EgoPage로 변경 필요 [미개발]
+          RelationBarScreen(), // TODO: EgoPage로 변경 필요 [미개발]
         ],
       ),
     );
