@@ -2,7 +2,7 @@
 
 2025 한성대학교 캡스톤디자인
 
-영상 링크: [https://drive.google.com/file/d/1F8UYUaL974q9_MrxjWgIjGMADaRsaCOf/view?usp=drive_link](https://drive.google.com/file/d/1F8UYUaL974q9_MrxjWgIjGMADaRsaCOf/view?usp=sharing)
+영상 링크: https://drive.google.com/file/d/1F8UYUaL974q9_MrxjWgIjGMADaRsaCOf/view?usp=sharing
 
 ## Documents
 
