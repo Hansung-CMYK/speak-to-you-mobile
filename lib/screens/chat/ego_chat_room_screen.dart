@@ -175,10 +175,38 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     _scrollToBottom();
   }
 
-  Future<File?> _pickAndCompressImage() async {
-    final XFile? picked = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+  Future<void> _showImagePickerOptions() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: Icon(Icons.photo),
+              title: Text('갤러리에서 선택'),
+              onTap: () async {
+                Navigator.pop(context);
+                final image = await _pickAndCompressImage(ImageSource.gallery);
+                if (image != null) _sendImage(image);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('카메라로 촬영'),
+              onTap: () async {
+                Navigator.pop(context);
+                final image = await _pickAndCompressImage(ImageSource.camera);
+                if (image != null) _sendImage(image);
+              },
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  Future<File?> _pickAndCompressImage(ImageSource source) async {
+    final XFile? picked = await ImagePicker().pickImage(source: source);
     if (picked == null) return null;
 
     final dir = await getTemporaryDirectory();
@@ -203,14 +231,12 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     return compressed != null ? File(compressed.path) : null;
   }
 
-  void _sendImage() async {
-    final file = await _pickAndCompressImage();
-    if (file == null) return;
-
+  void _sendImage(File file) async {
     final now = DateTime.now();
     final formatted = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
     final bytes = await file.readAsBytes();
     final b64 = base64Encode(bytes);
+
     final hashInput = "${widget.uid}|$formatted|IMAGE|$b64";
     final hash = ChatHistory.generateSHA256(hashInput);
 
@@ -352,11 +378,8 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                     children: [
                       /* 이미지 선택 버튼 */
                       IconButton(
-                        icon: const Icon(
-                          Icons.photo_outlined,
-                          color: Colors.grey,
-                        ),
-                        onPressed: _sendImage,
+                        icon: const Icon(Icons.photo_outlined, color: Colors.grey),
+                        onPressed: _showImagePickerOptions,
                       ),
                       /* 텍스트 입력 */
                       Expanded(
