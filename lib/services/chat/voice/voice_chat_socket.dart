@@ -1,15 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
-
-import 'package:ego/services/chat/chat_room_service.dart';
-import 'package:ego/services/setting_service.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:audioplayers/audioplayers.dart';
-
-const int kFlushBytes = 3200; // 0.1 s @16 kHz (PCM16 mono)
 
 class VoiceChatSocketClient {
   final String userId;
@@ -27,6 +22,11 @@ class VoiceChatSocketClient {
 
   bool _isMicOn = true;
 
+  // 🔊 인덱스 기반 청크 재생 큐
+  final Map<int, Uint8List> _orderedChunks = {};
+  int _nextPlayIndex = 0;
+  bool _isPlaying = false;
+
   VoiceChatSocketClient({
     required this.userId,
     required this.egoId,
@@ -39,23 +39,27 @@ class VoiceChatSocketClient {
 
   Future<void> toggleMic() async {
     _isMicOn = !_isMicOn;
-    print(_isMicOn ? "🎙️ 마이크 ON (전송 허용)" : "🔇 마이크 OFF (전송 차단)");
-    if (!_isMicOn) {
-      final silence = Uint8List(kFlushBytes);
+    print(_isMicOn ? "🎙️ 마이크 ON" : "🔇 마이크 OFF");
+
+    if (_isMicOn) {
+      _orderedChunks.clear();
+      _nextPlayIndex = 0;
+      await _player.stop();
+      _isPlaying = false;
+    } else {
+      final silence = Uint8List(3200); // 0.1s silence
       for (int i = 0; i < 5; i++) {
         sendPCM(silence, 16000);
       }
       Timer(const Duration(seconds: 3), () {
         sendPCM(silence, 16000);
-
       });
     }
   }
 
   Future<void> connect() async {
-    final chatRoomId = await ChatRoomService.fetchChatRoomIdByEgoIdNuserId(userId, egoId);
     final url =
-        '${SettingsService().webVoiceUrl}/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=$chatRoomId';
+        'ws://localhost:8000/api/ws/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=dummy';
 
     _channel = WebSocketChannel.connect(Uri.parse(url));
 
@@ -64,58 +68,44 @@ class VoiceChatSocketClient {
         try {
           if (data is String) {
             final parsed = jsonDecode(data);
-            print("📥 [JSON 수신] $parsed");
-
             if (parsed['type'] == 'audio_chunk' && parsed['audio_base64'] != null) {
               final base64Str = parsed['audio_base64'];
               final bytes = base64Decode(base64Str);
-              print("🎧 base64 디코딩 완료: ${bytes.length} bytes");
+              final index = parsed['index'] ?? 0;
 
-              onAudioChunk(bytes);
-              _playAudio(bytes);
+              onAudioChunk(bytes); // 시각화 등
+              enqueueOrderedChunk(index, bytes);
             } else {
               onMessage(parsed);
             }
-          } else if (data is List<int>) {
-            final bytes = Uint8List.fromList(data);
-            print("📥 [Binary 수신] ${bytes.length} bytes");
-            final sample = bytes.take(10).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
-            print("🧪 수신 바이너리 샘플 (앞 10바이트): $sample");
-
-            onAudioChunk(bytes);
-            _playAudio(bytes);
           }
-        } catch (e, stack) {
-          print("⚠️ 수신 처리 에러: $e\n$stack");
+        } catch (e) {
+          print("❌ WebSocket 데이터 처리 에러: $e");
         }
       },
       onDone: () {
         _isConnected = false;
-        print("❌ WebSocket 끊김, 재연결 시도 중...");
-        Future.delayed(const Duration(seconds: 2), connect);
+        print("❌ WebSocket 종료됨");
       },
       onError: (err) {
         _isConnected = false;
-        print("🛑 WebSocket 에러: $err");
+        print("❌ WebSocket 오류: $err");
       },
     );
 
     _isConnected = true;
-    print("✅ WebSocket 연결됨");
-
     await _startMicStream();
   }
 
   Future<void> _startMicStream() async {
     final micPermission = await Permission.microphone.request();
     if (!micPermission.isGranted) {
-      print("❌ 마이크 권한 없음");
+      print("❌ 마이크 권한 거부됨");
       return;
     }
 
-    _streamController = StreamController<Uint8List>();
+    _streamController = StreamController<Uint8List>.broadcast();
     _streamController.stream.listen((pcmBytes) {
-      print("🎤 마이크 → PCM ${pcmBytes.length} bytes 전송 시도");
       sendPCM(pcmBytes, 16000);
     });
 
@@ -128,7 +118,7 @@ class VoiceChatSocketClient {
       toStream: _streamController.sink,
     );
 
-    print("🎙️ 마이크 스트리밍 시작됨");
+    print("🎙️ 마이크 녹음 시작됨");
   }
 
   void sendPCM(Uint8List pcmBytes, int sampleRate) {
@@ -145,26 +135,41 @@ class VoiceChatSocketClient {
     buffer.add(pcmBytes);
 
     _channel.sink.add(buffer.toBytes());
-    print("📤 PCM 전송 완료: ${pcmBytes.length} bytes");
   }
 
-  Future<void> _playAudio(Uint8List bytes) async {
+  // 🧠 인덱스 기반으로 청크 저장
+  void enqueueOrderedChunk(int index, Uint8List chunk) {
+    if (_orderedChunks.containsKey(index)) return; // 중복 방지
+    _orderedChunks[index] = chunk;
+    _tryPlayNext();
+  }
+
+  void _tryPlayNext() async {
+    if (_isPlaying || !_orderedChunks.containsKey(_nextPlayIndex)) return;
+
+    final chunk = _orderedChunks.remove(_nextPlayIndex)!;
+    _isPlaying = true;
+
     try {
-      print("🎧 재생 시도: ${bytes.length} bytes");
-      await _player.stop();
-      await _player.play(BytesSource(bytes));
-      print("✅ 오디오 재생 성공");
+      print("▶️ 재생: 인덱스 $_nextPlayIndex");
+      await _player.play(BytesSource(chunk));
     } catch (e) {
       print("❌ 오디오 재생 실패: $e");
+    } finally {
+      _isPlaying = false;
+      _nextPlayIndex++;
+      Future.delayed(const Duration(milliseconds: 5), _tryPlayNext);
     }
   }
 
   void stopAudio() async {
     try {
       await _player.stop();
-      print("🛑 오디오 재생 중지 완료");
+      _orderedChunks.clear();
+      _isPlaying = false;
+      _nextPlayIndex = 0;
     } catch (e) {
-      print("⚠️ 오디오 중지 실패: $e");
+      print("❌ 오디오 정지 실패: $e");
     }
   }
 
@@ -174,6 +179,11 @@ class VoiceChatSocketClient {
     await _streamController.close();
     await _player.dispose();
     _channel.sink.close();
-    print("🧹 종료 완료: 리소스 정리 및 연결 종료");
+
+    _orderedChunks.clear();
+    _nextPlayIndex = 0;
+    _isPlaying = false;
+
+    print("🧹 연결 종료 및 리소스 정리 완료");
   }
 }

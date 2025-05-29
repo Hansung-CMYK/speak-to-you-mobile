@@ -49,7 +49,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     socketClient = VoiceChatSocketClient(
       userId: widget.uid,
       egoId: widget.egoModelV2.id!,
-      speaker: "karina", // 필요에 따라 변경 가능
+      speaker: "default", // 필요에 따라 변경 가능
       onMessage: _handleSocketMessage,
       onAudioChunk: _handleAudioChunk,
     );
@@ -70,11 +70,26 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     super.dispose();
   }
 
-  void _addChat(ChatHistory chat) {
-    setState(() {
-      chatHistoryList.add(chat);
-    });
-    // 채팅이 추가된 후에 스크롤을 마지막으로 이동
+  String egoChat = "";
+  void _addChat(ChatHistory chat, bool isComplete) {
+    if (chat.type == 'e') {
+      egoChat += chat.content;
+      if (isComplete) {
+        chat.content = egoChat; // 누적된 응답을 채팅에 넣고
+        egoChat = ""; // 초기화는 여기서만
+        setState(() {
+          chatHistoryList.add(chat);
+        });
+      }
+    } else {
+      // 사용자의 문장은 바로 추가
+      if (isComplete) {
+        setState(() {
+          chatHistoryList.add(chat);
+        });
+      }
+    }
+
     _scrollToBottom();
   }
 
@@ -94,36 +109,45 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     switch (message['type']) {
       case 'realtime':
         print("🗣️ 실시간 텍스트: ${message['text']}");
-        _addChat(ChatHistory(
-          uid: widget.uid,
-          chatRoomId: 1,
-          content: message['text'] ?? '',
-          type: 'u',
-          chatAt: DateTime.now(),
-          isDeleted: false,
-          contentType: "TEXT"
-        ));
         break;
 
       case 'fullSentence':
+        _addChat(ChatHistory(
+            uid: widget.uid,
+            chatRoomId: 1,
+            content: message['text'] ?? '',
+            type: 'u',
+            chatAt: DateTime.now(),
+            isDeleted: false,
+            contentType: "TEXT"
+        ), false);
         print("✅ STT 종료: ${message['text']}");
         break;
 
       case 'response_chunk':
-        print("🤖 LLM 응답 중: ${message['text']}");
-        break;
-
-      case 'response_done':
-        print("✅ 서버 응답 완료");
         _addChat(ChatHistory(
-            uid: "애고",
+            uid: widget.uid,
             chatRoomId: 1,
-            content: message['text'] ?? '',
+            content: 'response_chunk' +  message['text'] ?? '',
             type: 'e',
             chatAt: DateTime.now(),
             isDeleted: false,
             contentType: "TEXT"
-        ));
+        ), true);
+        print("🤖 LLM 응답 중: ${message['text']}");
+        break;
+
+      case 'response_done':
+        _addChat(ChatHistory(
+            uid: widget.uid,
+            chatRoomId: 1,
+            content: message['text'] ?? 'response_done',
+            type: 'e',
+            chatAt: DateTime.now(),
+            isDeleted: false,
+            contentType: "TEXT"
+        ), true);
+        print("✅ 서버 응답 완료");
         break;
 
       case 'cancel_audio':
@@ -273,6 +297,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
       floatingActionButtonLocation: const _LowerCenterDockedFabLocation(),
       floatingActionButton: CallEndButton(
         onPressed: () {
+          socketClient.stop();
           Navigator.pop(context);
         },
       ),

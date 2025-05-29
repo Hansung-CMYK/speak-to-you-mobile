@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 class ChatHistory {
   final String uid; // 사용자 UID
   final int chatRoomId; // 채팅방 ID
-  final String content; // 사용자가 보낸 메시지
+  late final String content; // 사용자가 보낸 메시지
   final String contentType; // 해당 chat이 이미지 형식인지, 이미지 형식인지 의미합니다.(IMAGE, TEXT)
   final String type; // 대화 유형 (u, e)
   final DateTime chatAt; // 대화 발생 시간
