@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:ego/models/chat/chat_history_model.dart';
-import 'package:ego/models/ego_info_model.dart';
 import 'package:ego/models/ego_model_v2.dart';
 import 'package:ego/screens/voice_chat/call_time_banner.dart';
 import 'package:ego/screens/voice_chat/voice_chat_overlay.dart';
@@ -116,7 +115,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
       case 'response_done':
         print("✅ 서버 응답 완료");
         _addChat(ChatHistory(
-            uid: "애고",
+            uid: widget.uid,
             chatRoomId: 1,
             content: message['text'] ?? '',
             type: 'e',

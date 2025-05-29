@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -23,6 +24,9 @@ class VoiceChatSocketClient {
   final AudioPlayer _player = AudioPlayer();
   late StreamController<Uint8List> _streamController;
 
+  final Queue<Uint8List> _audioQueue = Queue(); // 수신된 음성 재생 큐
+  bool _isPlaying = false; // 현재 재생 중 여부
+
   VoiceChatSocketClient({
     required this.userId,
     required this.egoId,
@@ -34,7 +38,6 @@ class VoiceChatSocketClient {
   bool _isMicOn = true;
 
   Future<void> toggleMic() async {
-    // [수정됨] 마이크 녹음을 중단하지 않고 전송 여부만 토글
     _isMicOn = !_isMicOn;
     print(_isMicOn ? "🎙️ 마이크 ON (전송 허용)" : "🔇 마이크 OFF (전송 차단)");
   }
@@ -42,9 +45,7 @@ class VoiceChatSocketClient {
   bool get isMicOn => _isMicOn;
 
   Future<void> connect() async {
-
     final chatRoomId = await ChatRoomService.fetchChatRoomIdByEgoIdNuserId(userId, egoId);
-
     final url = '${SettingsService().webVoiceUrl}/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=$chatRoomId';
 
     _channel = WebSocketChannel.connect(Uri.parse(url));
@@ -61,7 +62,7 @@ class VoiceChatSocketClient {
               print("🎧 base64 디코딩 완료: ${bytes.length} bytes");
 
               onAudioChunk(bytes);
-              _playAudio(bytes);
+              _enqueueAudio(bytes);
             } else {
               onMessage(parsed);
             }
@@ -73,7 +74,7 @@ class VoiceChatSocketClient {
             print("🧪 수신 바이너리 샘플 (앞 10바이트): $sample");
 
             onAudioChunk(bytes);
-            _playAudio(bytes);
+            _enqueueAudio(bytes);
           }
         } catch (e, stack) {
           print("⚠️ 수신 처리 에러: $e");
@@ -106,6 +107,8 @@ class VoiceChatSocketClient {
 
     _streamController = StreamController<Uint8List>();
     _streamController.stream.listen((pcmBytes) {
+      // 내가 말하면 상대방 음성 중지 및 큐 삭제
+      clearAudioQueueAndStopPlayback();
       sendPCM(pcmBytes, 16000);
     });
 
@@ -128,7 +131,6 @@ class VoiceChatSocketClient {
     final metaBytes = utf8.encode(meta);
     final metaLength = metaBytes.length;
 
-    final totalSize = 4 + metaBytes.length + pcmBytes.length;
     final buffer = BytesBuilder();
     final header = ByteData(4)..setUint32(0, metaLength, Endian.little);
     buffer.add(header.buffer.asUint8List());
@@ -138,15 +140,48 @@ class VoiceChatSocketClient {
     _channel.sink.add(buffer.toBytes());
   }
 
-  Future<void> _playAudio(Uint8List bytes) async {
-    try {
-      print("🎧 재생 시도: ${bytes.length} bytes");
-      await _player.stop();
-      await _player.play(BytesSource(bytes));
-      print("✅ 오디오 재생 성공");
-    } catch (e) {
-      print("❌ 오디오 재생 실패: $e");
+  void _enqueueAudio(Uint8List bytes) {
+    if (_isMicOn) {
+      // 내가 말하는 중이면 수신 음성 무시
+      print("🛑 수신 오디오 무시: 마이크 ON 상태");
+      return;
     }
+
+    _audioQueue.addLast(bytes);
+    if (!_isPlaying) {
+      _processAudioQueue();
+    }
+  }
+
+  Future<void> _processAudioQueue() async {
+    _isPlaying = true;
+
+    while (_audioQueue.isNotEmpty && !_isMicOn) {
+      final bytes = _audioQueue.removeFirst();
+      print("🎧 큐에서 재생: ${bytes.length} bytes");
+
+      try {
+        await _player.play(BytesSource(bytes));
+        await _player.onPlayerComplete.first;
+      } catch (e) {
+        print("❌ 오디오 재생 실패: $e");
+      }
+    }
+
+    _isPlaying = false;
+  }
+
+  void clearAudioQueueAndStopPlayback() async {
+    _audioQueue.clear();
+
+    try {
+      await _player.stop();
+      print("🛑 수신 음성 재생 중지 및 큐 비움 완료");
+    } catch (e) {
+      print("⚠️ 재생 중지 실패: $e");
+    }
+
+    _isPlaying = false;
   }
 
   void stopAudio() async {
