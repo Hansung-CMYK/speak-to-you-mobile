@@ -9,6 +9,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:audioplayers/audioplayers.dart';
 
+const int kFlushBytes = 3200; // 0.1 s @16 kHz (PCM16 mono)
+
 class VoiceChatSocketClient {
   final String userId;
   final int egoId;
@@ -23,6 +25,8 @@ class VoiceChatSocketClient {
   final AudioPlayer _player = AudioPlayer();
   late StreamController<Uint8List> _streamController;
 
+  bool _isMicOn = true;
+
   VoiceChatSocketClient({
     required this.userId,
     required this.egoId,
@@ -31,23 +35,30 @@ class VoiceChatSocketClient {
     required this.onAudioChunk,
   });
 
-  bool _isMicOn = true;
-
-  Future<void> toggleMic() async {
-    // [수정됨] 마이크 녹음을 중단하지 않고 전송 여부만 토글
-    _isMicOn = !_isMicOn;
-    print(_isMicOn ? "🎙️ 마이크 ON (전송 허용)" : "🔇 마이크 OFF (전송 차단)");
-  }
-
   bool get isMicOn => _isMicOn;
 
+  Future<void> toggleMic() async {
+    _isMicOn = !_isMicOn;
+    print(_isMicOn ? "🎙️ 마이크 ON (전송 허용)" : "🔇 마이크 OFF (전송 차단)");
+    if (!_isMicOn) {
+      final silence = Uint8List(kFlushBytes);
+      for (int i = 0; i < 5; i++) {
+        sendPCM(silence, 16000);
+      }
+      Timer(const Duration(seconds: 3), () {
+        sendPCM(silence, 16000);
+
+      });
+    }
+  }
+
   Future<void> connect() async {
-
     final chatRoomId = await ChatRoomService.fetchChatRoomIdByEgoIdNuserId(userId, egoId);
-
-    final url = '${SettingsService().webVoiceUrl}/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=$chatRoomId';
+    final url =
+        '${SettingsService().webVoiceUrl}/voice-chat?user_id=$userId&ego_id=$egoId&spk=$speaker&chat_room_id=$chatRoomId';
 
     _channel = WebSocketChannel.connect(Uri.parse(url));
+
     _channel.stream.listen(
           (data) {
         try {
@@ -68,7 +79,6 @@ class VoiceChatSocketClient {
           } else if (data is List<int>) {
             final bytes = Uint8List.fromList(data);
             print("📥 [Binary 수신] ${bytes.length} bytes");
-
             final sample = bytes.take(10).map((b) => b.toRadixString(16).padLeft(2, '0')).join(' ');
             print("🧪 수신 바이너리 샘플 (앞 10바이트): $sample");
 
@@ -76,8 +86,7 @@ class VoiceChatSocketClient {
             _playAudio(bytes);
           }
         } catch (e, stack) {
-          print("⚠️ 수신 처리 에러: $e");
-          print(stack);
+          print("⚠️ 수신 처리 에러: $e\n$stack");
         }
       },
       onDone: () {
@@ -106,6 +115,7 @@ class VoiceChatSocketClient {
 
     _streamController = StreamController<Uint8List>();
     _streamController.stream.listen((pcmBytes) {
+      print("🎤 마이크 → PCM ${pcmBytes.length} bytes 전송 시도");
       sendPCM(pcmBytes, 16000);
     });
 
@@ -128,7 +138,6 @@ class VoiceChatSocketClient {
     final metaBytes = utf8.encode(meta);
     final metaLength = metaBytes.length;
 
-    final totalSize = 4 + metaBytes.length + pcmBytes.length;
     final buffer = BytesBuilder();
     final header = ByteData(4)..setUint32(0, metaLength, Endian.little);
     buffer.add(header.buffer.asUint8List());
@@ -136,6 +145,7 @@ class VoiceChatSocketClient {
     buffer.add(pcmBytes);
 
     _channel.sink.add(buffer.toBytes());
+    print("📤 PCM 전송 완료: ${pcmBytes.length} bytes");
   }
 
   Future<void> _playAudio(Uint8List bytes) async {
@@ -164,5 +174,6 @@ class VoiceChatSocketClient {
     await _streamController.close();
     await _player.dispose();
     _channel.sink.close();
+    print("🧹 종료 완료: 리소스 정리 및 연결 종료");
   }
 }
