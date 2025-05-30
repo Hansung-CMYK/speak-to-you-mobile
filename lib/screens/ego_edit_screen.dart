@@ -50,6 +50,8 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
     _nameController.text = '';
     _egoIntroController.text = '';
     selectedMBTI = 'INFJ';
+
+    myEgoModel = EgoModelV2(name: '', introduction: '', mbti: 'INFJ');
   }
 
   @override
@@ -140,9 +142,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                                     'assets/icon/camera.svg',
                                   ),
                                   onPressed: () {
-                                    setState(() {
                                       _pickImageFromGallery();
-                                    });
                                   },
                                 ),
                               ),
