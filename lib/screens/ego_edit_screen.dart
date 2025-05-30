@@ -21,7 +21,7 @@ class EgoEditScreen extends StatefulWidget {
 }
 
 class _EgoEditScreenState extends State<EgoEditScreen> {
-  late final EgoModelV2 myEgoModel;
+  late EgoModelV2 myEgoModel;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _egoIntroController = TextEditingController();
 
