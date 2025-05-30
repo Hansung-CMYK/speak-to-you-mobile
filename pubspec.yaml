@@ -196,6 +196,7 @@ flutter:
     - assets/icon/trash_enabled.svg
     - assets/icon/error_icon.svg
     - assets/Ego_model.glb
+    - assets/image/ego_body_image.png
 
 
 

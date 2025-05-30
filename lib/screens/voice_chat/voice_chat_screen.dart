@@ -308,11 +308,14 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 30.h),
-                    child: Image.asset(
-                      'assets/image/ego_1.png',
-                      fit: BoxFit.cover,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      height: 600.h,
+                      child: Image.asset(
+                        'assets/image/ego_body_image.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
