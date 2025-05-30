@@ -140,7 +140,9 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                                     'assets/icon/camera.svg',
                                   ),
                                   onPressed: () {
-                                    _pickImageFromGallery();
+                                    setState(() {
+                                      _pickImageFromGallery();
+                                    });
                                   },
                                 ),
                               ),
