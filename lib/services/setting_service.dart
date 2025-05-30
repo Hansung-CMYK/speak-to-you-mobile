@@ -56,4 +56,5 @@ class SettingsService {
   String get diaryCreateUrl => 'http://$host:$diaryCreatePort/api/diary';
   String get genImageUrl => 'http://$host:$imageGenPort/api/image';
   String get webVoiceUrl => 'ws://$host:$diaryCreatePort/api/ws';
+  String get personaUrl => 'http://$host:$diaryCreatePort/api/persona';
 }

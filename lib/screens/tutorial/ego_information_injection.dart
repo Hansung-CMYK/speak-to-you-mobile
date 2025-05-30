@@ -128,6 +128,7 @@ class _UserInfoOnboardingScreenState extends State<UserInfoOnboardingScreen> {
   final ScrollController _scroll = ScrollController();
   final TextEditingController _txtCtl = TextEditingController();
   final FocusNode _focus = FocusNode();
+  late BuildContext _rootContext;
 
   @override
   void initState() {
@@ -138,6 +139,9 @@ class _UserInfoOnboardingScreenState extends State<UserInfoOnboardingScreen> {
     _initAudio();
     _pcmStream.stream.listen(_onPcmData);
     _addSystem(_questions[_idx]);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _rootContext = context;
+    });
     // WebSocket 연결 미리 하지 않음
   }
 
@@ -277,7 +281,10 @@ class _UserInfoOnboardingScreenState extends State<UserInfoOnboardingScreen> {
 
             PersonaEgoModel.sendPersonaEgoModel(personaEgoModel);
 
-            Navigator.pushReplacementNamed(context, 'Main'); // Main화면으로 이동
+            if (!mounted) return;
+
+            Navigator.of(context).pop();
+            Navigator.pushReplacementNamed(_rootContext, 'Main'); // Main화면으로 이동
           });
         });
         break;
@@ -287,7 +294,7 @@ class _UserInfoOnboardingScreenState extends State<UserInfoOnboardingScreen> {
     }
   }
 
-  void _onPlayExample() {
+  Future<void> _onPlayExample() async {
     _addUser(_examples[_idx], 'TEXT');
     if (_idx < _questions.length - 1) {
       setState(() => _idx++);

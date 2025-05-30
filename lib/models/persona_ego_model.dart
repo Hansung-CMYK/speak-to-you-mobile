@@ -17,11 +17,12 @@ class PersonaEgoModel {
   });
 
   Map<String, dynamic> toJson() {
-    return {'egoId': egoId, 'name': name, 'mbti': mbti, 'interview': interview};
+    return {'ego_id': egoId.toString(), 'name': name, 'mbti': mbti, 'interview': interview.expand((list) => list)
+        .map((e) => e.toString()) .join()};
   }
 
   static Future<void> sendPersonaEgoModel(PersonaEgoModel ego) async {
-    final url = Uri.parse('${SettingsService().dbUrl}/ego/persona');
+    final url = Uri.parse('${SettingsService().personaUrl}');
 
     final response = await http.post(
       url,
@@ -31,10 +32,12 @@ class PersonaEgoModel {
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       print('persona 전송 성공');
-      print('응답: ${response.body}');
+      final decodedBody = utf8.decode(response.bodyBytes);
+      print('응답: $decodedBody');
     } else {
       print('persona 전송 실패: ${response.statusCode}');
-      print('에러 메시지: ${response.body}');
+      final decodedBody = utf8.decode(response.bodyBytes);
+      print('응답: $decodedBody');
     }
   }
 }
