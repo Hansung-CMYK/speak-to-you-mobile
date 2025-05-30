@@ -27,6 +27,11 @@ class VoiceChatSocketClient {
 
   bool _isMicOn = true;
 
+  // 🔊 인덱스 기반 청크 재생 큐
+  final Map<int, Uint8List> _orderedChunks = {};
+  int _nextPlayIndex = 0;
+  bool _isPlaying = false;
+
   VoiceChatSocketClient({
     required this.userId,
     required this.egoId,

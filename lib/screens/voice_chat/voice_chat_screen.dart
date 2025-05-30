@@ -129,7 +129,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
       case 'cancel_audio':
         print("🛑 오디오 재생 취소 요청");
         // 오디오만 중단
-        socketClient.stopAudio(); // 또는 socketClient.stopAudio() 를 새로 만들어도 OK
+        socketClient.stop(); // 또는 socketClient.stopAudio() 를 새로 만들어도 OK
         break;
 
       case 'audio_chunk':
