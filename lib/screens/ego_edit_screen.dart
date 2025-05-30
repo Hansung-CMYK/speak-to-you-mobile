@@ -285,7 +285,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
 
                   // 완료 버튼 부분
                   _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () async {
-                    myEgoModel = EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI, personalityList: []);
+                    myEgoModel = EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI, personalityList: [], profileImage: selectedImage);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
