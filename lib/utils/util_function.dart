@@ -29,8 +29,8 @@ class UtilFunction {
     };
   }
 
-  // ego의 PersonalityList를 idList로 변환하는 함수 입니다.
-  // (그룹채팅방을 firebasestore에서 관리하는데 personality_id값 즉, 정수로 되어있어서 필요합니다.)
+  /// ego의 PersonalityList를 idList로 변환하는 함수 입니다.
+  /// (그룹채팅방을 firebasestore에서 관리하는데 personality_id값 즉, 정수로 되어있어서 변환하는 해당 함수가 필요합니다.)
   static int personalityTagToId(String personalityTag) {
     final Map<String, int> personalityMap = {
       '늘정주나': 1,
@@ -70,7 +70,7 @@ class UtilFunction {
     return personalityMap[personalityTag] ?? 0; // 존재하는 값이 없으면 0반환
   }
 
-  // relation tag값을 기반으로 사람과 채팅할 수 있는지 결정합니다.
+  /// relation tag값을 기반으로 사람과 채팅할 수 있는지 결정합니다.
   static bool relationToHumanChatPossible(String? relation) {
     if (relation == null) return false;
 
@@ -148,6 +148,7 @@ class UtilFunction {
     }
   }
 
+  /// 카테고리에 따른 점수를 매핑합니다.
   static double mapCategoryToValue(String category) {
     switch (category) {
       case '부정적':
@@ -169,6 +170,7 @@ class UtilFunction {
     }
   }
 
+  /// Bar그래프에 그려질 수 있도록 관계 데이터 값을 변환합니다.
   static List<BarData> relationDataToBarData(
     List<EgoRelationship> egoRelationData,
   ) {

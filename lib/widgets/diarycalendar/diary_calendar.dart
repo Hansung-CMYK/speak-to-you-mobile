@@ -151,6 +151,8 @@ class _DiaryCalendarState extends ConsumerState<DiaryCalendar> {
     return []; // 빈 리스트는 `_calendarBuilder()/markerBuilders`에서 공백으로 렌더링 한다.
   }
 
+  /// 월별로 조회한 일기들과 날짜를 매핑하는 함수입니다.
+  /// 해당 함수를 통해 어느 날짜에 어떤 일기가 작성되었는지 매핑이 가능합니다.
   void updateEmotionsFromDiaries(List<MonthlyDiary> diaries) {
 
     for (final diary in diaries) {

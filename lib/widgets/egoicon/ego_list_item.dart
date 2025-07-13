@@ -7,10 +7,10 @@ import 'package:ego/theme/color.dart';
 /**
  * Main화면 상단에 보여지는 EGO List의 Item을 만듭니다.
  *
- * @param assetPath   EGO 아이템의 이미지 경로입니다.
- * @param onTap       아이템을 탭했을 때 호출되는 콜백 함수입니다.
- * @param isMoreBtn   '더보기' 버튼인지 여부를 나타냅니다. (기본값: false)
- * @param radius      아이템의 테두리 반지름입니다. (기본값: 28)
+ * [profileImageBytes] EGO 프로필 이미지
+ * [onTap]       아이템을 탭했을 때 호출되는 콜백 함수입니다.
+ * [isMoreBtn]   '더보기' 버튼인지 여부를 나타냅니다. (기본값: false)
+ * [radius]      아이템의 테두리 반지름입니다. (기본값: 28)
  */
 Widget buildEgoListItem(
   Uint8List? profileImageBytes,

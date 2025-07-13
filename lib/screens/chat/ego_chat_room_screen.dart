@@ -23,6 +23,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
+/// EGO와 실시간 텍스트 대화 화면
+///
+/// [chatRoomId] - 채팅방의 고유 ID
+/// [uid] - 사용자 식별자 (UID)
+/// [egoModel] - EGO 정보
 class EgoChatRoomScreen extends ConsumerStatefulWidget {
   final int chatRoomId;
   final String uid;
@@ -87,6 +92,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     fetchDetailEgoData(widget.egoModel.id!);
   }
 
+  // EGO 프로필 클릭시 EGO 정보 BottomSheet를 띄우기 위해 EGO 정보 요청
   void fetchDetailEgoData(int egoId) async {
 
     final egoData = await EgoService.fetchFullEgoInfoByEgoId(widget.egoModel.id!);
@@ -95,6 +101,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     });
   }
 
+  // 초기 화면 로딩시 채팅 내역 조회
   Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
     final list = await ChatHistoryService.fetchChatHistoryList(
@@ -112,6 +119,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     setState(() => _isLoading = false);
   }
 
+  // 화면을 위 끝까지 스크롤시 이전 채팅 기록 조회
   Future<void> _fetchMoreData() async {
     setState(() => _isLoading = true);
     final list = await ChatHistoryService.fetchChatHistoryList(
@@ -175,6 +183,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     _scrollToBottom();
   }
 
+  // 갤러리에서 이미지 선택
   Future<void> _showImagePickerOptions() async {
     showModalBottomSheet(
       context: context,
@@ -205,6 +214,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     );
   }
 
+  // 이미지 압축
   Future<File?> _pickAndCompressImage(ImageSource source) async {
     final XFile? picked = await ImagePicker().pickImage(source: source);
     if (picked == null) return null;
@@ -231,6 +241,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     return compressed != null ? File(compressed.path) : null;
   }
 
+  // 이미지 전송
   void _sendImage(File file) async {
     final now = DateTime.now();
     final formatted = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);

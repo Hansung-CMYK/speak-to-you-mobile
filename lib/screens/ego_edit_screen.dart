@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 
 import 'tutorial/ego_information_injection.dart';
 
+/// EGO를 생성하는 화면
 class EgoEditScreen extends StatefulWidget {
   const EgoEditScreen({super.key});
 
@@ -33,13 +34,14 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
   Uint8List? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
+  // EGO의 이미지를 갤러리에서 선택
   Future<void> _pickImageFromGallery() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       final Uint8List bytes = await image.readAsBytes();
       setState(() {
         selectedImage = bytes;
-        myEgoModel.profileImage = bytes; // 이미지 전송 또는 저장용
+        myEgoModel.profileImage = bytes;
       });
     }
   }
@@ -92,6 +94,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        /* -------------------- EGO 프로필 이미지 -------------------- */
                         Center(
                           child: Stack(
                             alignment: Alignment.bottomRight,
@@ -150,7 +153,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           ),
                         ),
 
-                        // EGO 이름 부분
+                        /* -------------------- EGO 이름 입력 -------------------- */
                         SizedBox(height: 20.h),
                         Text(
                           'EGO 이름',
@@ -177,7 +180,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           ),
                         ),
 
-                        // MBTI DropDownMenu 부분
+                        /* -------------------- MBTI DropDownMenu -------------------- */
                         SizedBox(height: 10.h),
                         Text(
                           'MBTI',
@@ -252,7 +255,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           ),
                         ),
 
-                        // 소개글 부분
+                        /* -------------------- EGO 소개글 입력란 -------------------- */
                         SizedBox(height: 24.h),
                         Text(
                           'EGO 소개글',
@@ -283,7 +286,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                     ),
                   ),
 
-                  // 완료 버튼 부분
+                  /* -------------------- EGO 생성 버튼 -------------------- */
                   _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () async {
                     myEgoModel = EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI, personalityList: [], profileImage: selectedImage);
                     Navigator.push(

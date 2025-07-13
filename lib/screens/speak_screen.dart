@@ -18,6 +18,7 @@ import '../widgets/animation/animation_object_widget.dart';
 import 'egolistview/ego_list_blurred_screen.dart';
 import 'voice_chat/voice_chat_screen.dart';
 
+/// 3D Asset이 띄워지는 Main 화면
 class SpeakScreen extends ConsumerStatefulWidget {
   const SpeakScreen({super.key});
 
@@ -38,7 +39,6 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
   late bool autoPlay;
   late List<FrameAnimation> animationsData;
 
-  /// _tabCntroller 초기화
   @override
   void initState() {
     super.initState();
@@ -53,7 +53,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
     _fetchChatRoomList();
   }
 
-  /// _tabCntroller 제거
+
   @override
   void dispose() {
     super.dispose();
@@ -92,7 +92,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
 
         return Column(
           children: [
-            // 상단 스토리 EGO 리스트
+            /* -------------------- EGO 프로필 이미지 List -------------------- */
             Padding(
               padding: EdgeInsets.symmetric(vertical: 8.h),
               child: SizedBox(
@@ -148,8 +148,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
               ),
             ),
 
-            // TODO 여기서 EGO가 움직입니다.
-            // E/FrameEvents( 4492): updateAcquireFence: Did not find frame.로 인해 log를 가려서 주석처리 했습니다.
+            /* -------------------- EGO 3D Asset -------------------- */
             Expanded(
               child: AnimationObjectWidget(
                 animationName: animation,
@@ -160,7 +159,7 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
             ),
 
             // selectedEgo는 EgoList를 불러온 이후 할당되는데, 해당 buildSelectedEGO에서
-            //null check operator을 수행하는 바람에 순간적으로 null 화면이 보입니다. 때문에 이를 방지하기 위해
+            // null check operator을 수행하는 바람에 순간적으로 null 화면이 보입니다. 때문에 이를 방지하기 위해
             // selectedEgo가 null이면 즉, 아직 egolist가 불려지지 않았으면 로딩창 띄우게 함
             selectedEgo == null
                 ? CircularProgressIndicator()
@@ -182,11 +181,12 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
     );
   }
 
-  // 현재 클릭된 EGO의 정보 Card
+  /* -------------------- 현재 선택된 EGO의 이름 Card -------------------- */
   Widget _buildSelectedEGO() {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 30.h),
       child: SwipeActionContainer(
+        // 실시간 음성 대화
         onCall: () {
           // 전화 걸기 액션
           // uid는 시스템에 존재
@@ -199,16 +199,15 @@ class SpeakScreenState extends ConsumerState<SpeakScreen>
           );
         },
 
+        // 실시간 텍스트 대화
         onText: () {
           final matchingRoomId = chatRoomList.firstWhere(
                 (room) => room.egoId == selectedEgo?.id,
           );
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => EgoChatRoomScreen(chatRoomId: matchingRoomId.id , uid: uid, egoModel: selectedEgo!)),
           );
-
         },
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 11.h),

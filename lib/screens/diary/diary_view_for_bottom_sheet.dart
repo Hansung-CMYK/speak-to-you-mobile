@@ -20,9 +20,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import 'one_sentence_review.dart';
 
-/**
- * 캘린더 하단에 저장된 일기를 불러옵니다. [AI에게 요청하는 것 아님]
- * */
+/// 캘린더 하단에 저장된 일기를 불러옵니다. [AI에게 요청하는 것 아님]
+/// 사용자가 이전에 작성한 일기를 보여줍니다.
+/// [diaryId] : 조회할 일기의 ID
+/// [scrollController] : 현재 BottomSheet는 캘린더 화면안에서 동작하기 때문에 캘린더 화면의 ScrollController를 전달 받습니다.
 class DiaryViewForBottomSheet extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   final int diaryId;
@@ -56,6 +57,7 @@ class _DiaryViewForBottomSheetState
 
   // 같은 prompt로 이미지생성이 가능하도록
   // provider에 key값을 추가해 provider의 고유값 판단
+  // key값이 변경되면 이미지가 재생성 됩니다.
   void increaseKey(int containerId) {
     final newKey = DateTime.now().millisecondsSinceEpoch;
 
@@ -79,6 +81,7 @@ class _DiaryViewForBottomSheetState
       data: (fetchedDiary) {
         Diary diary = fetchedDiary;
 
+        // 사용자가 수정한 Topic으로 기존 Topic을 업데이트 합니다.
         void updateTopicUrl(int index, String newUrl) {
           setState(() {
             diary.topics[index].url = newUrl;
@@ -98,6 +101,7 @@ class _DiaryViewForBottomSheetState
                 controller: widget.scrollController,
                 child: Column(
                   children: [
+                    // 버튼과 버튼 사이에 빈 공간이 생기는 것을 막기 위한 부분입니다.
                     Center(
                       child: Container(
                         alignment: Alignment.center,
@@ -115,7 +119,7 @@ class _DiaryViewForBottomSheetState
                       padding: EdgeInsets.only(right: 20.w),
                       color: AppColors.white,
                       child: Row(
-                        // 일기 수정 및 일기 공유 버튼
+                        /* -------------------- 일기 수정 및 일기 공유 버튼 -------------------- */
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SvgButton(
@@ -138,7 +142,7 @@ class _DiaryViewForBottomSheetState
                           ),
                           SizedBox(width: 12.w),
 
-                          // 일기 수정화면 이동
+                          /* -------------------- 일기 수정 화면 이동 -------------------- */
                           SvgButton(
                             svgPath: 'assets/icon/edit_icon.svg',
                             width: 20.w,
@@ -166,10 +170,10 @@ class _DiaryViewForBottomSheetState
                       ),
                     ),
 
-                    // 감정 Container
+                    /* -------------------- 감정 Container -------------------- */
                     TodayEmotionContainer(diary.feeling),
 
-                    // 날짜
+                    /* -------------------- 날짜 -------------------- */
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Padding(
@@ -189,7 +193,7 @@ class _DiaryViewForBottomSheetState
                       ),
                     ),
 
-                    // topic 정보 Container(topic제목, topic 내용, topic 이미지)
+                    /* -------------------- topic 정보 Container(topic제목, topic 내용, topic 이미지) -------------------- */
                     ...diary.topics
                         .asMap()
                         .entries
@@ -209,15 +213,15 @@ class _DiaryViewForBottomSheetState
                           );
                         }),
 
-                    // 일기 작성해준 EGO 정보
+                    /* -------------------- 일기 작성해준 EGO 정보 -------------------- */
                     HelpedEgoInfoContainer(egoId: diary.egoId),
 
                     SizedBox(height: 14.h),
 
-                    // 오늘의 한 줄 요약
+                    /* -------------------- 오늘의 한 줄 요약 -------------------- */
                     OneSentenceReview(diary.dailyComment),
 
-                    // 일기 저장 버튼
+                    /* -------------------- 일기 저장 버튼 -------------------- */
                     Container(
                       width: double.infinity,
                       margin: EdgeInsets.only(

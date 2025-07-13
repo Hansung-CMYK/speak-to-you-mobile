@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+/// 로그인 화면
 class MainLoginScreen extends StatelessWidget {
   void createNewEgoMethod(BuildContext context) {
     Navigator.pushNamed(context, 'CreateEgo');

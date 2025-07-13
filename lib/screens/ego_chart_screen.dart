@@ -10,6 +10,7 @@ import 'dart:typed_data';
 
 import '../theme/color.dart';
 
+/// EGO들과 사용자의 친밀도를 막대바로 보여줍니다.
 class RelationBarScreen extends ConsumerStatefulWidget {
   RelationBarScreen({super.key});
 
@@ -127,6 +128,7 @@ class _BarChartSample7State extends ConsumerState<RelationBarScreen> {
 
                         if (label == null) return const SizedBox.shrink();
 
+                        // 수치에 따른 감정 label값 (그래프의 X축에 위치)
                         return Container(margin: EdgeInsets.only(right: 6.h), child: SideTitleWidget(
                           meta: meta,
                           space: 4,
@@ -285,6 +287,7 @@ class BarData {
   final String name;
 }
 
+/// long클릭시 아이콘이 회전합니다.
 class _IconWidget extends ImplicitlyAnimatedWidget {
   const _IconWidget({
     required this.color,
@@ -302,6 +305,7 @@ class _IconWidget extends ImplicitlyAnimatedWidget {
       _IconWidgetState();
 }
 
+/// Y축에 배치되는 EGO의 이름
 class _IconWidgetState extends AnimatedWidgetBaseState<_IconWidget> {
   Tween<double>? _rotationTween;
 

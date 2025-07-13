@@ -116,6 +116,9 @@ class EgoService {
 
   }
 
+  /**
+   * 오늘의 EGO 조회
+   * */
   static Future<EgoModelV2> fetchTodayEgo(String uid) async {
     final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$uid/daily'));
 
@@ -131,6 +134,9 @@ class EgoService {
     }
   }
 
+  /**
+   * EGO의 주인 ID를 조회합니다.
+   * */
   static Future<String> fetchEgoOwnerId(int egoId ) async{
     final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$egoId/owner'));
 
@@ -146,7 +152,9 @@ class EgoService {
     }
   }
 
-  // 사용자와 ego간의 관계를 포함한 전체 정보 반환
+  /**
+   * 사용자와 특정 ego간의 관계를 포함한 전체 정보 조회
+   * */
   static Future<EgoModelV2> fetchFullEgoInfoByEgoId(int egoId) async {
     final egoData = await fetchEgoByIdV2(egoId); // egoid로 기본 ego 정보 조회
 
@@ -173,6 +181,9 @@ class EgoService {
     }
   }
 
+  /**
+   * 새로운 EGO 생성
+   * */
   static Future<EgoModelV2> createNewEgo(EgoModelV2 newEgoModel) async {
 
     final uri = Uri.parse('${SettingsService().dbUrl}/ego');
@@ -193,6 +204,9 @@ class EgoService {
 
   }
 
+  /**
+   * EGO의 좋아요 수를 조회합니다.
+  * */
   static Future<int> fetchEgoLikeCnt(int egoId, bool isLike) async {
 
     final uid = SharedPrefService.getUid();
@@ -216,6 +230,9 @@ class EgoService {
 
   }
 
+  /**
+   * 사용자와 관련된 EGO들의 관계정보 조회합니다.
+   * */
   static Future<List<EgoRelationship>> fetchEgoRelation() async {
     final uid = SharedPrefService.getUid();
 

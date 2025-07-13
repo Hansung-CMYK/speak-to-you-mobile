@@ -3,9 +3,8 @@ import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/**
- * 캘린더화면에서 일자 클릭시 하단에 보여질 일기 BottomSheet입니다.
- * */
+/// 캘린더화면에서 일자 클릭시 하단에 보여질 일기 BottomSheet입니다.
+/// [diaryId] 조회할 일기의 ID를 전달 받습니다. (캘린더 화면에서 이미 일자별로 일기가 매핑된 상태)
 class CalendarBottomSheet extends StatefulWidget {
   final int diaryId;
 

@@ -15,6 +15,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'chat_history_screen.dart';
 
+/// 실시간 음성 대화 화면
 class VoiceChatScreen extends StatefulWidget {
   final EgoModelV2 egoModelV2;
   final String uid;
