@@ -124,13 +124,14 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
           itemBuilder: (context, index) {
             final chat = _chatRoomList[index];
 
+            /* -------------------- 채팅방 Item을 클릭, 롱클릭시 동작 -------------------- */
             return InkWell(
               onTap: () async {
                 setState(() {
                   _selectedChatRoomId = chat.id;
                 });
 
-                // B화면에서 되돌아올 때까지 기다림
+                // EGO 채팅 화면에서 되돌아올 때까지 기다림
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -176,7 +177,7 @@ class _PersonalChatListScreenState extends ConsumerState<PersonalChatListScreen>
                 padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
                 child: Row(
                   children: [
-                    // 채팅방 리스트 프로필 이미지
+                    /* -------------------- 채팅방 아이템 프로필 이미지 -------------------- */
                     buildEgoListItem(
                       chat.egoModel.profileImage,
                           () {},

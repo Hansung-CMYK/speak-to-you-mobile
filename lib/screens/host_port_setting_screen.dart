@@ -5,6 +5,7 @@ import 'package:ego/services/setting_service.dart';
 
 import 'package:ego/utils/shared_pref_helper.dart';
 
+/// Port번호 및 로그인한 사용자의 user_id를 변경할 수 있는 설정창
 class HostPortSettingScreen extends StatefulWidget {
   const HostPortSettingScreen({Key? key}) : super(key: key);
 

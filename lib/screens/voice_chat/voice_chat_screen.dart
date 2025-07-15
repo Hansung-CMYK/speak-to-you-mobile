@@ -9,11 +9,13 @@ import 'package:ego/screens/voice_chat/voice_chat_overlay.dart';
 import 'package:ego/services/chat/voice/voice_chat_socket.dart';
 import 'package:ego/theme/color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'chat_history_screen.dart';
 
+/// 실시간 음성 대화 화면
 class VoiceChatScreen extends StatefulWidget {
   final EgoModelV2 egoModelV2;
   final String uid;
@@ -29,6 +31,7 @@ class VoiceChatScreen extends StatefulWidget {
 }
 
 class _VoiceChatScreenState extends State<VoiceChatScreen> {
+  static const _audioChannel = MethodChannel('app.channel.audio');
   final ScrollController _scrollController = ScrollController();
   late VoiceChatSocketClient socketClient;
 
@@ -41,6 +44,11 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
 
   late List<ChatHistory> chatHistoryList;
 
+  // 🔸 Chat 상태 저장 변수
+  ChatHistory? _latestUserChat;
+  StringBuffer _llmBuffer = StringBuffer();
+  bool _isReceivingAudio = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,7 +57,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     socketClient = VoiceChatSocketClient(
       userId: widget.uid,
       egoId: widget.egoModelV2.id!,
-      speaker: "karina", // 필요에 따라 변경 가능
+      speaker: "default",
       onMessage: _handleSocketMessage,
       onAudioChunk: _handleAudioChunk,
     );
@@ -57,9 +65,7 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     socketClient.connect();
   }
 
-  void _initializeChatHistory() async
-  {
-    // 임시 데이터
+  void _initializeChatHistory() async {
     chatHistoryList = [];
   }
 
@@ -70,11 +76,26 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
     super.dispose();
   }
 
+  Future<void> _setSystemMicMute(bool mute) async {
+    try {
+      await _audioChannel.invokeMethod('setMicMute', {'mute': mute});
+    } on PlatformException catch (e) {
+      print('🔈 시스템 마이크 음소거 오류: ${e.message}');
+    }
+  }
+
+  Future<void> _setSystemSpeakerMute(bool mute) async {
+    try {
+      await _audioChannel.invokeMethod('setSpeakerMute', {'mute': mute});
+    } on PlatformException catch (e) {
+      print('🔇 시스템 스피커 음소거 오류: ${e.message}');
+    }
+  }
+
   void _addChat(ChatHistory chat) {
     setState(() {
       chatHistoryList.add(chat);
     });
-    // 채팅이 추가된 후에 스크롤을 마지막으로 이동
     _scrollToBottom();
   }
 
@@ -93,46 +114,35 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   void _handleSocketMessage(Map<String, dynamic> message) {
     switch (message['type']) {
       case 'realtime':
-        print("🗣️ 실시간 텍스트: ${message['text']}");
-        _addChat(ChatHistory(
-          uid: widget.uid,
-          chatRoomId: 1,
-          content: message['text'] ?? '',
-          type: 'u',
-          chatAt: DateTime.now(),
-          isDeleted: false,
-          contentType: "TEXT"
-        ));
-        break;
+        final text = message['text'] ?? '';
+        print("🗣️ 실시간 텍스트: $text");
 
-      case 'fullSentence':
-        print("✅ STT 종료: ${message['text']}");
-        break;
+        setState(() {
+          // 기존 채팅 제거
+          if (_latestUserChat != null) {
+            chatHistoryList.remove(_latestUserChat);
+          }
 
-      case 'response_chunk':
-        print("🤖 LLM 응답 중: ${message['text']}");
-        break;
-
-      case 'response_done':
-        print("✅ 서버 응답 완료");
-        _addChat(ChatHistory(
-            uid: "애고",
+          // 새 채팅 생성
+          _latestUserChat = ChatHistory(
+            uid: widget.uid,
             chatRoomId: 1,
-            content: message['text'] ?? '',
-            type: 'e',
+            content: text,
+            type: 'u',
             chatAt: DateTime.now(),
             isDeleted: false,
-            contentType: "TEXT"
-        ));
-        break;
+            contentType: "TEXT",
+          );
 
-      case 'cancel_audio':
-        print("🛑 오디오 재생 취소 요청");
-        // 오디오만 중단
-        socketClient.stopAudio(); // 또는 socketClient.stopAudio() 를 새로 만들어도 OK
+          chatHistoryList.add(_latestUserChat!);
+        });
+
+        _scrollToBottom();
         break;
 
       case 'audio_chunk':
+        _isReceivingAudio = true;
+
         final base64Str = message['audio_base64'];
         if (base64Str == null || base64Str.isEmpty) {
           print("⚠️ audio_base64 없음");
@@ -142,12 +152,45 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
         try {
           final bytes = base64Decode(base64Str);
           print("📥 [오디오 디코딩 완료] ${bytes.length} bytes");
-
-          // 오디오 디코딩 결과를 재생하도록 전달
-          socketClient.onAudioChunk(bytes); // 내부에서 재생 처리
+          socketClient.onAudioChunk(bytes);
         } catch (e) {
           print("❌ audio_base64 디코딩 실패: $e");
         }
+        break;
+
+      case 'fullSentence':
+        print("✅ STT 종료: ${message['text']}");
+        _latestUserChat = null;
+        break;
+
+      case 'response_chunk':
+        print("🤖 LLM 응답 중: ${message['text']}");
+        _llmBuffer.write(message['text'] ?? '');
+        break;
+
+      case 'response_done':
+        print("✅ 서버 응답 완료");
+
+        final finalText = _llmBuffer.toString().trim();
+        if (finalText.isNotEmpty) {
+          _addChat(ChatHistory(
+            uid: widget.uid,
+            chatRoomId: 1,
+            content: finalText,
+            type: 'e',
+            chatAt: DateTime.now(),
+            isDeleted: false,
+            contentType: "TEXT",
+          ));
+        }
+
+        _llmBuffer.clear();
+        _isReceivingAudio = false;
+        break;
+
+      case 'cancel_audio':
+        print("🛑 오디오 재생 취소 요청");
+        socketClient.stopAudio();
         break;
 
       default:
@@ -156,7 +199,6 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   }
 
   void _handleAudioChunk(Uint8List data) {
-    // TODO: 오디오 플레이어 추가 처리 가능
     print("🔊 오디오 청크 수신 (${data.length} bytes)");
   }
 
@@ -174,23 +216,19 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // 좌측 Icons
             Row(
               children: [
                 IconButton(
                   icon: SvgPicture.asset(
-                    isMicOn
-                        ? 'assets/icon/mic_on.svg'
-                        : 'assets/icon/mic_off.svg',
+                    isMicOn ? 'assets/icon/mic_on.svg' : 'assets/icon/mic_off.svg',
                     width: iconWidth,
                     height: iconHeight,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                   ),
                   padding: EdgeInsets.zero,
                   onPressed: () async {
+                    await _setSystemMicMute(isMicOn);
+
                     await socketClient.toggleMic();
                     setState(() {
                       isMicOn = !isMicOn;
@@ -200,18 +238,15 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                 SizedBox(width: 25.w),
                 IconButton(
                   icon: SvgPicture.asset(
-                    isSpeakerOn
-                        ? 'assets/icon/sound_on.svg'
-                        : 'assets/icon/sound_off.svg',
+                    isSpeakerOn ? 'assets/icon/sound_on.svg' : 'assets/icon/sound_off.svg',
                     width: iconWidth,
                     height: iconHeight,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                   ),
                   padding: EdgeInsets.zero,
-                  onPressed: () {
+                  onPressed: () async {
+                    await _setSystemSpeakerMute(isSpeakerOn);
+
                     setState(() {
                       isSpeakerOn = !isSpeakerOn;
                     });
@@ -219,8 +254,6 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                 ),
               ],
             ),
-
-            // 우측 Icons
             Row(
               children: [
                 IconButton(
@@ -228,19 +261,14 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                     'assets/icon/chat_history.svg',
                     width: iconWidth,
                     height: iconHeight,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                   ),
                   padding: EdgeInsets.zero,
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => ChatHistoryScreen(
-                          chatHistories: chatHistoryList,
-                        ),
+                        builder: (context) => ChatHistoryScreen(chatHistories: chatHistoryList),
                       ),
                     );
                   },
@@ -248,15 +276,10 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
                 SizedBox(width: 25.w),
                 IconButton(
                   icon: SvgPicture.asset(
-                    isChatVisible
-                        ? 'assets/icon/disappear_chat.svg'
-                        : 'assets/icon/appear_chat.svg',
+                    isChatVisible ? 'assets/icon/disappear_chat.svg' : 'assets/icon/appear_chat.svg',
                     width: iconWidth,
                     height: iconHeight,
-                    colorFilter: const ColorFilter.mode(
-                      Colors.white,
-                      BlendMode.srcIn,
-                    ),
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                   ),
                   padding: EdgeInsets.zero,
                   onPressed: () {
@@ -282,16 +305,18 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
             padding: EdgeInsets.only(top: 40.h),
             child: TopCallTimeBanner(egoName: egoInfo.name),
           ),
-          //TODO 여기서 EGO가 보여짐
           Expanded(
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 30.h),
-                    child: Image.asset(
-                      'assets/image/ego_1.png',
-                      fit: BoxFit.cover,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      height: 600.h,
+                      child: Image.asset(
+                        'assets/image/ego_body_image.png',
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
                 ),
@@ -313,10 +338,6 @@ class _VoiceChatScreenState extends State<VoiceChatScreen> {
   }
 }
 
-
-/**
- * 실시간 대화 종료 버튼
- * */
 class CallEndButton extends StatelessWidget {
   final VoidCallback onPressed;
 
@@ -344,13 +365,12 @@ class _LowerCenterDockedFabLocation extends FloatingActionButtonLocation {
   Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
     final double fabX =
         (scaffoldGeometry.scaffoldSize.width -
-            scaffoldGeometry.floatingActionButtonSize.width) /
-        2;
+            scaffoldGeometry.floatingActionButtonSize.width) / 2;
 
     final double fabY =
         scaffoldGeometry.contentBottom -
-        (scaffoldGeometry.floatingActionButtonSize.height / 2) +
-        20;
+            (scaffoldGeometry.floatingActionButtonSize.height / 2) +
+            20;
 
     return Offset(fabX, fabY);
   }

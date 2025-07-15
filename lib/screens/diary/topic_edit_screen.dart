@@ -8,6 +8,7 @@ import 'package:ego/theme/color.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// Topic 수정 화면
 class TopicEditScreen extends StatefulWidget {
   final Diary diary;
 
@@ -51,6 +52,8 @@ class _TopicEditScreenState extends State<TopicEditScreen> {
                         ),
                       ),
                     ),
+
+                    // 각각의 Topic은 개별 Textfield를 가집니다.
                     ...diary.topics.map(
                       (topic) => TopicEditContainer(topic: topic),
                     ),

@@ -35,7 +35,7 @@ Future<void> main() async {
   await initializeDateFormatting('ko');
   WidgetsFlutterBinding.ensureInitialized();
 
-  // TODO 계정 정보 업데이트
+  // 디바이스에 정보 저장
   await SharedPrefService.init();
   await SharedPrefService.setUid(
     'user_id_001',
@@ -43,6 +43,7 @@ Future<void> main() async {
 
   tz.initializeTimeZones();
 
+  // Firebase 초기 설정
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await requestNotificationPermission();
   final localNotificationsService = LocalNotificationsService.instance();
@@ -78,15 +79,15 @@ class MainScreenTest extends StatelessWidget {
             darkTheme: AppTheme.darkTheme,
             initialRoute: 'Login',
             routes: {
-              'Login' : (context) => MainLoginScreen(),
-              'CreateEgo':(context) => EgoEditScreen(),
-              'Main':
+              'Login' : (context) => MainLoginScreen(), // 로그인 화면
+              'CreateEgo':(context) => EgoEditScreen(), // EGO 생성 화면
+              'Main': // 로그인 이후의 Main화면
                   (context) => Consumer(
                     builder: (context, ref, child) {
                       return SampleMainScreen();
                     },
                   ),
-              '/settings' : (context) => HostPortSettingScreen()
+              '/settings' : (context) => HostPortSettingScreen() // 설정 화면
             },
           ),
     );

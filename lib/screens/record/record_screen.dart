@@ -1,13 +1,11 @@
 import 'package:ego/screens/record/calendar/calendar_screen.dart';
-import 'package:ego/screens/record/chart/chart_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../theme/color.dart';
+import '../ego_chart_screen.dart';
 
-/// 기록보기(가제) 화면이다. (2025-02-25: 현재는 캘린더 화면)
-///
-/// `캘린더`와 `감정차트`를 볼 수 있다.
+/// 캘린더와 EGO관계를 확인할 수 있는 화면
 class RecordScreen extends StatefulWidget {
   const RecordScreen({super.key});
 
@@ -17,7 +15,7 @@ class RecordScreen extends StatefulWidget {
 
 class _RecordScreenState extends State<RecordScreen>
     with SingleTickerProviderStateMixin {
-  /// [_tabController] `캘린더`와 `감정차트`를 선택하는 controller이다.
+  /// [_tabController] `캘린더`와 `EGO관계`를 선택하는 controller이다.
   late final TabController _tabController;
 
   /// _tabController 초기화
@@ -69,7 +67,7 @@ class _RecordScreenState extends State<RecordScreen>
         tabs: [
           // 탭 종류
           Tab(text: "캘린더"),
-          Tab(text: "감정차트"),
+          Tab(text: "EGO 관계"),
         ],
       ),
     );
@@ -81,8 +79,8 @@ class _RecordScreenState extends State<RecordScreen>
       child: TabBarView(
         controller: _tabController, // 컨트롤러 부여
         children: [
-          CalendarScreen(),
-          ChartScreen(), // TODO: EgoPage로 변경 필요 [미개발]
+          CalendarScreen(), // 캘린더 화면
+          RelationBarScreen() // EGO관계 화면
         ],
       ),
     );

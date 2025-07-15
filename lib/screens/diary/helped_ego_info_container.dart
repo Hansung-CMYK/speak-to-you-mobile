@@ -11,9 +11,8 @@ import 'package:ego/widgets/bottomsheet/today_ego_introV2.dart';
 
 import '../../services/ego/ego_service.dart';
 
-/**
- * 일기 작성을 도와준 EGO의 정보를 보여줍니다.
- * */
+/// 일기 작성을 도와준 EGO의 정보를 보여줍니다.
+/// [egoId] : 조회할 EgoId
 class HelpedEgoInfoContainer extends ConsumerWidget {
   final int egoId;
 
@@ -68,7 +67,7 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
                 ),
               ),
 
-              // EGO Profile 이미지 부분
+              /* -------------------- EGO Profile 이미지 부분 -------------------- */
               LayoutBuilder(
                 builder: (context, constraints) {
                   double size = constraints.maxWidth;
@@ -110,7 +109,7 @@ class HelpedEgoInfoContainer extends ConsumerWidget {
                 },
               ),
 
-              // EGO 이름 + 프로필 상세보기
+              /* -------------------- EGO 이름 + 프로필 상세보기 -------------------- */
               Container(
                 padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 12.w),
                 child: Row(

@@ -9,6 +9,8 @@ import 'package:ego/providers/ego_provider.dart';
 
 import 'package:ego/utils/shared_pref_helper.dart';
 
+import 'package:ego/models/ego_relation_model.dart';
+
 class EgoService {
   /**
    * 전달된 ChatRoomModel들을 바탕으로 EGO정보를 조회합니다.
@@ -114,6 +116,9 @@ class EgoService {
 
   }
 
+  /**
+   * 오늘의 EGO 조회
+   * */
   static Future<EgoModelV2> fetchTodayEgo(String uid) async {
     final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$uid/daily'));
 
@@ -129,6 +134,9 @@ class EgoService {
     }
   }
 
+  /**
+   * EGO의 주인 ID를 조회합니다.
+   * */
   static Future<String> fetchEgoOwnerId(int egoId ) async{
     final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego/$egoId/owner'));
 
@@ -144,7 +152,9 @@ class EgoService {
     }
   }
 
-  // 사용자와 ego간의 관계를 포함한 전체 정보 반환
+  /**
+   * 사용자와 특정 ego간의 관계를 포함한 전체 정보 조회
+   * */
   static Future<EgoModelV2> fetchFullEgoInfoByEgoId(int egoId) async {
     final egoData = await fetchEgoByIdV2(egoId); // egoid로 기본 ego 정보 조회
 
@@ -171,6 +181,9 @@ class EgoService {
     }
   }
 
+  /**
+   * 새로운 EGO 생성
+   * */
   static Future<EgoModelV2> createNewEgo(EgoModelV2 newEgoModel) async {
 
     final uri = Uri.parse('${SettingsService().dbUrl}/ego');
@@ -191,6 +204,9 @@ class EgoService {
 
   }
 
+  /**
+   * EGO의 좋아요 수를 조회합니다.
+  * */
   static Future<int> fetchEgoLikeCnt(int egoId, bool isLike) async {
 
     final uid = SharedPrefService.getUid();
@@ -212,6 +228,27 @@ class EgoService {
       throw Exception('채팅방 목록 불러오기 실패: ${response.statusCode}');
     }
 
+  }
+
+  /**
+   * 사용자와 관련된 EGO들의 관계정보 조회합니다.
+   * */
+  static Future<List<EgoRelationship>> fetchEgoRelation() async {
+    final uid = SharedPrefService.getUid();
+
+    final response = await http.get(Uri.parse('${SettingsService().dbUrl}/ego-relationship/$uid'));
+
+    if (response.statusCode == 200) {
+      final json = utf8.decode(response.bodyBytes);
+      final Map<String, dynamic> decodedJson = jsonDecode(json);
+
+      final List<dynamic> egoData = decodedJson['data'];
+
+      // List<EgoRelationship>로 변환하여 반환
+      return egoData.map((e) => EgoRelationship.fromJson(e)).toList();
+    } else {
+      throw Exception('ego의 관계 정보 불러오기 실패: ${response.statusCode}');
+    }
   }
 
 }

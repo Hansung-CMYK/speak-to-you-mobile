@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ego/theme/color.dart';
 
-// 오늘의 한 줄 요약 내용 부분
+/// 일기 화면에 있는 오늘의 한 줄 요약 내용 부분
 Widget OneSentenceReview(String sentence) {
   return Container(
     padding: EdgeInsets.all(20),

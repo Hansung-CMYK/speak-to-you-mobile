@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+/// 일기를 월별로 확인할 수 있는 캘린더 화면
 class CalendarScreen extends ConsumerStatefulWidget {
   const CalendarScreen({super.key});
 
@@ -25,9 +26,9 @@ class _CalendarScreenState extends ConsumerState<CalendarScreen> {
 
     return Stack(
       children: [
-        DiaryCalendar(onClickedValue: _onClickValue),
+        DiaryCalendar(onClickedValue: _onClickValue), // 캘린더 부분
         if (selectedValue != 0)
-          CalendarBottomSheet(key: UniqueKey(), diaryId: selectedValue),
+          CalendarBottomSheet(key: UniqueKey(), diaryId: selectedValue), // 일자를 클릭했을 때, 일기가 띄워지는 하단 부분
       ],
     );
   }

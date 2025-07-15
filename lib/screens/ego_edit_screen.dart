@@ -11,8 +11,10 @@ import 'package:flutter_svg/svg.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:image_picker/image_picker.dart';
 
-class EgoEditScreen extends StatefulWidget {
+import 'tutorial/ego_information_injection.dart';
 
+/// EGO를 생성하는 화면
+class EgoEditScreen extends StatefulWidget {
   const EgoEditScreen({super.key});
 
   @override
@@ -20,7 +22,7 @@ class EgoEditScreen extends StatefulWidget {
 }
 
 class _EgoEditScreenState extends State<EgoEditScreen> {
-  late final EgoModelV2 myEgoModel;
+  late EgoModelV2 myEgoModel;
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _egoIntroController = TextEditingController();
 
@@ -32,13 +34,14 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
   Uint8List? selectedImage;
   final ImagePicker _picker = ImagePicker();
 
+  // EGO의 이미지를 갤러리에서 선택
   Future<void> _pickImageFromGallery() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
       final Uint8List bytes = await image.readAsBytes();
       setState(() {
         selectedImage = bytes;
-        myEgoModel.profileImage = bytes; // 이미지 전송 또는 저장용
+        myEgoModel.profileImage = bytes;
       });
     }
   }
@@ -49,6 +52,8 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
     _nameController.text = '';
     _egoIntroController.text = '';
     selectedMBTI = 'INFJ';
+
+    myEgoModel = EgoModelV2(name: '', introduction: '', mbti: 'INFJ');
   }
 
   @override
@@ -57,7 +62,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'EGO 수정하기',
+          '나의 EGO 만들기',
           style: TextStyle(
             color: AppColors.black,
             fontWeight: FontWeight.w700,
@@ -89,6 +94,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        /* -------------------- EGO 프로필 이미지 -------------------- */
                         Center(
                           child: Stack(
                             alignment: Alignment.bottomRight,
@@ -96,29 +102,34 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                               CircleAvatar(
                                 radius: 100.r,
                                 backgroundColor: AppColors.white,
-                                child: selectedImage != null
-                                    ? ClipOval(
-                                  child: Image.memory(
-                                    selectedImage!,
-                                    width: 200.r,
-                                    height: 200.r,
-                                    fit: BoxFit.cover,
-                                    errorBuilder: (context, error, stackTrace) {
-                                      return Image.asset(
-                                        'assets/image/ego_icon.png',
-                                        width: 200.r,
-                                        height: 200.r,
-                                        fit: BoxFit.cover,
-                                      );
-                                    },
-                                  ),
-                                )
-                                    : Image.asset(
-                                  'assets/image/ego_icon.png',
-                                  width: 200.r,
-                                  height: 200.r,
-                                  fit: BoxFit.cover,
-                                ),
+                                child:
+                                    selectedImage != null
+                                        ? ClipOval(
+                                          child: Image.memory(
+                                            selectedImage!,
+                                            width: 200.r,
+                                            height: 200.r,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              return Image.asset(
+                                                'assets/image/ego_icon.png',
+                                                width: 200.r,
+                                                height: 200.r,
+                                                fit: BoxFit.cover,
+                                              );
+                                            },
+                                          ),
+                                        )
+                                        : Image.asset(
+                                          'assets/image/ego_icon.png',
+                                          width: 200.r,
+                                          height: 200.r,
+                                          fit: BoxFit.cover,
+                                        ),
                               ),
                               Container(
                                 width: 48.w,
@@ -134,7 +145,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                                     'assets/icon/camera.svg',
                                   ),
                                   onPressed: () {
-                                    _pickImageFromGallery();
+                                      _pickImageFromGallery();
                                   },
                                 ),
                               ),
@@ -142,7 +153,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           ),
                         ),
 
-                        // EGO 이름 부분
+                        /* -------------------- EGO 이름 입력 -------------------- */
                         SizedBox(height: 20.h),
                         Text(
                           'EGO 이름',
@@ -169,7 +180,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           ),
                         ),
 
-                        // MBTI DropDownMenu 부분
+                        /* -------------------- MBTI DropDownMenu -------------------- */
                         SizedBox(height: 10.h),
                         Text(
                           'MBTI',
@@ -244,7 +255,7 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                           ),
                         ),
 
-                        // 소개글 부분
+                        /* -------------------- EGO 소개글 입력란 -------------------- */
                         SizedBox(height: 24.h),
                         Text(
                           'EGO 소개글',
@@ -275,12 +286,19 @@ class _EgoEditScreenState extends State<EgoEditScreen> {
                     ),
                   ),
 
-                  // 완료 버튼 부분
+                  /* -------------------- EGO 생성 버튼 -------------------- */
                   _editCompleteBtn(!isIntroEmpty && !isNameEmpty, () async {
-                    final createdEgo = await EgoService.createNewEgo(
-                      EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI, personalityList: [], profileImage: selectedImage)
+                    myEgoModel = EgoModelV2(name: _nameController.text, introduction: _egoIntroController.text, mbti: selectedMBTI, personalityList: [], profileImage: selectedImage);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => UserInfoOnboardingScreen(
+                              egoModelV2: myEgoModel,
+                              onOnboardingComplete: () {},
+                            ),
+                      ),
                     );
-                    // 상준이 사용자 정보 입력 화면으로 이동
                   }),
                 ],
               ),

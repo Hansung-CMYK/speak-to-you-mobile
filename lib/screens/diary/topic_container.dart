@@ -151,7 +151,7 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          // 일기 이미지 부분
+          /* -------------------- 일기 이미지 부분 -------------------- */
           LayoutBuilder(
             builder: (context, constraints) {
               double size = constraints.maxWidth;
@@ -207,11 +207,11 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
             },
           ),
 
-          // 이미지 재생성 횟수, 버튼
+          /* -------------------- 이미지 재생성 횟수, 버튼 -------------------- */
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              // 횟수
+              // 이미지 생성 횟수
               Container(
                 child: Text(
                   key: Key('RegenCnt_${containerId}'),
@@ -227,7 +227,7 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
                 height: 16.h,
                 child: VerticalDivider(thickness: 1, color: AppColors.gray200),
               ),
-              // 버튼
+              // 이미지 재생성 버튼
               Container(
                 width: 16.w,
                 height: 16.h,
@@ -245,7 +245,7 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
             ],
           ),
 
-          // 일기 주제 및 공유 버튼
+          /* -------------------- 일기 주제 및 공유 버튼 -------------------- */
           Padding(
             padding: EdgeInsets.only(bottom: 8.h, top: 24.h),
             child: Row(
@@ -292,7 +292,7 @@ class _TopicContainerState extends ConsumerState<TopicContainer> {
             ),
           ),
 
-          // 내용
+          /* -------------------- 일기 내용 -------------------- */
           Container(
             width: double.infinity,
             margin: EdgeInsets.only(bottom: 20.h),

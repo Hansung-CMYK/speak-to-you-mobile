@@ -8,6 +8,7 @@ import 'package:ego/theme/color.dart';
 import 'package:ego/types/dialog_type.dart';
 import 'package:ego/widgets/confirm_dialog.dart';
 
+/// Topic을 수정할 수 있는 Container입니다. (Textfield, 삭제 버튼)
 class TopicEditContainer extends StatefulWidget {
   final Topic topic;
 
@@ -51,7 +52,7 @@ class _TopicEditContainerState extends State<TopicEditContainer> {
       padding: EdgeInsets.symmetric(vertical: 24.h),
       child: Column(
         children: [
-          // 주제
+          /* -------------------- Topic 주제 -------------------- */
           Container(
             padding: EdgeInsets.only(bottom: 8.h),
             alignment: Alignment.centerLeft,
@@ -65,7 +66,7 @@ class _TopicEditContainerState extends State<TopicEditContainer> {
             ),
           ),
 
-          // 내용
+          /* -------------------- Topic 내용 -------------------- */
           Container(
             margin: EdgeInsets.only(bottom: 12.h),
             height: 96.h,
@@ -95,7 +96,7 @@ class _TopicEditContainerState extends State<TopicEditContainer> {
             ),
           ),
 
-          // 삭제 버튼
+          /* -------------------- Topic 삭제 버튼 -------------------- */
           GestureDetector(
             onTap: () async {
               var dialogRes = await showConfirmDialog(

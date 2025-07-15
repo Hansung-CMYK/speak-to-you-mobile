@@ -23,6 +23,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
+/// EGO와 실시간 텍스트 대화 화면
+///
+/// [chatRoomId] - 채팅방의 고유 ID
+/// [uid] - 사용자 식별자 (UID)
+/// [egoModel] - EGO 정보
 class EgoChatRoomScreen extends ConsumerStatefulWidget {
   final int chatRoomId;
   final String uid;
@@ -87,6 +92,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     fetchDetailEgoData(widget.egoModel.id!);
   }
 
+  // EGO 프로필 클릭시 EGO 정보 BottomSheet를 띄우기 위해 EGO 정보 요청
   void fetchDetailEgoData(int egoId) async {
 
     final egoData = await EgoService.fetchFullEgoInfoByEgoId(widget.egoModel.id!);
@@ -95,6 +101,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     });
   }
 
+  // 초기 화면 로딩시 채팅 내역 조회
   Future<void> _fetchInitialData() async {
     setState(() => _isLoading = true);
     final list = await ChatHistoryService.fetchChatHistoryList(
@@ -112,6 +119,7 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     setState(() => _isLoading = false);
   }
 
+  // 화면을 위 끝까지 스크롤시 이전 채팅 기록 조회
   Future<void> _fetchMoreData() async {
     setState(() => _isLoading = true);
     final list = await ChatHistoryService.fetchChatHistoryList(
@@ -175,10 +183,40 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     _scrollToBottom();
   }
 
-  Future<File?> _pickAndCompressImage() async {
-    final XFile? picked = await ImagePicker().pickImage(
-      source: ImageSource.gallery,
+  // 갤러리에서 이미지 선택
+  Future<void> _showImagePickerOptions() async {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) => SafeArea(
+        child: Wrap(
+          children: [
+            ListTile(
+              leading: Icon(Icons.photo),
+              title: Text('갤러리에서 선택'),
+              onTap: () async {
+                Navigator.pop(context);
+                final image = await _pickAndCompressImage(ImageSource.gallery);
+                if (image != null) _sendImage(image);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.camera_alt),
+              title: Text('카메라로 촬영'),
+              onTap: () async {
+                Navigator.pop(context);
+                final image = await _pickAndCompressImage(ImageSource.camera);
+                if (image != null) _sendImage(image);
+              },
+            ),
+          ],
+        ),
+      ),
     );
+  }
+
+  // 이미지 압축
+  Future<File?> _pickAndCompressImage(ImageSource source) async {
+    final XFile? picked = await ImagePicker().pickImage(source: source);
     if (picked == null) return null;
 
     final dir = await getTemporaryDirectory();
@@ -203,14 +241,13 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
     return compressed != null ? File(compressed.path) : null;
   }
 
-  void _sendImage() async {
-    final file = await _pickAndCompressImage();
-    if (file == null) return;
-
+  // 이미지 전송
+  void _sendImage(File file) async {
     final now = DateTime.now();
     final formatted = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
     final bytes = await file.readAsBytes();
     final b64 = base64Encode(bytes);
+
     final hashInput = "${widget.uid}|$formatted|IMAGE|$b64";
     final hash = ChatHistory.generateSHA256(hashInput);
 
@@ -352,11 +389,8 @@ class _EgoChatRoomScreenState extends ConsumerState<EgoChatRoomScreen> {
                     children: [
                       /* 이미지 선택 버튼 */
                       IconButton(
-                        icon: const Icon(
-                          Icons.photo_outlined,
-                          color: Colors.grey,
-                        ),
-                        onPressed: _sendImage,
+                        icon: const Icon(Icons.photo_outlined, color: Colors.grey),
+                        onPressed: _showImagePickerOptions,
                       ),
                       /* 텍스트 입력 */
                       Expanded(

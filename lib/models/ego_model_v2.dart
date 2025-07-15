@@ -13,6 +13,7 @@ class EgoModelV2 {
   int? rating; //user가 평가한 점수
   String? relation; // Ego와 사용자의 관계
   bool? isLiked; // 해당 ego의 좋아요를 눌렀는가
+  String? voiceUrl;
 
   EgoModelV2({
     this.id,
@@ -25,7 +26,8 @@ class EgoModelV2 {
     this.personalityList,
     this.rating,
     this.relation,
-    this.isLiked
+    this.isLiked,
+    this.voiceUrl
   });
 
   /// JSON → Ego 객체
@@ -48,6 +50,7 @@ class EgoModelV2 {
       rating: json['rating'],
       relation: json['relation'],
       isLiked: json['isLiked'],
+      voiceUrl: json['voiceUrl']
     );
   }
 
@@ -64,6 +67,7 @@ class EgoModelV2 {
       'rating' : rating,
       'isLiked' : isLiked,
       'relation' : relation,
+      'voiceUrl' : voiceUrl
     };
   }
 
